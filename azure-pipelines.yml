@@ -1,0 +1,25 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ros:dashing-ros-core'
+
+steps:
+- script: |
+    apt-get update -qq
+    rosdep update
+    rosdep install --from-paths . --ignore-src -y
+  displayName: 'Set Up Environment'
+  
+- script: colcon build
+  displayName: 'Build'
+
+- script: |
+    colcon test
+    colcon test-result --verbose
+  displayName: 'Test'
