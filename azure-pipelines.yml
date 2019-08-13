@@ -9,11 +9,12 @@ trigger:
 pool:
   vmImage: 'ubuntu-16.04'
 
-container: 'ros:dashing-ros-core'
+container: ros:dashing-ros-core
 
 steps:
 - script: |
     apt-get update -qq
+    apt-get install -y sudo
     rosdep update
     rosdep install --from-paths . --ignore-src -y
   displayName: 'Set Up Environment'
