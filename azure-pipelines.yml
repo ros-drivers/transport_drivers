@@ -16,7 +16,7 @@ container:
 steps:
 - script: |
   /tmp/docker exec -t -u 0 ci-container \
-  sh -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -o DPKG::Options::="--force-confold" -y install sudo"
+  sh -c "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confold" -y install sudo"
   displayName: 'Set Up Sudo'
 
 - script: |
