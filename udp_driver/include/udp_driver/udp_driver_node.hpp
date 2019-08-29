@@ -67,9 +67,7 @@ public:
     const std::string & node_namespace)
   : LifecycleNode(
       node_name,
-      node_namespace,
-      rclcpp::NodeOptions()),
-    // TODO(esteve): Pass empty NodeOptions as workaround for https://github.com/ros2/rclcpp/pull/775
+      node_namespace),
     m_pub_ptr(
       LifecycleNode::create_publisher<OutputT>(declare_parameter("topic").get<std::string>(),
       rclcpp::QoS(10))),
