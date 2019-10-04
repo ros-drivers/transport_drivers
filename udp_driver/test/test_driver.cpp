@@ -28,9 +28,8 @@ Packet::Packet()
 TestDriver::TestDriver(
   const std::string & node_name,
   const std::string & topic,
-  const std::string & ip,
-  const uint16_t port)
-: TestDriverT(node_name, topic, ip, port),
+  const UdpConfig & udp_config)
+: TestDriverT(node_name, topic, udp_config),
   m_last_value(-1),
   m_times_init_output_has_been_called(0)
 {

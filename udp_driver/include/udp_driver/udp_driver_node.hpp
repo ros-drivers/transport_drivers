@@ -42,6 +42,27 @@ template<typename PacketT, typename OutputT>
 class UdpDriverNode : public rclcpp_lifecycle::LifecycleNode
 {
 public:
+  class UdpConfig
+  {
+public:
+    UdpConfig(const std::string & ip, const uint16_t port)
+    : ip_(ip), port_(port) {}
+
+    const std::string & get_ip() const
+    {
+      return ip_;
+    }
+
+    const uint16_t get_port() const
+    {
+      return port_;
+    }
+
+private:
+    const std::string ip_;
+    const uint16_t port_;
+  };
+
   /// \brief Default constructor, starts driver
   /// \param[in] node_name name of the node for rclcpp internals
   /// \param[in] topic Name of the topic to publish output on
@@ -51,13 +72,13 @@ public:
   UdpDriverNode(
     const std::string & node_name,
     const std::string & topic,
-    const std::string & ip,
-    const uint16_t port)
+    const UdpConfig & udp_config)
   : LifecycleNode(node_name),
     m_pub_ptr(this->create_publisher<OutputT>(topic, rclcpp::QoS(10))),
     m_io_service(),
     m_udp_socket(m_io_service,
-      boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(ip), port)) {}
+      boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(udp_config.get_ip()),
+      udp_config.get_port())) {}
 
   /// \brief Constructor
   /// \param[in] node_name Name of node for rclcpp internals

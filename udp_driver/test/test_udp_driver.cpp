@@ -70,7 +70,7 @@ TEST_F(udp_driver, basic)
   // setting up udp_driver_node instance
   std::string ip = "127.0.0.1";
   uint16_t port = 9001;
-  TestDriver driver("foo", "topic", ip, port);
+  TestDriver driver("foo", "topic", TestDriver::UdpConfig {ip, port});
 
 
   // setting up the pinger

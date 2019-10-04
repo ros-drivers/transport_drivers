@@ -42,8 +42,7 @@ public:
   TestDriver(
     const std::string & node_name,
     const std::string & topic,
-    const std::string & ip,
-    const uint16_t port);
+    const UdpConfig & udp_config);
 
   int32_t times_init_called() const;
   int32_t get_last_value() const;
