@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
     <name>udp_driver</name>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <description>A template class and associated utilities which encapsulate basic reading from UDP sockets</description>
     <maintainer email="opensource@apex.ai">Apex.AI, Inc.</maintainer>
     <license>Apache License 2.0</license>

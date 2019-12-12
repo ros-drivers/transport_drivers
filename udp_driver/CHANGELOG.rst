@@ -2,8 +2,8 @@
 Changelog for package udp_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2019-12-12)
+------------------
 * Added UdpConfig class to encapsulate configuration options
 * Removed workaround for ROS 2 Dashing PR2
 * Contributors: Esteve Fernandez

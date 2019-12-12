@@ -2,8 +2,8 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2019-12-12)
+------------------
 * Making serial_driver version number consistent with repo.
 * Initial commit of serial_driver.
 * Contributors: Joshua Whitley
