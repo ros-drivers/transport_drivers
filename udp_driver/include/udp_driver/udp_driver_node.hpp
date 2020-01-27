@@ -66,8 +66,8 @@ private:
   /// \brief Default constructor, starts driver
   /// \param[in] node_name name of the node for rclcpp internals
   /// \param[in] topic Name of the topic to publish output on
-  /// \param[in] ip Expected IP of UDP packets
-  /// \param[in] port Port that this driver listens to (i.e. sensor device at ip writes to port)
+  /// \param[in] udp_config An UdpConfig object with the expected IP of UDP packets and the port
+  ///            that this driver listens to (i.e. sensor device at ip writes to port)
   /// \throw runtime error if failed to start threads or configure driver
   UdpDriverNode(
     const std::string & node_name,
