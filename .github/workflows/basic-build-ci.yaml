@@ -12,7 +12,8 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-bionic-ros-dashing-ros-base-latest
     steps:
-    - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    - name: Fix Bugs in ros-tooling/action-ros-ci
+      run: sudo chown -R rosbuild:rosbuild "$HOME" .
     - name: Run Tests
       uses: ros-tooling/action-ros-ci@0.0.17
       with:
@@ -20,6 +21,7 @@ jobs:
           serial_driver
           udp_driver
         source-ros-binary-installation: dashing
+        vcs-repo-file-url: ""
     - name: Upload logs
       uses: actions/upload-artifact@v1
       with:
