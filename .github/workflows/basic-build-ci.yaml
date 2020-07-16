@@ -1,0 +1,22 @@
+name: Basic Build Workflow
+
+on:
+  - pull_request
+  - push
+
+jobs:
+  build-dashing:
+    runs-on: ubuntu-latest
+    container:
+      image: ros:dashing-ros-base
+      options: --user root
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+
+    - name: Install Prerequisites
+      run: |
+        mkdir -p src_tmp/ && mv `find -maxdepth 1 -not -name . -not -name src_tmp` src_tmp/ && mv src_tmp/ src/
+        apt-get update && rosdep update
+        bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
+        rosdep install --from-paths src --ignore-src -y'
