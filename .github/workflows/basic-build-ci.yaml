@@ -7,27 +7,22 @@ on:
 jobs:
   build-dashing:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
     container:
-      image: ros:dashing-ros-base
-      options: --user root
+      image: rostooling/setup-ros-docker:ubuntu-bionic-ros-dashing-ros-base-latest
     steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v2
-
-    - name: Install Prerequisites
-      run: |
-        mkdir -p src_tmp/ && mv `find -maxdepth 1 -not -name . -not -name src_tmp` src_tmp/ && mv src_tmp/ src/
-        apt-get update && rosdep update
-        bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
-        rosdep install --from-paths src --ignore-src -y'
-
-    - name: Build Packages
-      run: |
-        bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
-        colcon build'
-
-    - name: Test Packages
-      run: |
-        bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
-        colcon test; \
-        colcon test-result --verbose'
+    - run: sudo chown -R rosbuild:rosbuild "$HOME" .
+    - name: Run Tests
+      uses: ros-tooling/action-ros-ci@0.0.17
+      with:
+        package-name: |
+          serial_driver
+          udp_driver
+        source-ros-binary-installation: dashing
+    - name: Upload logs
+      uses: actions/upload-artifact@v1
+      with:
+        name: colcon-logs
+        path: ros_ws/log
+      if: always()
