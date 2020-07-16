@@ -20,3 +20,14 @@ jobs:
         apt-get update && rosdep update
         bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
         rosdep install --from-paths src --ignore-src -y'
+
+    - name: Build Packages
+      run: |
+        bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
+        colcon build'
+
+    - name: Test Packages
+      run: |
+        bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
+        colcon test; \
+        colcon test-result --verbose'
