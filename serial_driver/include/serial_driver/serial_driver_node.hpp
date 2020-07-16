@@ -1,5 +1,4 @@
 // Copyright 2018 Apex.AI, Inc.
-// Co-developed by Tier IV, Inc. and Apex.AI, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
+// Co-developed by Tier IV, Inc. and Apex.AI, Inc.
 
 
 /// \copyright Copyright 2018 Apex.AI, Inc.
@@ -23,7 +24,6 @@
 #include <chrono>
 #include <memory>
 #include <string>
-#include "helper_functions/crtp.hpp"
 #include "boost/asio.hpp"
 #include "boost/array.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -59,12 +59,34 @@ enum class stop_bits_t
   two
 };
 
+// TODO(JWhitleyWork): Move to separate package at a later date.
+template<typename Derived>
+class crtp
+{
+protected:
+  const Derived & impl() const
+  {
+    // This is the CRTP pattern for static polymorphism: this is related, static_cast is the only
+    // way to do this
+    //lint -e{9005, 9176, 1939} NOLINT
+    return *static_cast<const Derived *>(this);
+  }
+
+  Derived & impl()
+  {
+    // This is the CRTP pattern for static polymorphism: this is related, static_cast is the only
+    // way to do this
+    //lint -e{9005, 9176, 1939} NOLINT
+    return *static_cast<Derived *>(this);
+  }
+};
+
 /// \brief A node which encapsulates the primary functionality of a serial port receiver
 /// \tparam PacketT The type of the packet buffer. Typically a container
 /// \tparam OutputT The type a packet gets converted/deserialized into. Should be a ROS 2 message
 template<typename Derived, typename PacketT, typename OutputT>
 class SerialDriverNode : public rclcpp_lifecycle::LifecycleNode,
-  public autoware::common::helper_functions::crtp<Derived>
+  public crtp<Derived>
 {
 public:
   class SerialPortConfig
