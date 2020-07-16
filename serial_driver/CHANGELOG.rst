@@ -2,6 +2,17 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove Autoware.AUTO Dependencies (`#15 <https://github.com/ros-drivers/transport_drivers/issues/15>`_)
+  * Removing autoware dependencies.
+  * Fixing linting errors.
+  * Addressing review feedback.
+* Be specific about which parts of Boost are necessary (`#10 <https://github.com/ros-drivers/transport_drivers/issues/10>`_)
+  * serial: be specific about Boost dependency.
+  * udp: be specific about Boost dependency.
+* Contributors: G.A. vd. Hoorn, Joshua Whitley
+
 0.0.4 (2019-12-12)
 ------------------
 * Making serial_driver version number consistent with repo.

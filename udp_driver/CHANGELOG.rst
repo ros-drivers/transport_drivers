@@ -2,6 +2,14 @@
 Changelog for package udp_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Be specific about which parts of Boost are necessary (`#10 <https://github.com/ros-drivers/transport_drivers/issues/10>`_)
+  * serial: be specific about Boost dependency.
+  * udp: be specific about Boost dependency.
+* Fix doxygen
+* Contributors: Esteve Fernandez, G.A. vd. Hoorn
+
 0.0.4 (2019-12-12)
 ------------------
 * Added UdpConfig class to encapsulate configuration options
