@@ -59,6 +59,7 @@ enum class stop_bits_t
   two
 };
 
+// TODO(JWhitleyWork): Move to separate package at a later date.
 template<typename Derived>
 class crtp
 {

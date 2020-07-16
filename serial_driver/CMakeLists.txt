@@ -23,12 +23,8 @@ find_package(Boost REQUIRED COMPONENTS system)
 
 ament_auto_find_build_dependencies()
 
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS})
-  link_directories(${Boost_LIBRARY_DIRS})
-endif()
-
-include_directories(include)
+include_directories(include ${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto)
