@@ -2,8 +2,8 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2020-07-16)
+------------------
 * Remove Autoware.AUTO Dependencies (`#15 <https://github.com/ros-drivers/transport_drivers/issues/15>`_)
   * Removing autoware dependencies.
   * Fixing linting errors.

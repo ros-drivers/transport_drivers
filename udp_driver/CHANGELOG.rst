@@ -2,8 +2,8 @@
 Changelog for package udp_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2020-07-16)
+------------------
 * Be specific about which parts of Boost are necessary (`#10 <https://github.com/ros-drivers/transport_drivers/issues/10>`_)
   * serial: be specific about Boost dependency.
   * udp: be specific about Boost dependency.
