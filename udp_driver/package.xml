@@ -9,14 +9,11 @@
 
     <buildtool_depend>ament_cmake</buildtool_depend>
 
-    <build_depend>libboost-system-dev</build_depend>
-    <build_export_depend>libboost-system-dev</build_export_depend>
-
+    <depend>libboost-dev</depend>
+    <depend>libboost-system-dev</depend>
     <depend>rclcpp_lifecycle</depend>
     <depend>rclcpp</depend>
     <depend>std_msgs</depend>
-
-    <exec_depend>libboost-system</exec_depend>
 
     <test_depend>ament_lint_auto</test_depend>
     <test_depend>ament_lint_common</test_depend>
