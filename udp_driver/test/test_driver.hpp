@@ -34,15 +34,12 @@ public:
 };
 
 
-using TestDriverT = autoware::drivers::udp_driver::UdpDriverNode<Packet, std_msgs::msg::Int32>;
+using TestDriverT = autoware::drivers::udp_driver::UdpDriver<Packet, std_msgs::msg::Int32>;
 
 class UDP_DRIVER_PUBLIC TestDriver : public TestDriverT
 {
 public:
-  TestDriver(
-    const std::string & node_name,
-    const rclcpp::NodeOptions & options,
-    const UdpConfig & udp_config);
+  explicit TestDriver(rclcpp::Node & node);
 
   int32_t times_init_called() const;
   int32_t get_last_value() const;

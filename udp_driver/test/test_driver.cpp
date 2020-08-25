@@ -25,11 +25,8 @@ Packet::Packet(int val)
 Packet::Packet()
 : value(0) {}
 
-TestDriver::TestDriver(
-  const std::string & node_name,
-  const rclcpp::NodeOptions & options,
-  const UdpConfig & udp_config)
-: TestDriverT(node_name, options, udp_config),
+TestDriver::TestDriver(rclcpp::Node & node)
+: TestDriverT(node),
   m_last_value(-1),
   m_times_init_output_has_been_called(0)
 {
