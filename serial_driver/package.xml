@@ -4,8 +4,12 @@
   <name>serial_driver</name>
   <version>0.0.5</version>
   <description>A template class and associated utilities which encapsulate basic reading from serial ports</description>
-  <maintainer email="opensource@apex.ai">Apex.AI, Inc.</maintainer>
+  <maintainer email="whitleysoftwareservices@gmail.com">Joshua Whitley</maintainer>
   <license>Apache License 2.0</license>
+  <url type="repository">https://github.com/ros-drivers/transport_drivers</url>
+  <url type="bugtracker">https://github.com/ros-drivers/transport_drivers/issues</url>
+  <author email="opensource@apex.ai">Apex.AI, Inc.</author>
+  <author>Esteve Fernandez</author>
 
   <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
