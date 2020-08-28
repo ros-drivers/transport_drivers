@@ -2,8 +2,8 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.6 (2020-08-27)
+------------------
 * Uncrustify fixes.
 * Remove lifecycle references (`#19 <https://github.com/ros-drivers/transport_drivers/issues/19>`_)
 * Fixing boost dependency. (`#18 <https://github.com/ros-drivers/transport_drivers/issues/18>`_)
