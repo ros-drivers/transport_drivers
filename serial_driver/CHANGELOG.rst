@@ -2,6 +2,13 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Uncrustify fixes.
+* Remove lifecycle references (`#19 <https://github.com/ros-drivers/transport_drivers/issues/19>`_)
+* Fixing boost dependency. (`#18 <https://github.com/ros-drivers/transport_drivers/issues/18>`_)
+* Contributors: Esteve Fernandez, Joshua Whitley
+
 0.0.5 (2020-07-16)
 ------------------
 * Remove Autoware.AUTO Dependencies (`#15 <https://github.com/ros-drivers/transport_drivers/issues/15>`_)
