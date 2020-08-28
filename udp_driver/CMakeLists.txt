@@ -19,7 +19,6 @@ project(udp_driver)
 ## dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rclcpp_lifecycle REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system)
 if(Boost_FOUND)
@@ -40,7 +39,7 @@ if(BUILD_TESTING)
     set(TEST_LIB "${PROJECT_NAME}_test")
     add_library(${TEST_LIB} SHARED test/test_driver.hpp test/test_driver.cpp)
 
-    ament_target_dependencies(${TEST_LIB} "rclcpp" "rclcpp_lifecycle" "std_msgs")
+    ament_target_dependencies(${TEST_LIB} "rclcpp" "std_msgs")
     target_include_directories(${TEST_LIB} PRIVATE include)
     target_link_libraries(${TEST_LIB} ${Boost_LIBRARIES})
 

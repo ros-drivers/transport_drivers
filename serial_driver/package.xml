@@ -12,7 +12,6 @@
   <depend>libboost-dev</depend>
   <depend>libboost-system-dev</depend>
   <depend>rclcpp</depend>
-  <depend>rclcpp_lifecycle</depend>
   <depend>std_msgs</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>
