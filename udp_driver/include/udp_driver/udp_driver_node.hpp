@@ -89,8 +89,9 @@ private:
       node_name,
       node_namespace),
     m_pub_ptr(
-      Node::create_publisher<OutputT>(declare_parameter("topic").get<std::string>(),
-      rclcpp::QoS(10))),
+      Node::create_publisher<OutputT>(
+        declare_parameter("topic").get<std::string>(),
+        rclcpp::QoS(10))),
     m_io_service(),
     m_udp_socket(m_io_service, boost::asio::ip::udp::endpoint(
         boost::asio::ip::address::from_string(declare_parameter("ip").get<std::string>()),
@@ -161,8 +162,9 @@ private:
     boost::system::error_code udp_error;
     boost::asio::ip::udp::endpoint sender_endpoint;
     constexpr size_t max_data_size = 64 * 1024;
-    const size_t len = socket.receive_from(boost::asio::buffer(&pkt, max_data_size),
-        sender_endpoint, 0, udp_error);
+    const size_t len = socket.receive_from(
+      boost::asio::buffer(&pkt, max_data_size),
+      sender_endpoint, 0, udp_error);
 
     if (udp_error && udp_error != boost::asio::error::message_size) {
       throw boost::system::system_error(udp_error);

@@ -152,7 +152,8 @@ private:
     m_io_service(),
     m_serial_port(m_io_service)
   {
-    init_port(device_name, serial_port_config.get_baud_rate(),
+    init_port(
+      device_name, serial_port_config.get_baud_rate(),
       serial_port_config.get_flow_control(),
       serial_port_config.get_parity(), serial_port_config.get_stop_bits());
   }
@@ -169,8 +170,9 @@ private:
       node_name,
       node_namespace),
     m_pub_ptr(
-      Node::create_publisher<OutputT>(declare_parameter("topic").get<std::string>(),
-      rclcpp::QoS(history_depth))),
+      Node::create_publisher<OutputT>(
+        declare_parameter("topic").get<std::string>(),
+        rclcpp::QoS(history_depth))),
     m_io_service(),
     m_serial_port(m_io_service)
   {
@@ -263,9 +265,11 @@ private:
   {
     boost::system::error_code serial_error;
     constexpr size_t max_data_size = 64 * 1024;
-    const size_t len = boost::asio::read(port, boost::asio::buffer(&pkt,
+    const size_t len = boost::asio::read(
+      port, boost::asio::buffer(
+        &pkt,
         max_data_size), boost::asio::transfer_exactly(sizeof(pkt)),
-        serial_error);
+      serial_error);
 
     if (serial_error && serial_error != boost::asio::error::message_size) {
       throw boost::system::system_error(serial_error);

@@ -48,8 +48,9 @@ protected:
 
   void init_pinger_endpoint(const std::string & ip, const uint16_t & port)
   {
-    m_ping_endpoint = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(
-          ip), static_cast<uint16_t>(port));
+    m_ping_endpoint = boost::asio::ip::udp::endpoint(
+      boost::asio::ip::address::from_string(
+        ip), static_cast<uint16_t>(port));
   }
 
   boost::asio::ip::udp::endpoint m_ping_endpoint;
