@@ -5,12 +5,19 @@ on:
   - push
 
 jobs:
-  build-dashing:
-    runs-on: ubuntu-latest
+  build-ros:
     strategy:
       fail-fast: false
+      matrix:
+        ros-version: [dashing, foxy]
+        include:
+            - ros-version: dashing
+              image: rostooling/setup-ros-docker:ubuntu-bionic-ros-dashing-ros-base-latest
+            - ros-version: foxy
+              image: rostooling/setup-ros-docker:ubuntu-focal-ros-foxy-ros-base-testing-latest
+    runs-on: ubuntu-latest
     container:
-      image: rostooling/setup-ros-docker:ubuntu-bionic-ros-dashing-ros-base-latest
+      image: ${{ matrix.image }}
     steps:
     - name: Fix Bugs in ros-tooling/action-ros-ci
       run: sudo chown -R rosbuild:rosbuild "$HOME" .
@@ -20,7 +27,7 @@ jobs:
         package-name: |
           serial_driver
           udp_driver
-        source-ros-binary-installation: dashing
+        source-ros-binary-installation: ${{ matrix.ros-version }}
         vcs-repo-file-url: ""
     - name: Upload logs
       uses: actions/upload-artifact@v1
