@@ -9,11 +9,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: ["rostooling/setup-ros-docker:ubuntu-bionic-ros-dashing-ros-base-latest"]
-        ros-version: [dashing]
+        ros-version: [dashing, foxy]
         include:
-          - image: rostooling/setup-ros-docker:ubuntu-focal-ros-foxy-ros-base-testing-latest
-            ros-version: foxy
+            - ros-version: dashing
+              image: rostooling/setup-ros-docker:ubuntu-bionic-ros-dashing-ros-base-latest
+            - ros-version: foxy
+              image: rostooling/setup-ros-docker:ubuntu-focal-ros-foxy-ros-base-testing-latest
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
