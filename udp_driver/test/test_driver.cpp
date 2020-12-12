@@ -27,9 +27,9 @@ Packet::Packet()
 
 TestDriver::TestDriver(
   const std::string & node_name,
-  const std::string & topic,
+  const rclcpp::NodeOptions & options,
   const UdpConfig & udp_config)
-: TestDriverT(node_name, topic, udp_config),
+: TestDriverT(node_name, options, udp_config),
   m_last_value(-1),
   m_times_init_output_has_been_called(0)
 {
