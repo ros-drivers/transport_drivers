@@ -5,33 +5,38 @@ on:
   - push
 
 jobs:
-  build-ros:
+  build-ros2:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         ros-version: [dashing, foxy]
         include:
-            - ros-version: dashing
-              image: rostooling/setup-ros-docker:ubuntu-bionic-ros-dashing-ros-base-latest
-            - ros-version: foxy
-              image: rostooling/setup-ros-docker:ubuntu-focal-ros-foxy-ros-base-testing-latest
-    runs-on: ubuntu-latest
+          - ros-version: dashing
+            image: ros:dashing
+          - ros-version: foxy
+            image: ros:foxy
     container:
       image: ${{ matrix.image }}
     steps:
-    - name: Fix Bugs in ros-tooling/action-ros-ci
-      run: sudo chown -R rosbuild:rosbuild "$HOME" .
-    - name: Run Tests
-      uses: ros-tooling/action-ros-ci@0.0.17
-      with:
-        package-name: |
-          serial_driver
-          udp_driver
-        source-ros-binary-installation: ${{ matrix.ros-version }}
-        vcs-repo-file-url: ""
-    - name: Upload logs
-      uses: actions/upload-artifact@v1
-      with:
-        name: colcon-logs
-        path: ros_ws/log
-      if: always()
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Create Workspace
+        run: |
+          mkdir -p src_tmp/transport_drivers
+          mv `find -maxdepth 1 -not -name . -not -name src_tmp` src_tmp/transport_drivers/
+          mv src_tmp/ src/
+      - name: Install Dependencies
+        run: |
+          bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
+          apt-get update && rosdep update; \
+          rosdep install --from-paths src --ignore-src -y'
+      - name: Build Workspace
+        run: |
+          bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
+          colcon build --event-handlers console_cohesion+'
+      - name: Run Tests
+        run: |
+          bash -c 'source /opt/ros/$ROS_DISTRO/setup.bash; \
+          colcon test --event-handlers console_cohesion+; \
+          colcon test-result --verbose'
