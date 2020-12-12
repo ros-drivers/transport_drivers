@@ -62,35 +62,33 @@ private:
     const uint16_t port_;
   };
 
-  /// \brief Default constructor, starts driver
+  /// \brief Constructor - Gets config through arguments
   /// \param[in] node_name name of the node for rclcpp internals
-  /// \param[in] topic Name of the topic to publish output on
+  /// \param[in] options rclcpp::NodeOptions instance containing options for the node
   /// \param[in] udp_config An UdpConfig object with the expected IP of UDP packets and the port
   ///            that this driver listens to (i.e. sensor device at ip writes to port)
   /// \throw runtime error if failed to start threads or configure driver
   UdpDriverNode(
     const std::string & node_name,
-    const std::string & topic,
+    const rclcpp::NodeOptions & options,
     const UdpConfig & udp_config)
-  : Node(node_name),
-    m_pub_ptr(this->create_publisher<OutputT>(topic, rclcpp::QoS(10))),
+  : Node(node_name, options),
+    m_pub_ptr(this->create_publisher<OutputT>("udp_read", rclcpp::QoS(10))),
     m_io_service(),
     m_udp_socket(m_io_service,
       boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(udp_config.get_ip()),
       udp_config.get_port())) {}
 
-  /// \brief Constructor
+  /// \brief Constructor - Gets config from ROS parameters
   /// \param[in] node_name Name of node for rclcpp internals
-  /// \param[in] node_namespace Namespace of this node
+  /// \param[in] options rclcpp::NodeOptions instance containing options for the node
   UdpDriverNode(
     const std::string & node_name,
-    const std::string & node_namespace)
-  : Node(
-      node_name,
-      node_namespace),
+    const rclcpp::NodeOptions & options)
+  : Node(node_name, options),
     m_pub_ptr(
       Node::create_publisher<OutputT>(
-        declare_parameter("topic").get<std::string>(),
+        "udp_read",
         rclcpp::QoS(10))),
     m_io_service(),
     m_udp_socket(m_io_service, boost::asio::ip::udp::endpoint(

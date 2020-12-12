@@ -41,7 +41,7 @@ class UDP_DRIVER_PUBLIC TestDriver : public TestDriverT
 public:
   TestDriver(
     const std::string & node_name,
-    const std::string & topic,
+    const rclcpp::NodeOptions & options,
     const UdpConfig & udp_config);
 
   int32_t times_init_called() const;
