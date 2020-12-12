@@ -68,9 +68,11 @@ TEST_F(serial_driver, basic)
   std::vector<int32_t> values(10);
   std::generate(values.begin(), values.end(), [n = 0]() mutable {return n++;});
 
+  rclcpp::NodeOptions options;
+
   TestDriver driver(
     "serial_driver_node",
-    "serial_topic",
+    options,
     name,
     TestDriver::SerialPortConfig {38400, flow_control_t::software, parity_t::even, stop_bits_t::one}
   );

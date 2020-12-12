@@ -28,10 +28,10 @@ Packet::Packet()
 
 TestDriver::TestDriver(
   const std::string & node_name,
-  const std::string & topic,
+  const rclcpp::NodeOptions & options,
   const std::string & device_name,
   const SerialPortConfig & serial_port_config)
-: TestDriverT(node_name, topic, device_name, serial_port_config),
+: TestDriverT(node_name, options, device_name, serial_port_config),
   m_last_value(-1),
   m_times_init_output_has_been_called(0)
 {

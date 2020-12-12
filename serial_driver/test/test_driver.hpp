@@ -47,7 +47,7 @@ class SERIAL_DRIVER_PUBLIC TestDriver
 public:
   TestDriver(
     const std::string & node_name,
-    const std::string & topic,
+    const rclcpp::NodeOptions & options,
     const std::string & device_name,
     const SerialPortConfig & serial_port_config);
 

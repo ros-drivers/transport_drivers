@@ -132,23 +132,22 @@ private:
     stop_bits_t stop_bits_;
   };
 
-  /// \brief Default constructor, starts driver
+  /// \brief Constructor - Gets config through arguments
   /// \param[in] node_name name of the node for rclcpp internals.
-  /// \param[in] topic Name of the topic to publish output on.
+  /// \param[in] options rclcpp::NodeOptions instance defining options for the node.
   /// \param[in] device_name Name of the serial device.
-  /// \param[in] history_depth Size of the publisher's queue.
-  /// \param[in] history_depth Size of the publisher's queue.
   /// \param[in] serial_port_config config struct with baud_rate, flow_control, parity and
   /// stop_bits params
+  /// \param[in] history_depth Size of the publisher's queue.
   /// \throw runtime error if failed to start threads or configure driver.
   SerialDriverNode(
     const std::string & node_name,
-    const std::string & topic,
+    const rclcpp::NodeOptions & options,
     const std::string & device_name,
     const SerialPortConfig & serial_port_config,
     size_t history_depth = 10)
-  : Node(node_name),
-    m_pub_ptr(this->create_publisher<OutputT>(topic, rclcpp::QoS(history_depth))),
+  : Node(node_name, options),
+    m_pub_ptr(this->create_publisher<OutputT>("serial_read", rclcpp::QoS(history_depth))),
     m_io_service(),
     m_serial_port(m_io_service)
   {
@@ -158,20 +157,18 @@ private:
       serial_port_config.get_parity(), serial_port_config.get_stop_bits());
   }
 
-  /// \brief Constructor
+  /// \brief Constructor - Gets config from ROS parameters
   /// \param[in] node_name Name of node for rclcpp internals.
-  /// \param[in] node_namespace Namespace of this node.
+  /// \param[in] options rclcpp::NodeOptions instance defining options for the node.
   /// \param[in] history_depth Size of the publisher's queue.
   SerialDriverNode(
     const std::string & node_name,
-    const std::string & node_namespace,
+    const rclcpp::NodeOptions & options,
     size_t history_depth = 10)
-  : Node(
-      node_name,
-      node_namespace),
+  : Node(node_name, options),
     m_pub_ptr(
-      Node::create_publisher<OutputT>(
-        declare_parameter("topic").get<std::string>(),
+      this->create_publisher<OutputT>(
+        "serial_read",
         rclcpp::QoS(history_depth))),
     m_io_service(),
     m_serial_port(m_io_service)
