@@ -87,7 +87,7 @@ private:
   // brief Main loop: receives data from UDP, publishes to the given topic
   void start(const uint32_t max_iterations = 0U)
   {
-    m_timer = m_node.create_wall_timer(1s, process(max_iterations));
+    m_timer = m_node.create_wall_timer(1s, std::bind(&UdpDriver::process, this, max_iterations));
   }
 
   void process(const uint32_t max_iterations)
