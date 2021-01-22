@@ -78,11 +78,17 @@ private:
         boost::asio::ip::address::from_string(m_node.declare_parameter("ip").get<std::string>()),
         static_cast<uint16_t>(m_node.declare_parameter("port").get<uint16_t>())
       )
-    ) {}
+    ),
+    {}
 
 
   // brief Main loop: receives data from UDP, publishes to the given topic
-  void run(const uint32_t max_iterations = 0U)
+  void start(const uint32_t max_iterations = 0U)
+  {
+    m_timer_ m_node.create_wall_timer(1s, process(max_iterations));
+  }
+
+  void process(const uint32_t max_iterations)
   {
     // initialize the output object
     OutputT output;
@@ -160,6 +166,7 @@ private:
   const std::shared_ptr<typename rclcpp::Publisher<OutputT>> m_pub_ptr;
   boost::asio::io_service m_io_service;
   boost::asio::ip::udp::socket m_udp_socket;
+  rclcpp::TimerBase::SharedPtr timer_;
 };  // class UdpDriver
 }  // namespace udp_driver
 }  // namespace drivers
