@@ -26,6 +26,8 @@
 #include "boost/array.hpp"
 #include "rclcpp/rclcpp.hpp"
 
+using namespace std::chrono_literals;
+
 namespace autoware
 {
 namespace drivers
