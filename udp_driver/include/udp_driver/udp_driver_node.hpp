@@ -166,7 +166,7 @@ private:
   const std::shared_ptr<typename rclcpp::Publisher<OutputT>> m_pub_ptr;
   boost::asio::io_service m_io_service;
   boost::asio::ip::udp::socket m_udp_socket;
-  rclcpp::TimerBase::SharedPtr timer_;
+  rclcpp::TimerBase::SharedPtr m_timer;
 };  // class UdpDriver
 }  // namespace udp_driver
 }  // namespace drivers
