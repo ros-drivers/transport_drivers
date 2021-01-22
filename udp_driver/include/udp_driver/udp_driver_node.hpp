@@ -78,8 +78,8 @@ private:
         boost::asio::ip::address::from_string(m_node.declare_parameter("ip").get<std::string>()),
         static_cast<uint16_t>(m_node.declare_parameter("port").get<uint16_t>())
       )
-    ),
-    {}
+    )
+  {}
 
 
   // brief Main loop: receives data from UDP, publishes to the given topic
