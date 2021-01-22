@@ -62,32 +62,13 @@ private:
     const uint16_t port_;
   };
 
-  /// \brief Constructor - Gets config through arguments
-  /// \param[in] node_name name of the node for rclcpp internals
-  /// \param[in] options rclcpp::NodeOptions instance containing options for the node
-  /// \param[in] udp_config An UdpConfig object with the expected IP of UDP packets and the port
-  ///            that this driver listens to (i.e. sensor device at ip writes to port)
-  /// \throw runtime error if failed to start threads or configure driver
-  UdpDriverNode(
-    const std::string & node_name,
-    const rclcpp::NodeOptions & options,
-    const UdpConfig & udp_config)
-  : Node(rclcpp::Node & node),
-    m_pub_ptr(node.create_publisher<OutputT>("udp_read", rclcpp::QoS(10))),
-    m_io_service(),
-    m_udp_socket(m_io_service,
-      boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(udp_config.get_ip()),
-      udp_config.get_port())) {}
-
   /// \brief Constructor - Gets config from ROS parameters
-  /// \param[in] node_name Name of node for rclcpp internals
+  /// \param[in] node Node attached to the driver
   /// \param[in] options rclcpp::NodeOptions instance containing options for the node
-  UdpDriverNode(
-    const std::string & node_name,
-    const rclcpp::NodeOptions & options)
-  : Node(rclcpp::Node & node),
+  UdpDriver(rclcpp::Node & node)
+  : m_node{node},
     m_pub_ptr(
-      node.create_publisher<OutputT>(
+      m_node.create_publisher<OutputT>(
         "udp_read",
         rclcpp::QoS(10))),
     m_io_service(),
