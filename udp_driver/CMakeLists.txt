@@ -34,7 +34,7 @@ install(
 )
 ament_export_include_directories(include)
 
-if(BUILD_TESTING)
+if(FALSE)
     find_package(std_msgs REQUIRED)
     set(TEST_LIB "${PROJECT_NAME}_test")
     add_library(${TEST_LIB} SHARED test/test_driver.hpp test/test_driver.cpp)

@@ -40,7 +40,7 @@ namespace udp_driver
 /// \tparam PacketT The type of the packet buffer. Typically a container
 /// \tparam OutputT The type a packet gets converted/deserialized into. Should be a ROS 2 message
 template<typename PacketT, typename OutputT>
-class UdpDriver
+class UdpDriverNode : public rclcpp::Node
 {
 public:
   class UdpConfig
@@ -64,21 +64,34 @@ private:
     const uint16_t port_;
   };
 
+  UdpDriverNode(
+    const std::string & node_name,
+    const rclcpp::NodeOptions & options,
+    const UdpConfig & udp_config)
+  : Node(node_name, options),
+    m_pub_ptr(this->create_publisher<OutputT>("udp_read", rclcpp::QoS(10))),
+    m_io_service(),
+    m_udp_socket(m_io_service,
+      boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(udp_config.get_ip()),
+      udp_config.get_port())) {}
+
   /// \brief Constructor - Gets config from ROS parameters
   /// \param[in] node Node attached to the driver
   /// \param[in] options rclcpp::NodeOptions instance containing options for the node
-  UdpDriver(rclcpp::Node & node)
-  : m_node{node},
+  UdpDriverNode(
+    const std::string & node_name,
+    const rclcpp::NodeOptions & options)
+  : Node(node_name, options),
     m_pub_ptr(
-      m_node.create_publisher<OutputT>(
+      this->create_publisher<OutputT>(
         "udp_read",
         rclcpp::QoS(10))),
     m_io_service(),
     m_udp_socket(
       m_io_service,
       boost::asio::ip::udp::endpoint(
-        boost::asio::ip::address::from_string(m_node.declare_parameter("ip").get<std::string>()),
-        static_cast<uint16_t>(m_node.declare_parameter("port").get<uint16_t>())
+        boost::asio::ip::address::from_string(this->declare_parameter("ip").get<std::string>()),
+        static_cast<uint16_t>(this->declare_parameter("port").get<uint16_t>())
       )
     )
   {}
@@ -87,46 +100,44 @@ private:
   // brief Main loop: receives data from UDP, publishes to the given topic
   void start(const uint32_t max_iterations = 0U)
   {
-    auto lambda = [this, max_iterations] {
-      this->process(max_iterations);
-    };
-    m_timer = m_node.create_wall_timer(1s, lambda);
-  }
-
-  void process(const uint32_t max_iterations)
-  {
     // initialize the output object
     OutputT output;
     init_output(output);
 
     uint32_t iter = 0U;
     // workaround for rclcpp logging macros with template class
-    rclcpp::Logger node_logger = m_node.get_logger();
+    rclcpp::Logger node_logger = this->get_logger();
 
-    while (rclcpp::ok()) {
-      if ((max_iterations != 0U) && (max_iterations == iter)) {
-        break;
-      }
-      ++iter;
-      try {
-        PacketT pkt;
-        (void) get_packet(pkt, m_udp_socket);
+    auto lambda = [this, &max_iterations, &iter, &output, &node_logger] {
+      this->process(max_iterations, iter, output, node_logger);
+    };
+    m_timer = this->create_wall_timer(1s, lambda);
+  }
 
-        // message received, convert and publish
-        if (this->convert(pkt, output)) {
+  void process(const uint32_t & max_iterations, uint32_t & iter, OutputT & output, rclcpp::Logger & node_logger)
+  {
+    if ((max_iterations != 0U) && (max_iterations == iter)) {
+      m_timer->cancel();
+    }
+    ++iter;
+    try {
+      PacketT pkt;
+      (void) get_packet(pkt, m_udp_socket);
+
+      // message received, convert and publish
+      if (this->convert(pkt, output)) {
+        m_pub_ptr->publish(output);
+        while (this->get_output_remainder(output)) {
           m_pub_ptr->publish(output);
-          while (this->get_output_remainder(output)) {
-            m_pub_ptr->publish(output);
-          }
         }
-      } catch (const std::exception & e) {
-        RCLCPP_WARN(node_logger, e.what());
-        // And then just continue running
-      } catch (...) {
-        // Something really weird happened and I can't handle it here
-        RCLCPP_WARN(node_logger, "Unknown exception occured in UdpDriver");
-        throw;
       }
+    } catch (const std::exception & e) {
+      RCLCPP_WARN(node_logger, e.what());
+      // And then just continue running
+    } catch (...) {
+      // Something really weird happened and I can't handle it here
+      RCLCPP_WARN(node_logger, "Unknown exception occured in UdpDriver");
+      throw;
     }
   }
 
@@ -167,7 +178,7 @@ private:
     return len;
   }
 
-  rclcpp::Node & m_node;
+  // rclcpp::Node & m_node;
   const std::shared_ptr<typename rclcpp::Publisher<OutputT>> m_pub_ptr;
   boost::asio::io_service m_io_service;
   boost::asio::ip::udp::socket m_udp_socket;

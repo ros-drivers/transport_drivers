@@ -34,7 +34,7 @@ public:
 };
 
 
-using TestDriverT = autoware::drivers::udp_driver::UdpDriver<Packet, std_msgs::msg::Int32>;
+using TestDriverT = autoware::drivers::udp_driver::UdpDriverNode<Packet, std_msgs::msg::Int32>;
 
 class UDP_DRIVER_PUBLIC TestDriver : public TestDriverT
 {
