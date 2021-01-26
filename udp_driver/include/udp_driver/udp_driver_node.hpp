@@ -98,6 +98,18 @@ private:
 
 
   // brief Main loop: receives data from UDP, publishes to the given topic
+  void run(const uint32_t max_iterations = 0U)
+  {
+    start(max_iterations);
+    while (rclcpp::ok())
+    {
+      if(m_timer->is_canceled())
+      {
+        return;
+      }
+    }
+  }
+
   void start(const uint32_t max_iterations = 0U)
   {
     // initialize the output object
