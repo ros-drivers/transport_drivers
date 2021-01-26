@@ -103,6 +103,7 @@ private:
     start(max_iterations);
     while (rclcpp::ok())
     {
+      rclcpp::spin_some(this->get_node_base_interface());
       if(m_timer->is_canceled())
       {
         return;
@@ -120,7 +121,7 @@ private:
     // workaround for rclcpp logging macros with template class
     rclcpp::Logger node_logger = this->get_logger();
 
-    auto lambda = [this, &max_iterations, &iter, &output, &node_logger] {
+    auto lambda = [this, &max_iterations, &iter, &output, &node_logger]() {
       this->process(max_iterations, iter, output, node_logger);
     };
     m_timer = this->create_wall_timer(1s, lambda);
@@ -128,7 +129,7 @@ private:
 
   void process(const uint32_t & max_iterations, uint32_t & iter, OutputT & output, rclcpp::Logger & node_logger)
   {
-    if ((max_iterations != 0U) && (max_iterations == iter)) {
+    if ((max_iterations != 0U) && (max_iterations == iter) || !rclcpp::ok()) {
       m_timer->cancel();
     }
     ++iter;
