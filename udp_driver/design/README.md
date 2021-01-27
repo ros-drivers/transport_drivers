@@ -1,9 +1,3 @@
-udp_driver
-===============
-
-This is the design document for the `udp_driver` package.
-
-
 # Purpose / Use cases
 <!-- Required -->
 <!-- Things to consider:

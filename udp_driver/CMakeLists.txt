@@ -57,6 +57,38 @@ if(BUILD_TESTING)
     ament_lint_auto_find_test_dependencies()
 endif()
 
+# TODO(flynneva): add some IF statement here to only build this if needed
+# IF(blah)
+find_package(udp_msgs REQUIRED)
+
+add_library(${PROJECT_NAME} SHARED test/test_driver.hpp test/test_driver.cpp)
+ament_target_dependencies(${PROJECT_NAME}
+  "rclcpp"
+  "std_msgs"
+  "Boost"
+)
+target_include_directories(${PROJECT_NAME} PRIVATE include)
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+
+set(UDP_DRIVER_EXE udp_manager_node)
+
+add_executable(${UDP_DRIVER_EXE}
+  src/udp_manager_node.cpp
+)
+
+ament_target_dependencies(${UDP_DRIVER_EXE}
+  "rclcpp"
+  "udp_msgs"
+)
+
+target_link_libraries(${UDP_DRIVER_EXE}
+  ${PROJECT_NAME}
+)
+
+install(TARGETS
+	${UDP_DRIVER_EXE}
+	DESTINATION lib/${PROJECT_NAME})
+
 ament_package(
     CONFIG_EXTRAS_POST "udp_driver-extras.cmake"
 )
