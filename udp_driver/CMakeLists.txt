@@ -19,6 +19,7 @@ project(udp_driver)
 ## dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system)
 if(Boost_FOUND)
@@ -70,24 +71,10 @@ ament_target_dependencies(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
-set(UDP_DRIVER_EXE udp_manager_node)
-
-add_executable(${UDP_DRIVER_EXE}
-  src/udp_manager_node.cpp
+rclcpp_components_register_nodes(${PROJECT_NAME}
+  PLUGIN "udp_driver::UdpManagerNode"
+  EXECUTABLE ${PROJECT_NAME}_node
 )
-
-ament_target_dependencies(${UDP_DRIVER_EXE}
-  "rclcpp"
-  "udp_msgs"
-)
-
-target_link_libraries(${UDP_DRIVER_EXE}
-  ${PROJECT_NAME}
-)
-
-install(TARGETS
-	${UDP_DRIVER_EXE}
-	DESTINATION lib/${PROJECT_NAME})
 
 ament_package(
     CONFIG_EXTRAS_POST "udp_driver-extras.cmake"
