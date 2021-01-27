@@ -29,8 +29,8 @@ namespace udp_driver
 
 class UdpManagerNode : public rclcpp::Node
 {
-  public:
-    UdpManagerNode(const rclcpp::NodeOptions & options);
+public:
+  explicit UdpManagerNode(const rclcpp::NodeOptions & options);
 
 private:
   rclcpp::Service<udp_msgs::srv::UdpSocket>::SharedPtr create_udp_driver_;

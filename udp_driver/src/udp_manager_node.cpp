@@ -18,11 +18,11 @@
 
 namespace udp_driver
 {
-  UdpManagerNode::UdpManagerNode(const rclcpp::NodeOptions & options)
-  : Node("udp_manager_node", options)
-  {
-    RCLCPP_INFO(this->get_logger(), "Initializing udp send services");
-    RCLCPP_INFO(this->get_logger(), "Initializing udp driver creation services");
+UdpManagerNode::UdpManagerNode(const rclcpp::NodeOptions & options)
+: Node("udp_manager_node", options)
+{
+  RCLCPP_INFO(this->get_logger(), "Initializing udp send services");
+  RCLCPP_INFO(this->get_logger(), "Initializing udp driver creation services");
 
   create_udp_driver_ =
     this->create_service<udp_msgs::srv::UdpSocket>(
