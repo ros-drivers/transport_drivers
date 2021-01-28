@@ -62,13 +62,15 @@ endif()
 # IF(blah)
 find_package(udp_msgs REQUIRED)
 
-add_library(${PROJECT_NAME} SHARED test/test_driver.hpp test/test_driver.cpp)
+add_library(${PROJECT_NAME} SHARED
+  src/udp_manager_node.cpp)
+
 ament_target_dependencies(${PROJECT_NAME}
   "rclcpp"
   "std_msgs"
+  "udp_msgs"
   "Boost"
 )
-target_include_directories(${PROJECT_NAME} PRIVATE include)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 rclcpp_components_register_nodes(${PROJECT_NAME}

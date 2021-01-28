@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 #include <udp_manager_node.hpp>
 #include <iostream>
 #include <memory>
@@ -39,4 +38,3 @@ void UdpManagerNode::create_driver_handler(
   RCLCPP_INFO(this->get_logger(), "Creating a socket");
 }
 }  // namespace udp_driver
-RCLCPP_COMPONENTS_REGISTER_NODE(udp_driver::UdpManagerNode)

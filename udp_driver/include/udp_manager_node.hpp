@@ -16,6 +16,7 @@
 #define UDP_MANAGER_NODE_HPP_
 
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp_components/register_node_macro.hpp>
 
 #include <map>
 #include <memory>
@@ -41,18 +42,5 @@ private:
     const std::shared_ptr<udp_msgs::srv::UdpSocket::Response> response);
 };
 }  //  namespace udp_driver
-
-int main(int argc, char ** argv)
-{
-  rclcpp::init(argc, argv);
-
-  std::shared_ptr<udp_driver::UdpManagerNode> node = std::make_shared<udp_driver::UdpManagerNode>();
-
-  RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "UDP Manager node is up and running");
-  rclcpp::spin(node);
-  RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "UDP Manager node is shutting down...");
-  rclcpp::shutdown();
-  RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Exiting...");
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(udp_driver::UdpManagerNode)
 #endif  // UDP_MANAGER_NODE_HPP_
