@@ -11,11 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include "udp_component.hpp"
+#include "udp_component/udp_component.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 
-namespace udp_driver
+namespace udp_component
 {
 
 UdpComponent::UdpComponent(const rclcpp::NodeOptions & options)
@@ -24,8 +24,48 @@ UdpComponent::UdpComponent(const rclcpp::NodeOptions & options)
   RCLCPP_INFO(this->get_logger(), "Initializing udp_component");
 }
 
+int32_t UdpComponent::times_init_called() const
+{
+  RCLCPP_INFO(this->get_logger(), "times_init_called");
+  return m_times_init_output_has_been_called;
+}
+
+int32_t UdpComponent::get_last_value() const
+{
+  RCLCPP_INFO(this->get_logger(), "get_last_value");
+  return m_last_value;
+}
+
+void UdpComponent::reset_reset_flag()
+{
+  RCLCPP_INFO(this->get_logger(), "reset_reset_flag");
+  m_last_value = 0;
+}
+
+void UdpComponent::init_output(std_msgs::msg::Int32 & output)
+{
+  RCLCPP_INFO(this->get_logger(), "init output");
+  (void)output;
+  m_last_value = 0;
+  ++m_times_init_output_has_been_called;
+}
+
+bool UdpComponent::convert(const Packet & pkt, std_msgs::msg::Int32 & output)
+{
+  RCLCPP_INFO(this->get_logger(), "converter");
+  output.data = pkt.value;
+  m_last_value = output.data;
+  return true;
+}
+
+bool UdpComponent::get_output_remainder(std_msgs::msg::Int32 & output)
+{
+  RCLCPP_INFO(this->get_logger(), "get output remainder");
+  (void)output;
+  return false;
+}
 }  // namespace udp_driver
 
 #include "rclcpp_components/register_node_macro.hpp"
 
-RCLCPP_COMPONENTS_REGISTER_NODE(udp_driver::UdpComponent)
+RCLCPP_COMPONENTS_REGISTER_NODE(udp_component::UdpComponent)

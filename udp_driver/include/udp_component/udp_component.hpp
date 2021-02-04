@@ -24,7 +24,7 @@
 #include "udp_driver/udp_driver_node.hpp"
 #include "udp_driver/visibility_control.hpp"
 
-namespace udp_driver
+namespace udp_component
 {
 
 class Packet
@@ -57,5 +57,5 @@ private:
   int32_t m_last_value;
   int32_t m_times_init_output_has_been_called;
 };  // class UdpComponent
-}  //  namespace udp_driver
+}  //  namespace udp_component
 #endif  // UDP_COMPONENT_HPP_
