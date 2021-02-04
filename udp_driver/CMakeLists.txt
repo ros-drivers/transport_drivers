@@ -27,13 +27,7 @@ if(Boost_FOUND)
     link_directories(${Boost_LIBRARY_DIRS})
 endif()
 
-include_directories(include)
-
-install(
-    DIRECTORY include/
-    DESTINATION include
-)
-ament_export_include_directories(include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 if(BUILD_TESTING)
     find_package(std_msgs REQUIRED)
@@ -60,23 +54,37 @@ endif()
 
 # TODO(flynneva): add some IF statement here to only build this if needed
 # IF(blah)
-find_package(udp_msgs REQUIRED)
+add_library(udp_component SHARED
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/udp_component.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/udp_component.hpp
+)
 
-add_library(${PROJECT_NAME} SHARED
-  src/udp_manager_node.cpp)
+target_compile_definitions(udp_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
 
-ament_target_dependencies(${PROJECT_NAME}
+ament_target_dependencies(udp_component
   "rclcpp"
+  "rclcpp_components"
   "std_msgs"
-  "udp_msgs"
   "Boost"
 )
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
-rclcpp_components_register_nodes(${PROJECT_NAME}
-  PLUGIN "udp_driver::UdpManagerNode"
-  EXECUTABLE ${PROJECT_NAME}_node
+target_include_directories(udp_component PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(udp_component ${Boost_LIBRARIES})
+
+rclcpp_components_register_nodes(udp_component "udp_driver::UdpComponent")
+
+install(TARGETS
+  udp_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
+install(
+  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+  DESTINATION include
 )
+ament_export_include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 ament_package(
     CONFIG_EXTRAS_POST "udp_driver-extras.cmake"
