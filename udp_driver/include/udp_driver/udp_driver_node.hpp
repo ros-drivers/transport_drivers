@@ -129,7 +129,7 @@ private:
 
   void process(const uint32_t & max_iterations, uint32_t & iter, OutputT & output, rclcpp::Logger & node_logger)
   {
-    if ((max_iterations != 0U) && (max_iterations == iter) || !rclcpp::ok()) {
+    if ((max_iterations != 0U && max_iterations == iter) || !rclcpp::ok()) {
       m_timer->cancel();
     }
     ++iter;
