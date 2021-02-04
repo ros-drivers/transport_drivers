@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef UDP_COMPONENT_HPP_
-#define UDP_COMPONENT_HPP_
+#ifndef UDP_COMPONENT__UDP_COMPONENT_HPP_
+#define UDP_COMPONENT__UDP_COMPONENT_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 
@@ -58,4 +58,4 @@ private:
   int32_t m_times_init_output_has_been_called;
 };  // class UdpComponent
 }  //  namespace udp_component
-#endif  // UDP_COMPONENT_HPP_
+#endif  // UDP_COMPONENT__UDP_COMPONENT_HPP_

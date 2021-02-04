@@ -64,7 +64,7 @@ bool UdpComponent::get_output_remainder(std_msgs::msg::Int32 & output)
   (void)output;
   return false;
 }
-}  // namespace udp_driver
+}  // namespace udp_component
 
 #include "rclcpp_components/register_node_macro.hpp"
 
