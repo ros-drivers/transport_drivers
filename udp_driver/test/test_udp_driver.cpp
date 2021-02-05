@@ -84,4 +84,5 @@ TEST_F(udp_driver, basic)
   for (auto val : values) {
     driver.run(1U);
     EXPECT_EQ(driver.get_last_value(), val);
-  }}
+  }
+}
