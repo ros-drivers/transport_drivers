@@ -1,0 +1,7 @@
+serial_component:
+  ros__parameters:
+    device_name: "/dev/ttyUSB0"
+    baud_rate: 115200
+    flow_control: "none"  # hardware, software, or none
+    parity: "none"        # none, odd, even
+    stop_bits: "1"        # 1, 1.5, 2

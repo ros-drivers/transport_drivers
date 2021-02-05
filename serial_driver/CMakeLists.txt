@@ -18,13 +18,18 @@ cmake_minimum_required(VERSION 3.5)
 project(serial_driver)
 
 ## dependencies
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(ament_cmake_auto REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system)
 
 ament_auto_find_build_dependencies()
 
-include_directories(include ${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
+if(Boost_FOUND)
+  include_directories(include ${Boost_INCLUDE_DIRS})
+  link_directories(${Boost_LIBRARY_DIRS})
+endif()
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto)
@@ -45,6 +50,39 @@ if(BUILD_TESTING)
   target_include_directories(${TEST_SERIAL_DRIVER_EXE} PRIVATE include)
   target_link_libraries(${TEST_SERIAL_DRIVER_EXE} ${TEST_LIB} util)
 endif()
+
+add_library(serial_component SHARED
+  src/serial_component.cpp
+)
+
+target_compile_definitions(serial_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(serial_component
+  "rclcpp"
+  "rclcpp_components"
+  "Boost"
+)
+
+target_include_directories(serial_component PRIVATE include)
+target_link_libraries(serial_component ${Boost_LIBRARIES})
+
+rclcpp_components_register_node(serial_component
+  PLUGIN "serial_component::SerialComponent"
+  EXECUTABLE "serial_node"
+)
+
+install(TARGETS
+  serial_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+ament_export_include_directories(include)
 
 ament_auto_package(
   CONFIG_EXTRAS_POST "serial_driver-extras.cmake"

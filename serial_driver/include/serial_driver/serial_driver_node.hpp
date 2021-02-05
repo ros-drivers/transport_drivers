@@ -212,7 +212,7 @@ private:
     } else if ("2" == stop_bits_parameter) {
       stop_bits = stop_bits_t::two;
     } else {
-      throw std::domain_error("Unknown value for parity: " + stop_bits_parameter);
+      throw std::domain_error("Unknown value for stop_bits: " + stop_bits_parameter);
     }
 
     init_port(device_name, baud_rate, flow_control, parity, stop_bits);
