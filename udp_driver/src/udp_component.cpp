@@ -42,7 +42,7 @@ void UdpComponent::reset_reset_flag()
   m_last_value = 0;
 }
 
-void UdpComponent::init_output(std_msgs::msg::Int32 & output)
+void UdpComponent::init_output(udp_msgs::msg::UdpPacket & output)
 {
   RCLCPP_INFO(this->get_logger(), "init output");
   (void)output;
@@ -50,18 +50,15 @@ void UdpComponent::init_output(std_msgs::msg::Int32 & output)
   ++m_times_init_output_has_been_called;
 }
 
-bool UdpComponent::convert(const Packet & pkt, std_msgs::msg::Int32 & output)
+bool UdpComponent::convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output)
 {
   RCLCPP_INFO(this->get_logger(), "converter");
-  output.data = pkt.value;
-  m_last_value = output.data;
   return true;
 }
 
-bool UdpComponent::get_output_remainder(std_msgs::msg::Int32 & output)
+bool UdpComponent::get_output_remainder(udp_msgs::msg::UdpPacket & output)
 {
-  RCLCPP_INFO(this->get_logger(), "get output remainder");
-  (void)output;
+  RCLCPP_INFO(this->get_logger(), "remainder");
   return false;
 }
 }  // namespace udp_component

@@ -54,6 +54,8 @@ endif()
 
 # TODO(flynneva): add some IF statement here to only build this if needed
 # IF(blah)
+find_package(udp_msgs REQUIRED)
+
 add_library(udp_component SHARED
   src/udp_component.cpp
 )
@@ -64,14 +66,14 @@ target_compile_definitions(udp_component
 ament_target_dependencies(udp_component
   "rclcpp"
   "rclcpp_components"
-  "std_msgs"
+  "udp_msgs"
   "Boost"
 )
 
 target_include_directories(udp_component PRIVATE include)
 target_link_libraries(udp_component ${Boost_LIBRARIES})
 
-rclcpp_components_register_nodes(udp_component
+rclcpp_components_register_node(udp_component
   PLUGIN "udp_component::UdpComponent"
   EXECUTABLE "udp_node"
 )

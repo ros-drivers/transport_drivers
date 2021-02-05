@@ -20,7 +20,7 @@
 #include <map>
 #include <memory>
 
-#include "std_msgs/msg/int32.hpp"
+#include "udp_msgs/msg/udp_packet.hpp"
 #include "udp_driver/udp_driver_node.hpp"
 #include "udp_driver/visibility_control.hpp"
 
@@ -36,7 +36,7 @@ public:
   int value;
 };
 
-using UdpDriverT = autoware::drivers::udp_driver::UdpDriverNode<Packet, std_msgs::msg::Int32>;
+using UdpDriverT = autoware::drivers::udp_driver::UdpDriverNode<Packet, udp_msgs::msg::UdpPacket>;
 
 class UdpComponent : public UdpDriverT
 {
@@ -49,9 +49,9 @@ public:
   void reset_reset_flag();
 
 protected:
-  void init_output(std_msgs::msg::Int32 & output) override;
-  bool convert(const Packet & pkt, std_msgs::msg::Int32 & output) override;
-  bool get_output_remainder(std_msgs::msg::Int32 & output) override;
+  void init_output(udp_msgs::msg::UdpPacket & output) override;
+  bool convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output) override;
+  bool get_output_remainder(udp_msgs::msg::UdpPacket & output) override;
 
 private:
   int32_t m_last_value;
