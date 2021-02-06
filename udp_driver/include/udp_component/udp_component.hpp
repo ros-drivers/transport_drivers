@@ -31,9 +31,9 @@ class Packet
 {
 public:
   UDP_DRIVER_PUBLIC
-  explicit Packet(int val);
+  explicit Packet(std::vector<uint8_t> data);
   Packet();
-  int value;
+  std::vector<uint8_t> data;
 };
 
 using UdpDriverT = autoware::drivers::udp_driver::UdpDriverNode<Packet, udp_msgs::msg::UdpPacket>;

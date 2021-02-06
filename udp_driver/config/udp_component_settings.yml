@@ -1,0 +1,4 @@
+udp_component:
+  ros__parameters:
+    ip: "192.168.10.2"
+    port: 9000

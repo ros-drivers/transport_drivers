@@ -17,11 +17,18 @@
 
 namespace udp_component
 {
+Packet::Packet(std::vector<uint8_t> data)
+: data{data} {}
+Packet::Packet()
+: data{0} {}
 
 UdpComponent::UdpComponent(const rclcpp::NodeOptions & options)
 : UdpDriverT("udp_component", options)
 {
   RCLCPP_INFO(this->get_logger(), "Initializing udp_component");
+  while (rclcpp::ok()) {
+    run(100U);
+  }
 }
 
 int32_t UdpComponent::times_init_called() const
@@ -45,14 +52,32 @@ void UdpComponent::reset_reset_flag()
 void UdpComponent::init_output(udp_msgs::msg::UdpPacket & output)
 {
   RCLCPP_INFO(this->get_logger(), "init output");
-  (void)output;
   m_last_value = 0;
+
+  // set output header
+  output.header.frame_id = this->get_name();
+  output.header.stamp = this->now();
+
+  // set output using already declared ROS parameters
+  this->get_parameter("ip", output.address);
+  this->get_parameter("port", output.src_port);
+
+  RCLCPP_INFO(this->get_logger(), "output.frame_id: %s", output.header.frame_id.c_str());
+  RCLCPP_INFO(this->get_logger(), "output.address: %s", output.address.c_str());
+  RCLCPP_INFO(this->get_logger(), "output.port: %i", output.src_port);
+
   ++m_times_init_output_has_been_called;
 }
 
 bool UdpComponent::convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output)
 {
   RCLCPP_INFO(this->get_logger(), "converter");
+  RCLCPP_INFO(this->get_logger(), "pkt.data size: %i", pkt.data.size());
+  
+  
+  
+  
+  RCLCPP_INFO(this->get_logger(), "END CONVERT");
   return true;
 }
 
