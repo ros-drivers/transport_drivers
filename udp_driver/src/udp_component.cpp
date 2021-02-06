@@ -13,7 +13,10 @@
 // limitations under the License.
 #include "udp_component/udp_component.hpp"
 
+#include <vector>
+
 #include "rclcpp/rclcpp.hpp"
+
 
 namespace udp_component
 {
@@ -73,10 +76,6 @@ bool UdpComponent::convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output
 {
   RCLCPP_INFO(this->get_logger(), "converter");
   RCLCPP_INFO(this->get_logger(), "pkt.data size: %i", pkt.data.size());
-  
-  
-  
-  
   RCLCPP_INFO(this->get_logger(), "END CONVERT");
   return true;
 }

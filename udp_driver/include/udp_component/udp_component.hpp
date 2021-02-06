@@ -17,6 +17,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
+#include <vector>
 #include <map>
 #include <memory>
 
