@@ -19,6 +19,7 @@
 
 #include <map>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "udp_msgs/msg/udp_packet.hpp"
@@ -37,11 +38,19 @@ class UdpComponent : public UdpDriverT
 public:
   UDP_DRIVER_PUBLIC
   explicit UdpComponent(const rclcpp::NodeOptions & options);
+  ~UdpComponent()
+  {
+    RCLCPP_INFO(this->get_logger(), "joining thread");
+    if (reader_thread.joinable()) {
+      reader_thread.join();
+    }
+    delete &reader_thread;
+  }
 
 protected:
-  void init_output(udp_msgs::msg::UdpPacket & output) override {return;};
+  void init_output(udp_msgs::msg::UdpPacket & output) override {}
   bool convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output) override;
-  bool get_output_remainder(udp_msgs::msg::UdpPacket & output) override {return false;};
+  bool get_output_remainder(udp_msgs::msg::UdpPacket & output) override {return false;}
 
 private:
   std::string address_;
