@@ -17,9 +17,9 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <vector>
 #include <map>
 #include <memory>
+#include <vector>
 
 #include "udp_msgs/msg/udp_packet.hpp"
 #include "udp_driver/udp_driver_node.hpp"
@@ -28,14 +28,7 @@
 namespace udp_component
 {
 
-class Packet
-{
-public:
-  UDP_DRIVER_PUBLIC
-  explicit Packet(std::vector<uint8_t> data);
-  Packet();
-  std::vector<uint8_t> data;
-};
+using Packet = std::vector<uint8_t>;
 
 using UdpDriverT = autoware::drivers::udp_driver::UdpDriverNode<Packet, udp_msgs::msg::UdpPacket>;
 
@@ -45,18 +38,16 @@ public:
   UDP_DRIVER_PUBLIC
   explicit UdpComponent(const rclcpp::NodeOptions & options);
 
-  int32_t times_init_called() const;
-  int32_t get_last_value() const;
-  void reset_reset_flag();
-
 protected:
-  void init_output(udp_msgs::msg::UdpPacket & output) override;
+  void init_output(udp_msgs::msg::UdpPacket & output) override {return;};
   bool convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output) override;
-  bool get_output_remainder(udp_msgs::msg::UdpPacket & output) override;
+  bool get_output_remainder(udp_msgs::msg::UdpPacket & output) override {return false;};
 
 private:
-  int32_t m_last_value;
-  int32_t m_times_init_output_has_been_called;
+  std::string address_;
+  uint16_t port_;
+
+  std::thread reader_thread;
 };  // class UdpComponent
 }  //  namespace udp_component
 #endif  // UDP_COMPONENT__UDP_COMPONENT_HPP_

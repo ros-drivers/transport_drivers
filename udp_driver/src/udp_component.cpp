@@ -13,6 +13,7 @@
 // limitations under the License.
 #include "udp_component/udp_component.hpp"
 
+#include <thread>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
@@ -20,71 +21,37 @@
 
 namespace udp_component
 {
-Packet::Packet(std::vector<uint8_t> data)
-: data{data} {}
-Packet::Packet()
-: data{0} {}
 
 UdpComponent::UdpComponent(const rclcpp::NodeOptions & options)
 : UdpDriverT("udp_component", options)
 {
   RCLCPP_INFO(this->get_logger(), "Initializing udp_component");
-  while (rclcpp::ok()) {
-    run(100U);
-  }
-}
-
-int32_t UdpComponent::times_init_called() const
-{
-  RCLCPP_INFO(this->get_logger(), "times_init_called");
-  return m_times_init_output_has_been_called;
-}
-
-int32_t UdpComponent::get_last_value() const
-{
-  RCLCPP_INFO(this->get_logger(), "get_last_value");
-  return m_last_value;
-}
-
-void UdpComponent::reset_reset_flag()
-{
-  RCLCPP_INFO(this->get_logger(), "reset_reset_flag");
-  m_last_value = 0;
-}
-
-void UdpComponent::init_output(udp_msgs::msg::UdpPacket & output)
-{
-  RCLCPP_INFO(this->get_logger(), "init output");
-  m_last_value = 0;
-
-  // set output header
-  output.header.frame_id = this->get_name();
-  output.header.stamp = this->now();
-
+  
   // set output using already declared ROS parameters
-  this->get_parameter("ip", output.address);
-  this->get_parameter("port", output.src_port);
+  this->get_parameter("ip", address_);
+  this->get_parameter("port", port_);
 
-  RCLCPP_INFO(this->get_logger(), "output.frame_id: %s", output.header.frame_id.c_str());
-  RCLCPP_INFO(this->get_logger(), "output.address: %s", output.address.c_str());
-  RCLCPP_INFO(this->get_logger(), "output.port: %i", output.src_port);
-
-  ++m_times_init_output_has_been_called;
+  // start receiving packets on separate thread
+  std::thread(&UdpComponent::run, this, 0U);
 }
 
 bool UdpComponent::convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output)
 {
   RCLCPP_INFO(this->get_logger(), "converter");
-  RCLCPP_INFO(this->get_logger(), "pkt.data size: %i", pkt.data.size());
+  RCLCPP_INFO(this->get_logger(), "packet size: %i", pkt.size());
+  
+  // set output header
+  output.header.frame_id = this->get_name();
+  output.header.stamp = this->now();
+
+  RCLCPP_INFO(this->get_logger(), "packet size: %i", pkt.size());
+  RCLCPP_INFO(this->get_logger(), "output.frame_id: %s", output.header.frame_id.c_str());
+  RCLCPP_INFO(this->get_logger(), "output.address: %s", address_.c_str());
+  RCLCPP_INFO(this->get_logger(), "output.port: %i", port_);
   RCLCPP_INFO(this->get_logger(), "END CONVERT");
   return true;
 }
 
-bool UdpComponent::get_output_remainder(udp_msgs::msg::UdpPacket & output)
-{
-  RCLCPP_INFO(this->get_logger(), "remainder");
-  return false;
-}
 }  // namespace udp_component
 
 #include "rclcpp_components/register_node_macro.hpp"
