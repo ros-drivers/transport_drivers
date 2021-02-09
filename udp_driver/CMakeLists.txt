@@ -37,7 +37,11 @@ ament_export_include_directories(include)
 if(BUILD_TESTING)
     find_package(std_msgs REQUIRED)
     set(TEST_LIB "${PROJECT_NAME}_test")
-    add_library(${TEST_LIB} SHARED test/test_driver.hpp test/test_driver.cpp)
+    add_library(${TEST_LIB} SHARED
+            test/test_driver.hpp
+            test/test_driver.cpp
+            include/udp_driver/udp_sender.h
+            include/udp_driver/udp_receiver.h)
 
     ament_target_dependencies(${TEST_LIB} "rclcpp" "std_msgs")
     target_include_directories(${TEST_LIB} PRIVATE include)
