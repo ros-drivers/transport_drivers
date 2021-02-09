@@ -13,18 +13,20 @@
 // limitations under the License.
 
 // Co-developed by Tier IV, Inc. and Apex.AI, Inc.
+// Maintained by LeoDrive, 2021
 
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <string>
-#include <thread>
 #include <vector>
 #include "gtest/gtest.h"
 #include "test_driver.hpp"
 
+using namespace autoware::drivers::udp_driver;
 
 using test_udp_driver::TestDriver;
 using test_udp_driver::Packet;
+
 namespace
 {
 class udp_driver : public ::testing::Test
@@ -44,6 +46,8 @@ protected:
         std::cerr << "Could not send packet: " << err.message();
       }
     }
+
+    socket.close();
   }
 
   void init_pinger_endpoint(const std::string & ip, const uint16_t & port)
@@ -58,7 +62,7 @@ protected:
 }  // namespace
 
 
-// tests udp_driver_node's get_packet function which receives udp packages
+// tests udp_driver_node's receive_packet function which receives udp packages
 TEST_F(udp_driver, basic)
 {
   // rclcpp::init required to start the node
@@ -69,17 +73,25 @@ TEST_F(udp_driver, basic)
   std::generate(values.begin(), values.end(), [n = 0]() mutable {return n++;});
 
   // setting up udp_driver_node instance
+<<<<<<< HEAD
+  UdpConfig udp_conf = UdpConfig {
+    Endpoint { "127.0.0.1", 9000 }, // client endpoint
+    Endpoint { "127.0.0.1", 9001 }, // binding endpoint
+  };
+  rclcpp::NodeOptions options;
+  TestDriver driver("foo", options, udp_conf);
+=======
   std::string ip = "127.0.0.1";
   uint16_t port = 9001;
   rclcpp::NodeOptions options;
   TestDriver driver("foo", options, TestDriver::UdpConfig {ip, port});
+>>>>>>> ba27f3d88d5bd1f7f75ba56d9a17705c0013eee9
 
 
   // setting up the pinger
-  init_pinger_endpoint(ip, port);
+  init_pinger_endpoint(udp_conf.binding_endpoint().ip(), udp_conf.binding_endpoint().port());
 
   start_ping(values);
-
 
   for (auto val : values) {
     driver.run(1U);

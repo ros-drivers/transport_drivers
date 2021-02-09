@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // Co-developed by Tier IV, Inc. and Apex.AI, Inc.
+// Maintained by LeoDrive, 2021
 
 #ifndef TEST_DRIVER_HPP_
 #define TEST_DRIVER_HPP_
@@ -21,6 +22,8 @@
 #include "std_msgs/msg/int32.hpp"
 #include "udp_driver/udp_driver_node.hpp"
 #include "udp_driver/visibility_control.hpp"
+
+using namespace autoware::drivers::udp_driver;
 
 namespace test_udp_driver
 {
@@ -51,7 +54,8 @@ public:
 protected:
   void init_output(std_msgs::msg::Int32 & output) override;
 
-  bool convert(const Packet & pkt, std_msgs::msg::Int32 & output) override;
+  bool convertTo(const Packet & pkt, std_msgs::msg::Int32 & output) override;
+  bool convertFrom(const std_msgs::msg::Int32 & output, Packet & pkt) override;
 
   bool get_output_remainder(std_msgs::msg::Int32 & output) override;
 
