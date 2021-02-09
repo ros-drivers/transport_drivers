@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // Co-developed by Tier IV, Inc. and Apex.AI, Inc.
+// Maintained by LeoDrive, 2021
 
 /// \file
 /// \brief This file defines the udp_driver_node class.
@@ -22,17 +23,43 @@
 #include <chrono>
 #include <memory>
 #include <string>
-#include "boost/asio.hpp"
-#include "boost/array.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp/qos.hpp"
+
+#include "udp_sender.h"
+#include "udp_receiver.h"
 
 namespace autoware
 {
 namespace drivers
 {
-/// \brief A template class and associated utilities which encapsulate basic reading from UDP
+/// \brief A template class and associated utilities which encapsulate basic reading and writing of UDP socket
 namespace udp_driver
 {
+
+struct Endpoint {
+  Endpoint(const std::string &ip, uint16_t port) : m_ip(ip), m_port(port) {}
+  const std::string &ip() const { return m_ip; }
+  uint16_t port() const { return m_port; }
+
+private:
+  std::string m_ip;
+  uint16_t m_port;
+};
+
+class UdpConfig {
+public:
+    UdpConfig(const Endpoint &client_endpoint, const Endpoint &binding_endpoint):
+            m_client_endpoint(client_endpoint),
+            m_binding_endpoint(binding_endpoint) {}
+
+    const Endpoint & client_endpoint() const { return m_client_endpoint; }
+    const Endpoint & binding_endpoint() const { return m_binding_endpoint; }
+
+private:
+    const Endpoint m_client_endpoint;
+    const Endpoint m_binding_endpoint;
+};
 
 /// \brief A node which encapsulates the primary functionality of a UDP receiver
 /// \tparam PacketT The type of the packet buffer. Typically a container
@@ -41,27 +68,6 @@ template<typename PacketT, typename OutputT>
 class UdpDriverNode : public rclcpp::Node
 {
 public:
-  class UdpConfig
-  {
-public:
-    UdpConfig(const std::string & ip, const uint16_t port)
-    : ip_(ip), port_(port) {}
-
-    const std::string & get_ip() const
-    {
-      return ip_;
-    }
-
-    const uint16_t get_port() const
-    {
-      return port_;
-    }
-
-private:
-    const std::string ip_;
-    const uint16_t port_;
-  };
-
   /// \brief Constructor - Gets config through arguments
   /// \param[in] node_name name of the node for rclcpp internals
   /// \param[in] options rclcpp::NodeOptions instance containing options for the node
@@ -74,10 +80,11 @@ private:
     const UdpConfig & udp_config)
   : Node(node_name, options),
     m_pub_ptr(this->create_publisher<OutputT>("udp_read", rclcpp::QoS(10))),
-    m_io_service(),
-    m_udp_socket(m_io_service,
-      boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(udp_config.get_ip()),
-      udp_config.get_port())) {}
+    m_sub_ptr(this->create_subscription<OutputT>("/udp_write",
+              rclcpp::QoS(rclcpp::KeepLast(10)).best_effort(),
+              std::bind(&UdpDriverNode::sender_callback, this, std::placeholders::_1))),
+    m_sender(new UdpSender(udp_config.client_endpoint().ip(), udp_config.client_endpoint().port())),
+    m_receiver(new UdpReceiver(udp_config.binding_endpoint().ip(), udp_config.binding_endpoint().port())) {}
 
   /// \brief Constructor - Gets config from ROS parameters
   /// \param[in] node_name Name of node for rclcpp internals
@@ -86,15 +93,10 @@ private:
     const std::string & node_name,
     const rclcpp::NodeOptions & options)
   : Node(node_name, options),
-    m_pub_ptr(
-      Node::create_publisher<OutputT>(
-        "udp_read",
-        rclcpp::QoS(10))),
-    m_io_service(),
-    m_udp_socket(m_io_service, boost::asio::ip::udp::endpoint(
-        boost::asio::ip::address::from_string(declare_parameter("ip").get<std::string>()),
-        static_cast<uint16_t>(declare_parameter("port").get<uint16_t>()))) {}
-
+    m_pub_ptr(Node::create_publisher<OutputT>("udp_read", rclcpp::QoS(10))),
+    m_sender(new UdpSender(declare_parameter("ip").get<std::string>(), static_cast<uint16_t>(declare_parameter("port").get<uint16_t>()))),
+    m_receiver(new UdpReceiver(declare_parameter("ip").get<std::string>(), static_cast<uint16_t>(declare_parameter("port").get<uint16_t>()))) {
+  }
 
   // brief Main loop: receives data from UDP, publishes to the given topic
   void run(const uint32_t max_iterations = 0U)
@@ -114,10 +116,10 @@ private:
       ++iter;
       try {
         PacketT pkt;
-        (void) get_packet(pkt, m_udp_socket);
+        (void) m_receiver->receive_packet(pkt);
 
         // message received, convert and publish
-        if (this->convert(pkt, output)) {
+        if (this->convertTo(pkt, output)) {
           m_pub_ptr->publish(output);
           while (this->get_output_remainder(output)) {
             m_pub_ptr->publish(output);
@@ -140,12 +142,20 @@ protected:
   ///        headers.
   /// \param[inout] output The message to get initialized
   virtual void init_output(OutputT & output) = 0;
+
   /// \brief Converts a packet into an output, updates any stateful information
   /// \param[in] pkt The packet type to be deserialized
   /// \param[out] output Holds the output, if necessary
   /// \return Whether or not an output has been written to (e.g. if sufficient points have been
   ///         deserialized for a full PointCloud)
-  virtual bool convert(const PacketT & pkt, OutputT & output) = 0;
+  virtual bool convertTo(const PacketT & pkt, OutputT & output) = 0;
+
+  /// \brief Converts a ROS2 message into a packet buffer
+  /// \param[in] output Holds the output, if necessary
+  /// \param[out] pkt The packet type to be deserialized
+  /// \return Whether or not an output has been written to a packet buffer
+  virtual bool convertFrom(const OutputT & output, PacketT & pkt) = 0;
+
   /// \brief Gets the remaining outputs from a packet. This supports the use case i.e. if a packet
   ///        contains information for 500 points, but OutputT can only hold 300 points.
   /// \param[out] output The extra output gets written into this variable
@@ -154,27 +164,22 @@ protected:
   virtual bool get_output_remainder(OutputT & output) = 0;
 
 private:
-  /// \brief Receives a package via UDP and returns the length of the data in the buffer
-  size_t get_packet(PacketT & pkt, boost::asio::ip::udp::socket & socket)
-  {
-    boost::system::error_code udp_error;
-    boost::asio::ip::udp::endpoint sender_endpoint;
-    constexpr size_t max_data_size = 64 * 1024;
-    const size_t len = socket.receive_from(
-      boost::asio::buffer(&pkt, max_data_size),
-      sender_endpoint, 0, udp_error);
-
-    if (udp_error && udp_error != boost::asio::error::message_size) {
-      throw boost::system::system_error(udp_error);
-    }
-
-    return len;
+  void sender_callback(const typename OutputT::SharedPtr msg) {
+      PacketT pkt;
+      if (this->convertFrom(*msg, pkt)) {
+          if (m_sender->send(pkt) == -1) {
+              RCLCPP_WARN(this->get_logger(), "Cannot send Packet data on socket.");
+          }
+      }
   }
 
   const std::shared_ptr<typename rclcpp::Publisher<OutputT>> m_pub_ptr;
-  boost::asio::io_service m_io_service;
-  boost::asio::ip::udp::socket m_udp_socket;
+  const std::shared_ptr<typename rclcpp::Subscription<OutputT>> m_sub_ptr;
+
+  std::unique_ptr<UdpSender> m_sender;
+  std::unique_ptr<UdpReceiver> m_receiver;
 };  // class UdpDriverNode
+
 }  // namespace udp_driver
 }  // namespace drivers
 }  // namespace autoware
