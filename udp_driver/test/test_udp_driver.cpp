@@ -73,20 +73,12 @@ TEST_F(udp_driver, basic)
   std::generate(values.begin(), values.end(), [n = 0]() mutable {return n++;});
 
   // setting up udp_driver_node instance
-<<<<<<< HEAD
   UdpConfig udp_conf = UdpConfig {
     Endpoint { "127.0.0.1", 9000 }, // client endpoint
     Endpoint { "127.0.0.1", 9001 }, // binding endpoint
   };
   rclcpp::NodeOptions options;
   TestDriver driver("foo", options, udp_conf);
-=======
-  std::string ip = "127.0.0.1";
-  uint16_t port = 9001;
-  rclcpp::NodeOptions options;
-  TestDriver driver("foo", options, TestDriver::UdpConfig {ip, port});
->>>>>>> ba27f3d88d5bd1f7f75ba56d9a17705c0013eee9
-
 
   // setting up the pinger
   init_pinger_endpoint(udp_conf.binding_endpoint().ip(), udp_conf.binding_endpoint().port());
