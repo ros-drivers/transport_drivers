@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // Co-developed by Tier IV, Inc. and Apex.AI, Inc.
+// Maintained by LeoDrive, 2021
 
 #include "test_driver.hpp"
 
@@ -49,11 +50,17 @@ void TestDriver::init_output(std_msgs::msg::Int32 & output)
   ++m_times_init_output_has_been_called;
 }
 
-bool TestDriver::convert(const Packet & pkt, std_msgs::msg::Int32 & output)
+bool TestDriver::convertTo(const Packet & pkt, std_msgs::msg::Int32 & output)
 {
   output.data = pkt.value;
   m_last_value = output.data;
   return true;
+}
+
+bool TestDriver::convertFrom(const std_msgs::msg::Int32 &output, Packet &pkt)
+{
+    pkt.value = output.data;
+    return true;
 }
 
 bool TestDriver::get_output_remainder(std_msgs::msg::Int32 & output)
