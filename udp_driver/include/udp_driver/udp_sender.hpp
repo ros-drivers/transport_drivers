@@ -14,8 +14,8 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef UDP_DRIVER_UDP_SENDER_H
-#define UDP_DRIVER_UDP_SENDER_H
+#ifndef UDP_DRIVER_UDP_SENDER_HPP
+#define UDP_DRIVER_UDP_SENDER_HPP
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
@@ -41,6 +41,14 @@ public:
         m_udp_socket.open(udp::v4());
     }
 
+    ~UdpSender() {
+        boost::system::error_code err;
+        m_udp_socket.close(err);
+        if (err) {
+            throw boost::system::system_error(err);
+        }
+    }
+
     template <typename PacketT>
     std::size_t send(PacketT & pkt) {
         try {
@@ -61,4 +69,4 @@ private:
 }  // namespace drivers
 }  // namespace autoware
 
-#endif //UDP_DRIVER_UDP_SENDER_H
+#endif //UDP_DRIVER_UDP_SENDER_HPP
