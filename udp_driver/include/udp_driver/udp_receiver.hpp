@@ -15,8 +15,8 @@
 // Co-developed by Tier IV, Inc. and Apex.AI, Inc.
 // Maintained by LeoDrive, 2021
 
-#ifndef UDP_DRIVER_UDP_RECEIVER_H
-#define UDP_DRIVER_UDP_RECEIVER_H
+#ifndef UDP_DRIVER_UDP_RECEIVER_HPP
+#define UDP_DRIVER_UDP_RECEIVER_HPP
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
@@ -71,5 +71,5 @@ private:
 }  // namespace drivers
 }  // namespace autoware
 
-#endif //UDP_DRIVER_UDP_RECEIVER_H
+#endif //UDP_DRIVER_UDP_RECEIVER_HPP
 
