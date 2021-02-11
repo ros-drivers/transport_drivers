@@ -51,11 +51,11 @@ bool UdpComponent::convert(const udp_component::Packet & pkt, udp_msgs::msg::Udp
   output.data.resize(pkt.size());
   // set output header
   RCLCPP_INFO(this->get_logger(), "output size: %s", output.data.size());
-  
-  //output.header.stamp = this->now();
 
-  //RCLCPP_INFO(this->get_logger(), "packet size: %i", pkt.size());
-  //RCLCPP_INFO(this->get_logger(), "output.frame_id: %s", output.header.frame_id.c_str());
+  // output.header.stamp = this->now();
+
+  // RCLCPP_INFO(this->get_logger(), "packet size: %i", pkt.size());
+  // RCLCPP_INFO(this->get_logger(), "output.frame_id: %s", output.header.frame_id.c_str());
   RCLCPP_INFO(this->get_logger(), "output.address: %s", address_.c_str());
   RCLCPP_INFO(this->get_logger(), "output.port: %i", port_);
   RCLCPP_INFO(this->get_logger(), "END CONVERT");

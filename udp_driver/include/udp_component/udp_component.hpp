@@ -31,7 +31,7 @@ namespace udp_component
 
 using Packet = std::vector<uint8_t>;
 
-using UdpDriverT = autoware::drivers::udp_driver::UdpDriverNode<udp_component::Packet, udp_msgs::msg::UdpPacket>;
+using UdpDriverT = autoware::drivers::udp_driver::UdpDriverNode<Packet, udp_msgs::msg::UdpPacket>;
 
 class UDP_DRIVER_PUBLIC UdpComponent : public UdpDriverT
 {
@@ -47,8 +47,11 @@ public:
   }
 
 protected:
-  void init_output(udp_msgs::msg::UdpPacket & output) override {RCLCPP_WARN(this->get_logger(), "output: %s", output.address.c_str());}
-  bool convert(const udp_component::Packet & pkt, udp_msgs::msg::UdpPacket & output) override;
+  void init_output(udp_msgs::msg::UdpPacket & output) override
+  {
+    RCLCPP_WARN(this->get_logger(), "output: %s", output.address.c_str());
+  }
+  bool convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output) override;
   bool get_output_remainder(udp_msgs::msg::UdpPacket & output) override {return false;}
 
 private:

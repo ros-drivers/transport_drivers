@@ -115,7 +115,7 @@ private:
       try {
         PacketT pkt;
         auto size = get_packet(pkt, m_udp_socket);
-	RCLCPP_WARN(node_logger, "received packet with size: %i", static_cast<int>(size));
+        RCLCPP_WARN(node_logger, "received packet with size: %i", static_cast<int>(size));
         // message received, convert and publish
         if (convert(pkt, output)) {
           m_pub_ptr->publish(output);
