@@ -26,13 +26,6 @@ UdpComponent::UdpComponent(const rclcpp::NodeOptions & options)
 : UdpDriverT("udp_component", options)
 {
   RCLCPP_INFO(this->get_logger(), "Initializing udp_component");
-
-  // set output using already declared ROS parameters
-  this->get_parameter("ip", address_);
-  this->get_parameter("port", port_);
-  RCLCPP_INFO(this->get_logger(), "ip: %s", address_.c_str());
-  RCLCPP_INFO(this->get_logger(), "port: %i", port_);
-
   RCLCPP_INFO(this->get_logger(), "Starting udp reader thread");
   // start receiving packets on separate thread
   reader_thread = std::thread{[this]() {this->run();}};
@@ -43,21 +36,20 @@ bool UdpComponent::convert(const udp_component::Packet & pkt, udp_msgs::msg::Udp
   RCLCPP_INFO(this->get_logger(), "converter");
   RCLCPP_INFO(this->get_logger(), "packet size: %i", pkt.size());
   RCLCPP_INFO(this->get_logger(), "node name: %s", this->get_name());
-  RCLCPP_INFO(this->get_logger(), "output: %s", output.address.c_str());
+  RCLCPP_INFO(this->get_logger(), "ip: %s", this->get_ip().c_str());
+  RCLCPP_INFO(this->get_logger(), "port: %i", this->get_port());
 
   // clear out old data
-  output.data.clear();
+  // output.data.clear();
   // resize output vector to incoming packets size
-  output.data.resize(pkt.size());
+  // output.data.resize(pkt.size());
   // set output header
-  RCLCPP_INFO(this->get_logger(), "output size: %s", output.data.size());
+  // RCLCPP_INFO(this->get_logger(), "output size: %s", output.data.size());
 
   // output.header.stamp = this->now();
 
   // RCLCPP_INFO(this->get_logger(), "packet size: %i", pkt.size());
   // RCLCPP_INFO(this->get_logger(), "output.frame_id: %s", output.header.frame_id.c_str());
-  RCLCPP_INFO(this->get_logger(), "output.address: %s", address_.c_str());
-  RCLCPP_INFO(this->get_logger(), "output.port: %i", port_);
   RCLCPP_INFO(this->get_logger(), "END CONVERT");
   return true;
 }

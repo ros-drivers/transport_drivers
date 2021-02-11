@@ -88,6 +88,12 @@ install(
   DIRECTORY include/
   DESTINATION include
 )
+
+install(
+  DIRECTORY config/
+  DESTINATION config
+)
+
 ament_export_include_directories(include)
 
 ament_package(

@@ -73,11 +73,13 @@ private:
     const rclcpp::NodeOptions & options,
     const UdpConfig & udp_config)
   : Node(node_name, options),
+    ip_(udp_config.get_ip()),
+    port_(udp_config.get_port()),
     m_pub_ptr(this->create_publisher<OutputT>("udp_read", rclcpp::QoS(10))),
     m_io_service(),
     m_udp_socket(m_io_service,
-      boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(udp_config.get_ip()),
-      udp_config.get_port())) {}
+      boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(this->get_ip()),
+      this->get_port())) {}
 
   /// \brief Constructor - Gets config from ROS parameters
   /// \param[in] node_name Name of node for rclcpp internals
@@ -91,9 +93,11 @@ private:
         "udp_read",
         rclcpp::QoS(10))),
     m_io_service(),
+    ip_(declare_parameter("ip").get<std::string>()),
+    port_(declare_parameter("port").get<uint16_t>()),
     m_udp_socket(m_io_service, boost::asio::ip::udp::endpoint(
-        boost::asio::ip::address::from_string(declare_parameter("ip").get<std::string>()),
-        static_cast<uint16_t>(declare_parameter("port").get<uint16_t>()))) {}
+        boost::asio::ip::address::from_string(get_ip()),
+        static_cast<uint16_t>(get_port()))) {}
 
 
   // brief Main loop: receives data from UDP, publishes to the given topic
@@ -134,6 +138,16 @@ private:
     }
   }
 
+  const std::string & get_ip() const
+  {
+    return ip_;
+  }
+
+  const uint16_t get_port() const
+  {
+    return port_;
+  }
+
 protected:
   /// \brief This method is called on the output just as the node execution thread is started.
   ///        The main use case is preallocating unbounded messages (e.g. PointCloud2), or setting up
@@ -170,6 +184,9 @@ private:
 
     return len;
   }
+
+  const std::string ip_;
+  const uint16_t port_;
 
   const std::shared_ptr<typename rclcpp::Publisher<OutputT>> m_pub_ptr;
   boost::asio::io_service m_io_service;

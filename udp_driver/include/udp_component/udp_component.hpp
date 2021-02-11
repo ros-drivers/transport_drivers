@@ -43,21 +43,17 @@ public:
     if (reader_thread.joinable()) {
       reader_thread.join();
     }
-    delete &reader_thread;
   }
 
 protected:
   void init_output(udp_msgs::msg::UdpPacket & output) override
   {
-    RCLCPP_WARN(this->get_logger(), "output: %s", output.address.c_str());
+    RCLCPP_WARN(this->get_logger(), "stored address: %s", this->get_ip().c_str());
   }
   bool convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output) override;
   bool get_output_remainder(udp_msgs::msg::UdpPacket & output) override {return false;}
 
 private:
-  std::string address_;
-  uint16_t port_;
-
   std::thread reader_thread;
 };  // class UdpComponent
 }  //  namespace udp_component
