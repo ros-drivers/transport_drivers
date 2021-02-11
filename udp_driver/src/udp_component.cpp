@@ -38,19 +38,26 @@ UdpComponent::UdpComponent(const rclcpp::NodeOptions & options)
   reader_thread = std::thread{[this]() {this->run();}};
 }
 
-bool UdpComponent::convert(const Packet & pkt, udp_msgs::msg::UdpPacket & output)
+bool UdpComponent::convert(const udp_component::Packet & pkt, udp_msgs::msg::UdpPacket & output)
 {
   RCLCPP_INFO(this->get_logger(), "converter");
   RCLCPP_INFO(this->get_logger(), "packet size: %i", pkt.size());
+  RCLCPP_INFO(this->get_logger(), "node name: %s", this->get_name());
+  RCLCPP_INFO(this->get_logger(), "output: %s", output.address.c_str());
 
+  // clear out old data
+  output.data.clear();
+  // resize output vector to incoming packets size
+  output.data.resize(pkt.size());
   // set output header
-  // output.header.frame_id = this->get_name();
-  // output.header.stamp = this->now();
+  RCLCPP_INFO(this->get_logger(), "output size: %s", output.data.size());
+  
+  //output.header.stamp = this->now();
 
-  // RCLCPP_INFO(this->get_logger(), "packet size: %i", pkt.size());
-  // RCLCPP_INFO(this->get_logger(), "output.frame_id: %s", output.header.frame_id.c_str());
-  // RCLCPP_INFO(this->get_logger(), "output.address: %s", address_.c_str());
-  // RCLCPP_INFO(this->get_logger(), "output.port: %i", port_);
+  //RCLCPP_INFO(this->get_logger(), "packet size: %i", pkt.size());
+  //RCLCPP_INFO(this->get_logger(), "output.frame_id: %s", output.header.frame_id.c_str());
+  RCLCPP_INFO(this->get_logger(), "output.address: %s", address_.c_str());
+  RCLCPP_INFO(this->get_logger(), "output.port: %i", port_);
   RCLCPP_INFO(this->get_logger(), "END CONVERT");
   return true;
 }

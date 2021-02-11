@@ -9,8 +9,9 @@ These parameters can be set in two ways: either by [loading in from a parameter 
 
 Provided with this package is a default setup for the parameters file, located in the `udp_driver/config` directory.
 
+Go ahead and modify the provided parameter file to your desired UDP settings and run the component:
 ```
-ros2 run udp_driver udp_node
+ros2 run udp_driver udp_node --
 ```
 
 #### Renaming the provided udp_component

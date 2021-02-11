@@ -87,7 +87,7 @@ private:
     const rclcpp::NodeOptions & options)
   : Node(node_name, options),
     m_pub_ptr(
-      Node::create_publisher<OutputT>(
+      this->create_publisher<OutputT>(
         "udp_read",
         rclcpp::QoS(10))),
     m_io_service(),
@@ -114,12 +114,12 @@ private:
       ++iter;
       try {
         PacketT pkt;
-        (void) get_packet(pkt, m_udp_socket);
-
+        auto size = get_packet(pkt, m_udp_socket);
+	RCLCPP_WARN(node_logger, "received packet with size: %i", static_cast<int>(size));
         // message received, convert and publish
-        if (this->convert(pkt, output)) {
+        if (convert(pkt, output)) {
           m_pub_ptr->publish(output);
-          while (this->get_output_remainder(output)) {
+          while (get_output_remainder(output)) {
             m_pub_ptr->publish(output);
           }
         }
