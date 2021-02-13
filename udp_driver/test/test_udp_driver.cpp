@@ -72,14 +72,13 @@ TEST_F(udp_driver, basic)
   std::string ip = "127.0.0.1";
   uint16_t port = 9001;
   rclcpp::NodeOptions options;
-  
+
   TestDriver driver("foo", options, TestDriver::UdpConfig {ip, port});
 
   // setting up the pinger
   init_pinger_endpoint(ip, port);
 
   start_ping(values);
-
 
   for (auto val : values) {
     driver.run(1U);
@@ -91,8 +90,7 @@ TEST_F(udp_driver, basic)
 // tests udp_driver_node's get_packet function which receives udp packages
 TEST_F(udp_driver, init_from_param)
 {
-  // rclcpp::init required to start the node
-  //rclcpp::init(0, nullptr);
+  // rclcpp::init already started above
 
   // setting values to send
   std::vector<int> values(10);
@@ -102,11 +100,10 @@ TEST_F(udp_driver, init_from_param)
   std::string ip = "127.0.0.1";
   uint16_t port = 9001;
   rclcpp::NodeOptions options;
-  
-  options.allow_undeclared_parameters(true);
-  options.parameter_overrides({{"ip", ip}, {"port", port}});  
-  TestDriver driver_ros_params(options);
 
+  options.allow_undeclared_parameters(true);
+  options.parameter_overrides({{"ip", ip}, {"port", port}});
+  TestDriver driver_ros_params(options);
 
   // setting up the pinger
   init_pinger_endpoint(ip, port);
