@@ -35,6 +35,12 @@ TestDriver::TestDriver(
 {
 }
 
+TestDriver::TestDriver(const rclcpp::NodeOptions & options)
+: TestDriverT("udp_component", options)
+{
+  //reader_thread = std::thread{[this]() {this->run();}};
+}
+
 int32_t TestDriver::times_init_called() const {return m_times_init_output_has_been_called;}
 int32_t TestDriver::get_last_value() const {return m_last_value;}
 void TestDriver::reset_reset_flag()

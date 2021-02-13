@@ -43,6 +43,7 @@ public:
     const std::string & node_name,
     const rclcpp::NodeOptions & options,
     const UdpConfig & udp_config);
+  explicit TestDriver(const rclcpp::NodeOptions & options);
 
   int32_t times_init_called() const;
   int32_t get_last_value() const;
@@ -56,6 +57,7 @@ protected:
   bool get_output_remainder(std_msgs::msg::Int32 & output) override;
 
 private:
+  std::thread reader_thread;
   int32_t m_last_value;
   int32_t m_times_init_output_has_been_called;
 };  // class TestDriver
