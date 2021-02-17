@@ -30,8 +30,8 @@ namespace udp_component
 
 using Packet = std::vector<uint8_t>;
 
-using namespace autoware::drivers; // includes IoContext
-using namespace autoware::drivers::udp_driver;
+using autoware::drivers::IoContext;
+using autoware::drivers::udp_driver::UdpDriver;
 
 class UdpComponent : public rclcpp::Node
 {
@@ -49,16 +49,22 @@ public:
     return port_;
   }
 
-  void handlePacket(const boost::asio::mutable_buffer &packet);
+  const std::string & get_frame_id() const
+  {
+    return frame_id_;
+  }
 
-protected:
+  void handlePacket(const boost::asio::mutable_buffer &packet);
 
 private:
   std::string ip_;
   uint16_t port_;
+  std::string frame_id_;
 
   IoContext context_;
-  UdpDriver udp_driver_;  //TODO(flynneva): make this a vector of drivers?
+  UdpDriver udp_driver_;  // TODO(flynneva): make this a vector of drivers?
+
+  rclcpp::Publisher<udp_msgs::msg::UdpPacket>::SharedPtr udp_publisher_;
 };  // class UdpComponent
 }  //  namespace udp_component
 #endif  // UDP_COMPONENT__UDP_COMPONENT_HPP_
