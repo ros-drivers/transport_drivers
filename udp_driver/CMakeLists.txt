@@ -19,6 +19,7 @@ project(udp_driver)
 ## dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread)
 if(Boost_FOUND)
@@ -66,6 +67,49 @@ if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
     ament_lint_auto_find_test_dependencies()
 endif()
+# TODO(flynneva): add some IF statement here to only build this if needed
+# IF(blah)
+find_package(udp_msgs REQUIRED)
+
+add_library(udp_component SHARED
+  src/udp_component.cpp
+)
+
+target_compile_definitions(udp_component
+  PRIVATE "COMPOSITION_BUILDING_DLL")
+
+ament_target_dependencies(udp_component
+  "rclcpp"
+  "rclcpp_components"
+  "udp_msgs"
+  "Boost"
+)
+
+target_include_directories(udp_component PRIVATE include)
+target_link_libraries(udp_component ${Boost_LIBRARIES})
+
+rclcpp_components_register_node(udp_component
+  PLUGIN "udp_component::UdpComponent"
+  EXECUTABLE "udp_node"
+)
+
+install(TARGETS
+  udp_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
+install(
+  DIRECTORY config/
+  DESTINATION config
+)
+
+ament_export_include_directories(include)
 
 ament_package(
     CONFIG_EXTRAS_POST "udp_driver-extras.cmake"
