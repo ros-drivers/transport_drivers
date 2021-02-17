@@ -71,13 +71,8 @@ TEST_F(udp_driver, basic)
   // setting up udp_driver_node instance
   std::string ip = "127.0.0.1";
   uint16_t port = 9001;
-  rclcpp::NodeOptions node_options{};
-  node_options.append_parameter_override("topic", "topic");
-  node_options.append_parameter_override("ip", ip);
-  node_options.append_parameter_override("port", port);
-
-  rclcpp::Node node{"node", node_options};
-  TestDriver driver(node);
+  rclcpp::NodeOptions options;
+  TestDriver driver("foo", options, TestDriver::UdpConfig {ip, port});
 
 
   // setting up the pinger

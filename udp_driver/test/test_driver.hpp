@@ -39,7 +39,10 @@ using TestDriverT = autoware::drivers::udp_driver::UdpDriverNode<Packet, std_msg
 class UDP_DRIVER_PUBLIC TestDriver : public TestDriverT
 {
 public:
-  explicit TestDriver(rclcpp::Node & node);
+  TestDriver(
+    const std::string & node_name,
+    const rclcpp::NodeOptions & options,
+    const UdpConfig & udp_config);
 
   int32_t times_init_called() const;
   int32_t get_last_value() const;
