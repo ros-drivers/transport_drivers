@@ -26,7 +26,7 @@
 #include "boost/array.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-using namespace std::chrono_literals;
+using std::chrono_literals::operator""ms;
 
 namespace autoware
 {
@@ -64,6 +64,12 @@ private:
     const uint16_t port_;
   };
 
+  /// \brief Constructor - Gets config through arguments
+  /// \param[in] node_name name of the node for rclcpp internals
+  /// \param[in] options rclcpp::NodeOptions instance containing options for the node
+  /// \param[in] udp_config An UdpConfig object with the expected IP of UDP packets and the port
+  ///            that this driver listens to (i.e. sensor device at ip writes to port)
+  /// \throw runtime error if failed to start threads or configure driver
   UdpDriverNode(
     const std::string & node_name,
     const rclcpp::NodeOptions & options,
@@ -76,42 +82,24 @@ private:
       udp_config.get_port())) {}
 
   /// \brief Constructor - Gets config from ROS parameters
-  /// \param[in] node Node attached to the driver
+  /// \param[in] node_name Name of node for rclcpp internals
   /// \param[in] options rclcpp::NodeOptions instance containing options for the node
   UdpDriverNode(
     const std::string & node_name,
     const rclcpp::NodeOptions & options)
   : Node(node_name, options),
     m_pub_ptr(
-      this->create_publisher<OutputT>(
+      Node::create_publisher<OutputT>(
         "udp_read",
         rclcpp::QoS(10))),
     m_io_service(),
-    m_udp_socket(
-      m_io_service,
-      boost::asio::ip::udp::endpoint(
-        boost::asio::ip::address::from_string(this->declare_parameter("ip").get<std::string>()),
-        static_cast<uint16_t>(this->declare_parameter("port").get<uint16_t>())
-      )
-    )
-  {}
+    m_udp_socket(m_io_service, boost::asio::ip::udp::endpoint(
+        boost::asio::ip::address::from_string(declare_parameter("ip").get<std::string>()),
+        static_cast<uint16_t>(declare_parameter("port").get<uint16_t>()))) {}
 
 
   // brief Main loop: receives data from UDP, publishes to the given topic
   void run(const uint32_t max_iterations = 0U)
-  {
-    start(max_iterations);
-    while (rclcpp::ok())
-    {
-      rclcpp::spin_some(this->get_node_base_interface());
-      if(m_timer->is_canceled())
-      {
-        return;
-      }
-    }
-  }
-
-  void start(const uint32_t max_iterations = 0U)
   {
     // initialize the output object
     OutputT output;
@@ -121,16 +109,28 @@ private:
     // workaround for rclcpp logging macros with template class
     rclcpp::Logger node_logger = this->get_logger();
 
-    auto lambda = [this, &max_iterations, &iter, &output, &node_logger]() {
-      this->process(max_iterations, iter, output, node_logger);
-    };
-    m_timer = this->create_wall_timer(1s, lambda);
+    auto lambda = [this, &max_iterations, &output, &iter, &node_logger]() {
+        this->process(max_iterations, output, iter, node_logger);
+      };
+
+    m_timer = this->create_wall_timer(500ms, lambda);
+    while (rclcpp::ok()) {
+      rclcpp::spin_some(this->get_node_base_interface());
+      if (m_timer->is_canceled()) {
+        return;
+      }
+    }
   }
 
-  void process(const uint32_t & max_iterations, uint32_t & iter, OutputT & output, rclcpp::Logger & node_logger)
+  void process(
+    const uint32_t max_iterations,
+    OutputT & output,
+    uint32_t & iter,
+    rclcpp::Logger & node_logger)
   {
-    if ((max_iterations != 0U && max_iterations == iter) || !rclcpp::ok()) {
-      m_timer->cancel();
+    if ((max_iterations != 0U) && (max_iterations == iter)) {
+      this->m_timer->cancel();
+      return;
     }
     ++iter;
     try {
@@ -149,7 +149,7 @@ private:
       // And then just continue running
     } catch (...) {
       // Something really weird happened and I can't handle it here
-      RCLCPP_WARN(node_logger, "Unknown exception occured in UdpDriver");
+      RCLCPP_WARN(node_logger, "Unknown exception occured in UdpDriverNode");
       throw;
     }
   }
@@ -191,12 +191,11 @@ private:
     return len;
   }
 
-  // rclcpp::Node & m_node;
   const std::shared_ptr<typename rclcpp::Publisher<OutputT>> m_pub_ptr;
   boost::asio::io_service m_io_service;
   boost::asio::ip::udp::socket m_udp_socket;
   rclcpp::TimerBase::SharedPtr m_timer;
-};  // class UdpDriver
+};  // class UdpDriverNode
 }  // namespace udp_driver
 }  // namespace drivers
 }  // namespace autoware
