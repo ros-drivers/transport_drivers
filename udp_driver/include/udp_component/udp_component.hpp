@@ -39,9 +39,24 @@ public:
   explicit UdpComponent(const rclcpp::NodeOptions & options);
   ~UdpComponent() {}
 
+  const std::string & get_ip() const
+  {
+    return ip_;
+  }
+
+  const uint16_t get_port() const
+  {
+    return port_;
+  }
+
+  void handlePacket(const boost::asio::mutable_buffer &packet);
+
 protected:
 
 private:
+  std::string ip_;
+  uint16_t port_;
+
   IoContext context_;
   UdpDriver udp_driver_;  //TODO(flynneva): make this a vector of drivers?
 };  // class UdpComponent

@@ -23,10 +23,29 @@ namespace udp_component
 {
 
 UdpComponent::UdpComponent(const rclcpp::NodeOptions & options)
-: Node("udp_component", options), udp_driver_(context_) 
+: Node("udp_component", options),
+  udp_driver_(context_),
+  ip_(declare_parameter("ip").get<std::string>()),
+  port_(declare_parameter("port").get<uint16_t>())
 {
   RCLCPP_INFO(this->get_logger(), "Initializing udp_component");
-  RCLCPP_INFO(this->get_logger(), "Starting udp reader thread");
+  RCLCPP_INFO(this->get_logger(), "ip: %s", this->get_ip().c_str());
+  RCLCPP_INFO(this->get_logger(), "port: %i", this->get_port());
+
+  this->udp_driver_.initialize_sender(this->get_ip(), this->get_port());
+  this->udp_driver_.initialize_receiver(this->get_ip(), this->get_port());
+
+  RCLCPP_INFO(this->get_logger(), "Initialized sender and receiver socket");
+  RCLCPP_INFO(this->get_logger(), "Opening reciever socket");
+
+  this->udp_driver_.receiver()->open();
+  this->udp_driver_.receiver()->bind();
+  this->udp_driver_.receiver()->asyncReceive(boost::bind(&UdpComponent::handlePacket, this, _1));
+}
+
+void UdpComponent::handlePacket(const boost::asio::mutable_buffer &packet)
+{
+  RCLCPP_INFO(this->get_logger(), "RECEIVED PACKET");
 }
 
 }  // namespace udp_component
