@@ -39,8 +39,6 @@ public:
   void init_receiver(const std::string &ip, uint16_t port);
 
 private:
-  std::shared_ptr<rclcpp::Publisher<std_msgs::msg::Int32>> publisher() const;
-
   void createPublishers();
   void createSubscribers();
 

@@ -46,10 +46,6 @@ void UdpDriverNode::init_receiver(const std::string &ip, uint16_t port) {
   m_udp_driver->receiver()->asyncReceive(boost::bind(&UdpDriverNode::receiver_callback, this, _1));
 }
 
-std::shared_ptr<rclcpp::Publisher<std_msgs::msg::Int32>> UdpDriverNode::publisher() const {
-  return m_publisher;
-}
-
 void UdpDriverNode::createPublishers() {
   m_publisher = this->create_publisher<std_msgs::msg::Int32>("udp_read",
                                                              rclcpp::QoS(100));

@@ -40,7 +40,7 @@ TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest) {
   std::shared_future<bool> future_1(promise_1.get_future());
 
   // Raw UDP packets receiver, It could be a hardware (microcontroller, etc.)
-  UdpSocket receiver(ctx, "127.0.0.1", 9000);
+  UdpSocket receiver(ctx, ip, port);
   receiver.open();
   EXPECT_EQ(receiver.isOpen(), true);
   receiver.bind();
@@ -56,7 +56,7 @@ TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest) {
   // The data this node receives will be pumped to device by raw UDP packets.
   rclcpp::NodeOptions options;
   std::shared_ptr<UdpDriverNode> node(std::make_shared<UdpDriverNode>("UdpDriverNodeTest", options, ctx));
-  node->init_sender("127.0.0.1", 9000);
+  node->init_sender(ip, port);
 
   // ROS node publisher that sends sequence of data in ROS messages to device
   // The node sends data by 10 times and then shutting down
@@ -106,7 +106,7 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest) {
   // Main Drive Node
   rclcpp::NodeOptions options;
   std::shared_ptr<UdpDriverNode> node(std::make_shared<UdpDriverNode>("UdpDriverNodeTest", options, ctx));
-  node->init_receiver("127.0.0.1", 9000);
+  node->init_receiver(ip, port);
 
   // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
   // Test node that receives sequence of data from a topic published by main node
@@ -126,7 +126,7 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest) {
   // Sender socket that could be a hardware (microcontroller, etc.)
   // Streams sequence of data in an asynchronous manner by 10 times and then shutting down
   {
-    UdpSocket sender(ctx, "127.0.0.1", 9000);
+    UdpSocket sender(ctx, ip, port);
     sender.open();
     EXPECT_EQ(sender.isOpen(), true);
     int32_t count = 0;
