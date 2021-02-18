@@ -25,58 +25,56 @@
 using boost::asio::ip::udp;
 using boost::asio::ip::address;
 
-namespace autoware
-{
-namespace drivers
-{
+namespace autoware {
+namespace drivers {
 
 typedef boost::function<void(const MutSocketBuffer &)> Functor;
 
 class UdpSocket : private boost::noncopyable {
 public:
-    UdpSocket(const IoContext &ctx, const std::string &ip, uint16_t port);
-    ~UdpSocket();
+  UdpSocket(const IoContext &ctx, const std::string &ip, uint16_t port);
+  ~UdpSocket();
 
-    std::string ip() const;
-    uint16_t port() const;
+  std::string ip() const;
+  uint16_t port() const;
 
-    void open();
-    void close();
-    bool isOpen() const;
+  void open();
+  void close();
+  bool isOpen() const;
 
-    void bind();
+  void bind();
 
-    /*
-     * Blocking Send Operation
-     */
-    std::size_t send(const MutSocketBuffer &buff);
+  /*
+   * Blocking Send Operation
+   */
+  std::size_t send(const MutSocketBuffer &buff);
 
-    /*
-     * Blocking Receive Operation
-     */
-    size_t receive(const MutSocketBuffer &buff);
+  /*
+   * Blocking Receive Operation
+   */
+  size_t receive(const MutSocketBuffer &buff);
 
-    /*
-     * NonBlocking Send Operation
-     */
-    void asyncSend(const MutSocketBuffer &buff);
+  /*
+   * NonBlocking Send Operation
+   */
+  void asyncSend(const MutSocketBuffer &buff);
 
-    /*
-     * NonBlocking Receive Operation
-     */
-    void asyncReceive(Functor func);
-
-private:
-    void asyncSendHandler(const boost::system::error_code& error, std::size_t bytes_transferred);
-    void asyncReceiveHandler(const boost::system::error_code& error, std::size_t bytes_transferred);
+  /*
+   * NonBlocking Receive Operation
+   */
+  void asyncReceive(Functor func);
 
 private:
-    const IoContext &m_ctx;
-    udp::socket m_udp_socket;
-    udp::endpoint m_endpoint;
-    Functor m_func;
-    static const size_t m_recv_buffer_size {2048};
-    boost::array<uint8_t, m_recv_buffer_size> m_recv_buffer;
+  void asyncSendHandler(const boost::system::error_code &error, std::size_t bytes_transferred);
+  void asyncReceiveHandler(const boost::system::error_code &error, std::size_t bytes_transferred);
+
+private:
+  const IoContext &m_ctx;
+  udp::socket m_udp_socket;
+  udp::endpoint m_endpoint;
+  Functor m_func;
+  static const size_t m_recv_buffer_size{2048};
+  boost::array<uint8_t, m_recv_buffer_size> m_recv_buffer;
 };
 
 }  // namespace drivers

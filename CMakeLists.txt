@@ -19,9 +19,9 @@ cmake_minimum_required(VERSION 3.5)
 project(transport_driver)
 
 # Consider passing `-DCMAKE_BUILD_TYPE=Debug` option to cmake to export Debug symbols.
-if(NOT CMAKE_BUILD_TYPE)
+if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
-endif()
+endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
@@ -33,10 +33,10 @@ find_package(ament_cmake_auto REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread)
-if(Boost_FOUND)
+if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
     link_directories(${Boost_LIBRARY_DIRS})
-endif()
+endif ()
 
 include_directories(include)
 
@@ -54,24 +54,24 @@ target_compile_options(${PROJECT_NAME} PUBLIC "-O0" PRIVATE -Wno-sign-conversion
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 install(
-    DIRECTORY include
-    DESTINATION include
+        DIRECTORY include
+        DESTINATION include
 )
 
-if(BUILD_TESTING)
+if (BUILD_TESTING)
     find_package(ament_cmake_gtest REQUIRED)
     find_package(ament_lint_auto REQUIRED)
 
     ament_lint_auto_find_test_dependencies()
 
     set(TEST_FILES
-        test_io_context.cpp
-        test_udp_socket.cpp
-        test_udp_data.cpp
-        test_udp_driver.cpp
-        test_udp_driver_node.cpp)
+            test_io_context.cpp
+            test_udp_socket.cpp
+            test_udp_data.cpp
+            test_udp_driver.cpp
+            test_udp_driver_node.cpp)
 
-    foreach(file ${TEST_FILES})
+    foreach (file ${TEST_FILES})
         get_filename_component(name "${file}" NAME_WLE)
         set(TEST_UDP_DRIVER_EXE ${name})
 
@@ -82,7 +82,7 @@ if(BUILD_TESTING)
 
         target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
         target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME})
-    endforeach()
-endif()
+    endforeach ()
+endif ()
 
 ament_package()

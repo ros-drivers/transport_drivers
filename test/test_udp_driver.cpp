@@ -30,35 +30,35 @@ const std::string ip = "127.0.0.1";
 constexpr uint16_t port = 8000;
 
 TEST(UdpDriverTest, NonBlockingSendReceiveTest) {
-    IoContext ctx;
-    UdpDriver driver(ctx);
+  IoContext ctx;
+  UdpDriver driver(ctx);
 
-    driver.init_sender(ip, port);
-    driver.init_receiver(ip, port);
+  driver.init_sender(ip, port);
+  driver.init_receiver(ip, port);
 
-    int32_t sum = 0;
-    driver.receiver()->open();
-    driver.receiver()->bind();
-    driver.receiver()->asyncReceive([&](const MutSocketBuffer &buffer) {
-        sum += *(int32_t *) buffer.data();
-    });
+  int32_t sum = 0;
+  driver.receiver()->open();
+  driver.receiver()->bind();
+  driver.receiver()->asyncReceive([&](const MutSocketBuffer &buffer) {
+    sum += *(int32_t *) buffer.data();
+  });
 
-    driver.sender()->open();
-    EXPECT_EQ(driver.sender()->isOpen(), true);
+  driver.sender()->open();
+  EXPECT_EQ(driver.sender()->isOpen(), true);
 
-    for (int val : {1, 2, 3, 4, 5}) {
-        driver.sender()->asyncSend(MutSocketBuffer(&val, sizeof(val)));
-    }
+  for (int val : {1, 2, 3, 4, 5}) {
+    driver.sender()->asyncSend(MutSocketBuffer(&val, sizeof(val)));
+  }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-    EXPECT_EQ(sum, 15);
+  EXPECT_EQ(sum, 15);
 
-    driver.sender()->close();
-    EXPECT_EQ(driver.sender()->isOpen(), false);
+  driver.sender()->close();
+  EXPECT_EQ(driver.sender()->isOpen(), false);
 
-    driver.receiver()->close();
-    EXPECT_EQ(driver.receiver()->isOpen(), false);
+  driver.receiver()->close();
+  EXPECT_EQ(driver.receiver()->isOpen(), false);
 
-    ctx.waitForExit();
+  ctx.waitForExit();
 }

@@ -24,115 +24,115 @@ constexpr uint16_t port = 8000;
 constexpr float PI = 3.14159265359;
 
 void handle_data(const MutSocketBuffer &buffer) {
-    float received_PI = *(float*)buffer.data();
-    EXPECT_EQ(buffer.size(), sizeof(received_PI));
-    EXPECT_EQ(received_PI, PI);
-    std::cout << "[handle_data]" << std::endl;
+  float received_PI = *(float *) buffer.data();
+  EXPECT_EQ(buffer.size(), sizeof(received_PI));
+  EXPECT_EQ(received_PI, PI);
+  std::cout << "[handle_data]" << std::endl;
 }
 
 TEST(UdpDataTest, LifeCycleTest) {
-    IoContext ctx;
-    UdpSocket sender(ctx, ip, port);
-    UdpSocket receiver(ctx, ip, port);
+  IoContext ctx;
+  UdpSocket sender(ctx, ip, port);
+  UdpSocket receiver(ctx, ip, port);
 
-    EXPECT_EQ(sender.ip(), ip);
-    EXPECT_EQ(sender.port(), port);
-    EXPECT_EQ(receiver.ip(), ip);
-    EXPECT_EQ(receiver.port(), port);
+  EXPECT_EQ(sender.ip(), ip);
+  EXPECT_EQ(sender.port(), port);
+  EXPECT_EQ(receiver.ip(), ip);
+  EXPECT_EQ(receiver.port(), port);
 
-    EXPECT_EQ(sender.isOpen(), false);
-    sender.open();
-    EXPECT_EQ(sender.isOpen(), true);
+  EXPECT_EQ(sender.isOpen(), false);
+  sender.open();
+  EXPECT_EQ(sender.isOpen(), true);
 
-    EXPECT_EQ(receiver.isOpen(), false);
-    receiver.open();
-    EXPECT_EQ(receiver.isOpen(), true);
+  EXPECT_EQ(receiver.isOpen(), false);
+  receiver.open();
+  EXPECT_EQ(receiver.isOpen(), true);
 
-    sender.close();
-    EXPECT_EQ(sender.isOpen(), false);
-    receiver.close();
-    EXPECT_EQ(receiver.isOpen(), false);
+  sender.close();
+  EXPECT_EQ(sender.isOpen(), false);
+  receiver.close();
+  EXPECT_EQ(receiver.isOpen(), false);
 }
 
 TEST(UdpDataTest, BlockingSendReceiveTest) {
-    IoContext ctx;
-    UdpSocket sender(ctx, ip, port);
-    UdpSocket receiver(ctx, ip, port);
+  IoContext ctx;
+  UdpSocket sender(ctx, ip, port);
+  UdpSocket receiver(ctx, ip, port);
 
-    sender.open();
-    EXPECT_EQ(sender.isOpen(), true);
-    receiver.open();
-    EXPECT_EQ(receiver.isOpen(), true);
+  sender.open();
+  EXPECT_EQ(sender.isOpen(), true);
+  receiver.open();
+  EXPECT_EQ(receiver.isOpen(), true);
 
-    receiver.bind();
+  receiver.bind();
 
-    std::size_t size = sender.send(MutSocketBuffer((void *)&PI, sizeof(PI)));
-    EXPECT_EQ(size, sizeof(PI));
+  std::size_t size = sender.send(MutSocketBuffer((void *) &PI, sizeof(PI)));
+  EXPECT_EQ(size, sizeof(PI));
 
-    float received_PI = 0.0f;
-    size = receiver.receive(MutSocketBuffer(&received_PI, sizeof(received_PI)));
-    EXPECT_EQ(size, sizeof(received_PI));
-    EXPECT_EQ(received_PI, PI);
+  float received_PI = 0.0f;
+  size = receiver.receive(MutSocketBuffer(&received_PI, sizeof(received_PI)));
+  EXPECT_EQ(size, sizeof(received_PI));
+  EXPECT_EQ(received_PI, PI);
 
-    sender.close();
-    EXPECT_EQ(sender.isOpen(), false);
-    receiver.close();
-    EXPECT_EQ(receiver.isOpen(), false);
+  sender.close();
+  EXPECT_EQ(sender.isOpen(), false);
+  receiver.close();
+  EXPECT_EQ(receiver.isOpen(), false);
 }
 
 TEST(UdpDataTest, NonBlockingSendReceiveTest) {
-    IoContext ctx(8);
-    EXPECT_EQ(ctx.serviceThreadCount(), 8);
+  IoContext ctx(8);
+  EXPECT_EQ(ctx.serviceThreadCount(), 8);
 
-    UdpSocket sender(ctx, ip, port);
-    UdpSocket receiver(ctx, ip, port);
+  UdpSocket sender(ctx, ip, port);
+  UdpSocket receiver(ctx, ip, port);
 
-    sender.open();
-    EXPECT_EQ(sender.isOpen(), true);
-    receiver.open();
-    EXPECT_EQ(receiver.isOpen(), true);
+  sender.open();
+  EXPECT_EQ(sender.isOpen(), true);
+  receiver.open();
+  EXPECT_EQ(receiver.isOpen(), true);
 
-    receiver.bind();
-    receiver.asyncReceive(boost::bind(handle_data, _1));
+  receiver.bind();
+  receiver.asyncReceive(boost::bind(handle_data, _1));
 
-    MutSocketBuffer buffer((void *)&PI, sizeof(PI));
-    sender.asyncSend(buffer);
-    sender.asyncSend(buffer);
-    sender.asyncSend(buffer);
+  MutSocketBuffer buffer((void *) &PI, sizeof(PI));
+  sender.asyncSend(buffer);
+  sender.asyncSend(buffer);
+  sender.asyncSend(buffer);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-    sender.close();
-    EXPECT_EQ(sender.isOpen(), false);
-    receiver.close();
-    EXPECT_EQ(receiver.isOpen(), false);
+  sender.close();
+  EXPECT_EQ(sender.isOpen(), false);
+  receiver.close();
+  EXPECT_EQ(receiver.isOpen(), false);
 
-    ctx.waitForExit();
+  ctx.waitForExit();
 }
 
 TEST(UdpDataTest, BlockingSendNonBlockingReceiveTest) {
-    IoContext ctx(5);
-    UdpSocket sender(ctx, ip, port);
-    UdpSocket receiver(ctx, ip, port);
+  IoContext ctx(5);
+  UdpSocket sender(ctx, ip, port);
+  UdpSocket receiver(ctx, ip, port);
 
-    sender.open();
-    EXPECT_EQ(sender.isOpen(), true);
-    receiver.open();
-    EXPECT_EQ(receiver.isOpen(), true);
+  sender.open();
+  EXPECT_EQ(sender.isOpen(), true);
+  receiver.open();
+  EXPECT_EQ(receiver.isOpen(), true);
 
-    receiver.bind();
-    receiver.asyncReceive(boost::bind(handle_data, _1));
+  receiver.bind();
+  receiver.asyncReceive(boost::bind(handle_data, _1));
 
-    std::size_t size = sender.send(MutSocketBuffer((void *)&PI, sizeof(PI)));
-    EXPECT_EQ(size, sizeof(PI));
+  std::size_t size = sender.send(MutSocketBuffer((void *) &PI, sizeof(PI)));
+  EXPECT_EQ(size, sizeof(PI));
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-    sender.close();
-    EXPECT_EQ(sender.isOpen(), false);
-    receiver.close();
-    EXPECT_EQ(receiver.isOpen(), false);
+  sender.close();
+  EXPECT_EQ(sender.isOpen(), false);
+  receiver.close();
+  EXPECT_EQ(receiver.isOpen(), false);
 
-    ctx.waitForExit();
+  ctx.waitForExit();
 }
 

@@ -20,26 +20,24 @@
 #include "io_context.hpp"
 #include "udp_socket.hpp"
 
-namespace autoware
-{
-namespace drivers
-{
+namespace autoware {
+namespace drivers {
 
 class UdpDriver {
 public:
-    UdpDriver(const IoContext &ctx);
-    ~UdpDriver();
+  UdpDriver(const IoContext &ctx);
+  ~UdpDriver();
 
-    void init_sender(const std::string &ip, uint16_t port);
-    void init_receiver(const std::string &ip, uint16_t port);
+  void init_sender(const std::string &ip, uint16_t port);
+  void init_receiver(const std::string &ip, uint16_t port);
 
-    std::shared_ptr<UdpSocket> sender() const;
-    std::shared_ptr<UdpSocket> receiver() const;
+  std::shared_ptr<UdpSocket> sender() const;
+  std::shared_ptr<UdpSocket> receiver() const;
 
 private:
-    const IoContext &m_ctx;
-    std::shared_ptr<UdpSocket> m_sender;
-    std::shared_ptr<UdpSocket> m_receiver;
+  const IoContext &m_ctx;
+  std::shared_ptr<UdpSocket> m_sender;
+  std::shared_ptr<UdpSocket> m_receiver;
 };
 
 }  // namespace drivers

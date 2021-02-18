@@ -24,10 +24,8 @@
 
 #include "common.hpp"
 
-namespace autoware
-{
-namespace msgs
-{
+namespace autoware {
+namespace msgs {
 
 /*
 * ROS2 Message to Raw Buffer Converters

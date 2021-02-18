@@ -21,32 +21,30 @@
 #include <boost/thread.hpp>
 #include <boost/noncopyable.hpp>
 
-namespace autoware
-{
-namespace drivers
-{
+namespace autoware {
+namespace drivers {
 
 class IoContext : private boost::noncopyable {
 public:
-    IoContext(int16_t threads_count = -1);
-    ~IoContext();
+  IoContext(int16_t threads_count = -1);
+  ~IoContext();
 
-    boost::asio::io_service &ios() const;
+  boost::asio::io_service &ios() const;
 
-    bool isServiceStopped();
-    uint32_t serviceThreadCount();
+  bool isServiceStopped();
+  uint32_t serviceThreadCount();
 
-    void waitForExit();
+  void waitForExit();
 
-    template<class F>
-    void post(F f) {
-        ios().post(f);
-    }
+  template<class F>
+  void post(F f) {
+    ios().post(f);
+  }
 
 private:
-    std::shared_ptr<boost::asio::io_service> m_ios;
-    std::shared_ptr<boost::asio::io_service::work> m_work;
-    std::shared_ptr<boost::thread_group> m_ios_thread_workers;
+  std::shared_ptr<boost::asio::io_service> m_ios;
+  std::shared_ptr<boost::asio::io_service::work> m_work;
+  std::shared_ptr<boost::thread_group> m_ios_thread_workers;
 };
 
 }  // namespace drivers

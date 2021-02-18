@@ -23,15 +23,15 @@ const std::string ip = "127.0.0.1";
 constexpr uint16_t port = 8000;
 
 TEST(UdpSocketTest, LifeCycleTest) {
-    IoContext ctx;
-    UdpSocket socket(ctx, ip, port);
+  IoContext ctx;
+  UdpSocket socket(ctx, ip, port);
 
-    EXPECT_EQ(socket.ip(), ip);
-    EXPECT_EQ(socket.port(), port);
+  EXPECT_EQ(socket.ip(), ip);
+  EXPECT_EQ(socket.port(), port);
 
-    EXPECT_EQ(socket.isOpen(), false);
-    socket.open();
-    EXPECT_EQ(socket.isOpen(), true);
-    socket.close();
-    EXPECT_EQ(socket.isOpen(), false);
+  EXPECT_EQ(socket.isOpen(), false);
+  socket.open();
+  EXPECT_EQ(socket.isOpen(), true);
+  socket.close();
+  EXPECT_EQ(socket.isOpen(), false);
 }

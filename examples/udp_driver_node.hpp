@@ -27,15 +27,12 @@
 #include "converters.hpp"
 #include "udp_driver.hpp"
 
-namespace autoware
-{
-namespace drivers
-{
+namespace autoware {
+namespace drivers {
 
-class UdpDriverNode : public rclcpp::Node
-{
+class UdpDriverNode : public rclcpp::Node {
 public:
-  UdpDriverNode(const std::string & node_name, const rclcpp::NodeOptions & options, IoContext &ctx);
+  UdpDriverNode(const std::string &node_name, const rclcpp::NodeOptions &options, IoContext &ctx);
   ~UdpDriverNode();
 
   void init_sender(const std::string &ip, int16_t port);
