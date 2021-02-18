@@ -43,10 +43,10 @@ include_directories(include)
 ament_export_include_directories(include)
 ament_auto_find_build_dependencies()
 ament_auto_add_library(${PROJECT_NAME} SHARED
-        src/converters.cpp
         src/io_context.cpp
         src/udp_socket.cpp
         src/udp_driver.cpp
+        src/converters/std_msgs.cpp
         examples/udp_driver_node.cpp)
 ament_target_dependencies(${PROJECT_NAME} "rclcpp" "std_msgs" "Boost")
 
