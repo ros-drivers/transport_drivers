@@ -17,10 +17,27 @@
 #ifndef TRANSPORT_DRIVER_STD_MSGS_HPP
 #define TRANSPORT_DRIVER_STD_MSGS_HPP
 
+/*
+ * std_msgs::msg::Int variant
+ */
 #include <std_msgs/msg/int8.hpp>
 #include <std_msgs/msg/int16.hpp>
 #include <std_msgs/msg/int32.hpp>
 #include <std_msgs/msg/int64.hpp>
+
+/*
+ * std_msgs::msg::UInt variant
+ */
+#include <std_msgs/msg/u_int8.hpp>
+#include <std_msgs/msg/u_int16.hpp>
+#include <std_msgs/msg/u_int32.hpp>
+#include <std_msgs/msg/u_int64.hpp>
+
+/*
+ * std_msgs::msg::Float variant
+ */
+#include <std_msgs/msg/float32.hpp>
+#include <std_msgs/msg/float64.hpp>
 
 #include "common.hpp"
 
@@ -28,20 +45,54 @@ namespace autoware {
 namespace msgs {
 
 /*
-* ROS2 Message to Raw Buffer Converters
-*/
+ * ROS2 Message to Raw Buffer Converters
+ * std_msgs::msg::Int variant
+ */
 void convertFromRos2Message(const std_msgs::msg::Int8::SharedPtr &in, MutSocketBuffer &out);
 void convertFromRos2Message(const std_msgs::msg::Int16::SharedPtr &in, MutSocketBuffer &out);
 void convertFromRos2Message(const std_msgs::msg::Int32::SharedPtr &in, MutSocketBuffer &out);
 void convertFromRos2Message(const std_msgs::msg::Int64::SharedPtr &in, MutSocketBuffer &out);
 
 /*
-* Raw Buffer to ROS2 Message Converters
-*/
+ * Raw Buffer to ROS2 Message Converters
+ * std_msgs::msg::Int variant
+ */
 void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Int8 &out);
 void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Int16 &out);
 void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Int32 &out);
 void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Int64 &out);
+
+/*
+ * ROS2 Message to Raw Buffer Converters
+ * std_msgs::msg::UInt variant
+ */
+void convertFromRos2Message(const std_msgs::msg::UInt8::SharedPtr &in, MutSocketBuffer &out);
+void convertFromRos2Message(const std_msgs::msg::UInt16::SharedPtr &in, MutSocketBuffer &out);
+void convertFromRos2Message(const std_msgs::msg::UInt32::SharedPtr &in, MutSocketBuffer &out);
+void convertFromRos2Message(const std_msgs::msg::UInt64::SharedPtr &in, MutSocketBuffer &out);
+
+/*
+ * Raw Buffer to ROS2 Message Converters
+ * std_msgs::msg::UInt variant
+ */
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::UInt8 &out);
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::UInt16 &out);
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::UInt32 &out);
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::UInt64 &out);
+
+/*
+ * ROS2 Message to Raw Buffer Converters
+ * std_msgs::msg::Float variant
+ */
+void convertFromRos2Message(const std_msgs::msg::Float32::SharedPtr &in, MutSocketBuffer &out);
+void convertFromRos2Message(const std_msgs::msg::Float64::SharedPtr &in, MutSocketBuffer &out);
+
+/*
+ * Raw Buffer to ROS2 Message Converters
+ * std_msgs::msg::Float variant
+ */
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Float32 &out);
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Float64 &out);
 
 }  // namespace msgs
 }  // namespace autoware
