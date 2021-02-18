@@ -14,7 +14,7 @@
 
 // Developed by LeoDrive, 2021
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "io_context.hpp"
 
 using namespace autoware::drivers;

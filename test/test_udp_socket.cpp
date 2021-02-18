@@ -14,7 +14,7 @@
 
 // Developed by LeoDrive, 2021
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "udp_socket.hpp"
 
 using namespace autoware::drivers;

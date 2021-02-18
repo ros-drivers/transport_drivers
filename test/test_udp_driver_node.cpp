@@ -14,15 +14,15 @@
 
 // Developed by LeoDrive, 2021
 
+#include <gtest/gtest.h>
+
 #include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include <rclcpp/rclcpp.hpp>
-#include <std_msgs/msg/int32.hpp>
 
-#include "gtest/gtest.h"
 #include "../examples/udp_driver_node.hpp"
 
 using namespace std::chrono_literals;
