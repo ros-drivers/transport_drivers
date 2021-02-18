@@ -31,15 +31,21 @@ namespace autoware
 namespace msgs
 {
 
-void convertFromRosMessage(const std_msgs::msg::Int8::SharedPtr &in, MutSocketBuffer &out);
-void convertFromRosMessage(const std_msgs::msg::Int16::SharedPtr &in, MutSocketBuffer &out);
-void convertFromRosMessage(const std_msgs::msg::Int32::SharedPtr &in, MutSocketBuffer &out);
-void convertFromRosMessage(const std_msgs::msg::Int64::SharedPtr &in, MutSocketBuffer &out);
+/*
+ * ROS2 Message to Raw Buffer Converters
+ */
+void convertFromRos2Message(const std_msgs::msg::Int8::SharedPtr &in, MutSocketBuffer &out);
+void convertFromRos2Message(const std_msgs::msg::Int16::SharedPtr &in, MutSocketBuffer &out);
+void convertFromRos2Message(const std_msgs::msg::Int32::SharedPtr &in, MutSocketBuffer &out);
+void convertFromRos2Message(const std_msgs::msg::Int64::SharedPtr &in, MutSocketBuffer &out);
 
-void convertToRosMessage(const MutSocketBuffer &in, std_msgs::msg::Int8 &out);
-void convertToRosMessage(const MutSocketBuffer &in, std_msgs::msg::Int16 &out);
-void convertToRosMessage(const MutSocketBuffer &in, std_msgs::msg::Int32 &out);
-void convertToRosMessage(const MutSocketBuffer &in, std_msgs::msg::Int64 &out);
+/*
+ * Raw Buffer to ROS2 Message Converters
+ */
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Int8 &out);
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Int16 &out);
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Int32 &out);
+void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Int64 &out);
 
 }  // namespace msgs
 }  // namespace autoware

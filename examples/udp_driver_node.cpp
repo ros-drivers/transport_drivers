@@ -51,7 +51,7 @@ void UdpDriverNode::receiver_callback(const MutSocketBuffer &buffer) {
   std::cout << "[UdpDriverNode::receiver_callback] " << *(int32_t*)buffer.data() << std::endl;
 
   std_msgs::msg::Int32 out;
-  autoware::msgs::convertToRosMessage(buffer, out);
+  autoware::msgs::convertToRos2Message(buffer, out);
 
   m_publisher->publish(out);
 }
@@ -60,7 +60,7 @@ void UdpDriverNode::subscriber_callback(std_msgs::msg::Int32::SharedPtr msg) {
   std::cout << "[UdpDriverNode::subscriber_callback] " << msg->data << std::endl;
 
   MutSocketBuffer out;
-  autoware::msgs::convertFromRosMessage(msg, out);
+  autoware::msgs::convertFromRos2Message(msg, out);
 
   m_udp_driver->sender()->asyncSend(out);
 }
