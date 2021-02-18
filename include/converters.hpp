@@ -18,7 +18,11 @@
 #define UDP_DRIVER_CONVERTERS_HPP
 
 #include <boost/asio.hpp>
+
+#include <std_msgs/msg/int8.hpp>
+#include <std_msgs/msg/int16.hpp>
 #include <std_msgs/msg/int32.hpp>
+#include <std_msgs/msg/int64.hpp>
 
 typedef boost::asio::mutable_buffer MutSocketBuffer;
 
@@ -27,8 +31,15 @@ namespace autoware
 namespace msgs
 {
 
+void convertFromRosMessage(const std_msgs::msg::Int8::SharedPtr &in, MutSocketBuffer &out);
+void convertFromRosMessage(const std_msgs::msg::Int16::SharedPtr &in, MutSocketBuffer &out);
 void convertFromRosMessage(const std_msgs::msg::Int32::SharedPtr &in, MutSocketBuffer &out);
+void convertFromRosMessage(const std_msgs::msg::Int64::SharedPtr &in, MutSocketBuffer &out);
+
+void convertToRosMessage(const MutSocketBuffer &in, std_msgs::msg::Int8 &out);
+void convertToRosMessage(const MutSocketBuffer &in, std_msgs::msg::Int16 &out);
 void convertToRosMessage(const MutSocketBuffer &in, std_msgs::msg::Int32 &out);
+void convertToRosMessage(const MutSocketBuffer &in, std_msgs::msg::Int64 &out);
 
 }  // namespace msgs
 }  // namespace autoware
