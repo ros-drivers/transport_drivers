@@ -1,4 +1,4 @@
-// Copyright 2018 Apex.AI, Inc.
+// Copyright 2021 LeoDrive.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Co-developed by Tier IV, Inc. and Apex.AI, Inc.
-// Maintained by LeoDrive, 2021
+// Developed by LeoDrive, 2021
 
 #ifndef UDP_DRIVER__UDP_DRIVER_NODE_HPP_
 #define UDP_DRIVER__UDP_DRIVER_NODE_HPP_
