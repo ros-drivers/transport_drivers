@@ -14,8 +14,8 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef UDP_DRIVER_IO_CONTEXT_HPP
-#define UDP_DRIVER_IO_CONTEXT_HPP
+#ifndef UDP_DRIVER__IO_CONTEXT_HPP_
+#define UDP_DRIVER__IO_CONTEXT_HPP_
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
@@ -27,61 +27,69 @@ namespace autoware
 namespace drivers
 {
 
-class IoContext : private boost::noncopyable {
+class IoContext : private boost::noncopyable
+{
 public:
-    IoContext(int16_t threads_count = -1) : m_ios(new boost::asio::io_service()),
-                m_work(new boost::asio::io_service::work(ios())),
-                m_ios_thread_workers(new boost::thread_group()) {
-        if (threads_count == -1) {
-            threads_count = boost::thread::hardware_concurrency();
-        }
-
-        for (int i = 0; i < threads_count; ++i) {
-            m_ios_thread_workers->create_thread(boost::bind(&boost::asio::io_service::run, &ios()));
-        }
-
-        std::cout << "[IoContext::IoContext] INFO => Thread(s) Created: " << serviceThreadCount() << std::endl;
+  explicit IoContext(int16_t threads_count = -1)
+  : m_ios(new boost::asio::io_service()),
+    m_work(new boost::asio::io_service::work(ios())),
+    m_ios_thread_workers(new boost::thread_group())
+  {
+    if (threads_count == -1) {
+      threads_count = boost::thread::hardware_concurrency();
     }
 
-    ~IoContext() {
-        std::cout << "[IoContext::~IoContext] INFO => Destructing..." << std::endl;
-        waitForExit();
+    for (int i = 0; i < threads_count; ++i) {
+      m_ios_thread_workers->create_thread(
+        boost::bind(&boost::asio::io_service::run, &ios()));
     }
 
-    inline boost::asio::io_service &ios() const {
-        return *m_ios;
+    std::cout << "[IoContext::IoContext] INFO => Thread(s) Created: " <<
+      serviceThreadCount() << std::endl;
+  }
+
+  ~IoContext()
+  {
+    std::cout << "[IoContext::~IoContext] INFO => Destructing..." << std::endl;
+    waitForExit();
+  }
+
+  inline boost::asio::io_service & ios() const
+  {
+    return *m_ios;
+  }
+
+  template<class F>
+  void post(F f)
+  {
+    ios().post(f);
+  }
+
+  void poll_one()
+  {
+    if (!ios().stopped()) {
+      ios().poll_one();
+    }
+  }
+
+  inline bool isServiceStopped() {return ios().stopped();}
+  inline uint32_t serviceThreadCount() {return m_ios_thread_workers->size();}
+
+  void waitForExit()
+  {
+    if (!ios().stopped()) {
+      ios().post([&]() {m_work.reset();});
     }
 
-    template<class F>
-    void post(F f) {
-        ios().post(f);
-    }
-
-    void poll_one() {
-        if (!ios().stopped()) {
-            ios().poll_one();
-        }
-    }
-
-    inline bool isServiceStopped() { return ios().stopped(); }
-    inline uint32_t serviceThreadCount() { return m_ios_thread_workers->size(); }
-
-    void waitForExit() {
-        if (!ios().stopped()) {
-            ios().post([&]() { m_work.reset(); });
-        }
-
-        m_ios_thread_workers->interrupt_all();
-        m_ios_thread_workers->join_all();
-    }
+    m_ios_thread_workers->interrupt_all();
+    m_ios_thread_workers->join_all();
+  }
 
 private:
-    boost::shared_ptr<boost::asio::io_service> m_ios;
-    boost::shared_ptr<boost::asio::io_service::work> m_work;
-    boost::shared_ptr<boost::thread_group> m_ios_thread_workers;
+  boost::shared_ptr<boost::asio::io_service> m_ios;
+  boost::shared_ptr<boost::asio::io_service::work> m_work;
+  boost::shared_ptr<boost::thread_group> m_ios_thread_workers;
 };
-
 }  // namespace drivers
 }  // namespace autoware
-
-#endif //UDP_DRIVER_IO_CONTEXT_HPP
+#endif  // UDP_DRIVER__IO_CONTEXT_HPP_

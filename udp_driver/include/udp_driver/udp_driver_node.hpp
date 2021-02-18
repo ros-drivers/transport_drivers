@@ -34,7 +34,8 @@ namespace autoware
 {
 namespace drivers
 {
-/// \brief A template class and associated utilities which encapsulate basic reading and writing of UDP socket
+/// \brief A template class and associated utilities which encapsulate
+///        basic reading and writing of UDP socket
 namespace udp_driver
 {
 
@@ -53,72 +54,80 @@ public:
   UdpDriverNode(
     const std::string & node_name,
     const rclcpp::NodeOptions & options,
-    IoContext &ctx) :
-        Node(node_name, options),
-        m_udp_driver(new UdpDriver(ctx)) {
+    IoContext & ctx)
+  : Node(node_name, options), m_udp_driver(new UdpDriver(ctx)) {}
+
+  ~UdpDriverNode()
+  {
+    std::cout << "[UdpDriverNode::~UdpDriverNode] INFO => Destructing..." << std::endl;
   }
 
-  ~UdpDriverNode() { std::cout << "[UdpDriverNode::~UdpDriverNode] INFO => Destructing..." << std::endl; }
-
-    void initialize_sender(const std::string &ip, int16_t port) {
-        m_udp_driver->initialize_sender(ip, port);
-        if (!m_udp_driver->sender()->isOpen()) {
-            m_udp_driver->sender()->open();
-        }
-
-        createSubscribers();
+  void initialize_sender(const std::string & ip, int16_t port)
+  {
+    m_udp_driver->initialize_sender(ip, port);
+    if (!m_udp_driver->sender()->isOpen()) {
+      m_udp_driver->sender()->open();
     }
 
-    void initialize_receiver(const std::string &ip, uint16_t port) {
-        createPublishers();
+    createSubscribers();
+  }
 
-        m_udp_driver->initialize_receiver(ip, port);
-        m_udp_driver->receiver()->open();
-        m_udp_driver->receiver()->bind();
-        m_udp_driver->receiver()->asyncReceive(boost::bind(&UdpDriverNode::receiver_callback,this, _1));
-    }
+  void initialize_receiver(const std::string & ip, uint16_t port)
+  {
+    createPublishers();
+
+    m_udp_driver->initialize_receiver(ip, port);
+    m_udp_driver->receiver()->open();
+    m_udp_driver->receiver()->bind();
+    m_udp_driver->receiver()->asyncReceive(
+      boost::bind(&UdpDriverNode::receiver_callback, this, _1));
+  }
 
 private:
-  std::shared_ptr<rclcpp::Publisher<std_msgs::msg::Int32>> publisher() const {
-      return m_publisher;
+  std::shared_ptr<rclcpp::Publisher<std_msgs::msg::Int32>> publisher() const
+  {
+    return m_publisher;
   }
 
-  void createPublishers() {
-    m_publisher = this->create_publisher<std_msgs::msg::Int32>("udp_read",
-                                                               rclcpp::QoS(100));
+  void createPublishers()
+  {
+    m_publisher = this->create_publisher<std_msgs::msg::Int32>("udp_read", rclcpp::QoS(100));
   }
 
-  void createSubscribers() {
-    m_subscriber = this->create_subscription<std_msgs::msg::Int32>("udp_write",
-        rclcpp::QoS(rclcpp::KeepLast(10)).best_effort(),
-        std::bind(&UdpDriverNode::subscriber_callback, this, std::placeholders::_1));
+  void createSubscribers()
+  {
+    m_subscriber = this->create_subscription<std_msgs::msg::Int32>(
+      "udp_write",
+      rclcpp::QoS(rclcpp::KeepLast(10)).best_effort(),
+      std::bind(&UdpDriverNode::subscriber_callback, this, std::placeholders::_1));
   }
 
-  void receiver_callback(const MutSocketBuffer &buffer) {
-      std::cout << "[UdpDriverNode::receiver_callback] " << *(int32_t*)buffer.data() << std::endl;
+  void receiver_callback(const MutSocketBuffer & buffer)
+  {
+    std::cout << "[UdpDriverNode::receiver_callback] " <<
+      *reinterpre_cast<int32_t *> buffer.data() << std::endl;
 
-      std_msgs::msg::Int32 out;
-      autoware::msgs::convertToRosMessage(buffer, out);
+    std_msgs::msg::Int32 out;
+    autoware::msgs::convertToRosMessage(buffer, out);
 
-      m_publisher->publish(out);
+    m_publisher->publish(out);
   }
 
-  void subscriber_callback(std_msgs::msg::Int32::SharedPtr msg) {
-      std::cout << "[UdpDriverNode::subscriber_callback] " << msg->data << std::endl;
+  void subscriber_callback(std_msgs::msg::Int32::SharedPtr msg)
+  {
+    std::cout << "[UdpDriverNode::subscriber_callback] " << msg->data << std::endl;
 
-      MutSocketBuffer out;
-      autoware::msgs::convertFromRosMessage(msg, out);
+    MutSocketBuffer out;
+    autoware::msgs::convertFromRosMessage(msg, out);
 
-      m_udp_driver->sender()->asyncSend(out);
+    m_udp_driver->sender()->asyncSend(out);
   }
 
   std::shared_ptr<UdpDriver> m_udp_driver;
   std::shared_ptr<typename rclcpp::Publisher<std_msgs::msg::Int32>> m_publisher;
   std::shared_ptr<typename rclcpp::Subscription<std_msgs::msg::Int32>> m_subscriber;
 };  // class UdpDriverNode
-
 }  // namespace udp_driver
 }  // namespace drivers
 }  // namespace autoware
-
 #endif  // UDP_DRIVER__UDP_DRIVER_NODE_HPP_

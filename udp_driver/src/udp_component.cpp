@@ -31,7 +31,7 @@ UdpComponent::UdpComponent(const rclcpp::NodeOptions & options)
   frame_id_(declare_parameter("frame_id").get<std::string>())
 {
   udp_publisher_ = this->create_publisher<udp_msgs::msg::UdpPacket>(
-                         "p" + std::to_string(this->get_port()), 10);
+    "p" + std::to_string(this->get_port()), 10);
 
   RCLCPP_INFO(this->get_logger(), "Initializing udp_component with:");
   RCLCPP_INFO(this->get_logger(), "  ip: %s", this->get_ip().c_str());
@@ -46,7 +46,7 @@ UdpComponent::UdpComponent(const rclcpp::NodeOptions & options)
   this->udp_driver_.receiver()->asyncReceive(boost::bind(&UdpComponent::handlePacket, this, _1));
 }
 
-void UdpComponent::handlePacket(const boost::asio::mutable_buffer &packet)
+void UdpComponent::handlePacket(const boost::asio::mutable_buffer & packet)
 {
   udp_msgs::msg::UdpPacket udp_packet;
   // Populate UDP packet ROS message

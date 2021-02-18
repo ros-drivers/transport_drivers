@@ -14,8 +14,8 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef UDP_DRIVER_CONVERTERS_HPP
-#define UDP_DRIVER_CONVERTERS_HPP
+#ifndef UDP_DRIVER__CONVERTERS_HPP_
+#define UDP_DRIVER__CONVERTERS_HPP_
 
 #include <boost/asio.hpp>
 #include "std_msgs/msg/int32.hpp"
@@ -27,15 +27,18 @@ namespace autoware
 namespace msgs
 {
 
-inline void convertFromRosMessage(const std_msgs::msg::Int32::SharedPtr &in, MutSocketBuffer &out) {
+inline void convertFromRosMessage(
+  const std_msgs::msg::Int32::SharedPtr & in,
+  MutSocketBuffer & out)
+{
   out = MutSocketBuffer(&in->data, sizeof(in->data));
 }
 
-inline void convertToRosMessage(const MutSocketBuffer &in, std_msgs::msg::Int32 &out) {
+inline void convertToRosMessage(const MutSocketBuffer & in, std_msgs::msg::Int32 & out)
+{
   out.data = *boost::asio::buffer_cast<int32_t *>(in);
 }
-
 }  // namespace msgs
 }  // namespace autoware
 
-#endif //UDP_DRIVER_CONVERTERS_HPP
+#endif  // UDP_DRIVER__CONVERTERS_HPP_

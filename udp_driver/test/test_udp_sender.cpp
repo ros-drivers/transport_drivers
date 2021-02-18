@@ -14,25 +14,27 @@
 
 // Developed by LeoDrive, 2021
 
+#include <string>
+
 #include "gtest/gtest.h"
 #include "udp_driver/udp_socket.hpp"
 
-using namespace autoware::drivers; // includes IoContext
-using namespace autoware::drivers::udp_driver;
+using autoware::drivers::IoContext;
+using autoware::drivers::udp_driver::UdpSocket;
 
 TEST(UdpSenderTest, LifeCycleTest) {
-    std::string ip = "127.0.0.1";
-    uint16_t port = 8000;
+  std::string ip = "127.0.0.1";
+  uint16_t port = 8000;
 
-    IoContext ctx;
-    UdpSocket sender(ctx, ip, port);
+  IoContext ctx;
+  UdpSocket sender(ctx, ip, port);
 
-    EXPECT_EQ(sender.ip(), ip);
-    EXPECT_EQ(sender.port(), port);
+  EXPECT_EQ(sender.ip(), ip);
+  EXPECT_EQ(sender.port(), port);
 
-    EXPECT_EQ(sender.isOpen(), false);
-    sender.open();
-    EXPECT_EQ(sender.isOpen(), true);
-    sender.close();
-    EXPECT_EQ(sender.isOpen(), false);
+  EXPECT_EQ(sender.isOpen(), false);
+  sender.open();
+  EXPECT_EQ(sender.isOpen(), true);
+  sender.close();
+  EXPECT_EQ(sender.isOpen(), false);
 }

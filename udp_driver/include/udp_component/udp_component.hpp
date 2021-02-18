@@ -54,7 +54,7 @@ public:
     return frame_id_;
   }
 
-  void handlePacket(const boost::asio::mutable_buffer &packet);
+  void handlePacket(const boost::asio::mutable_buffer & packet);
 
 private:
   std::string ip_;

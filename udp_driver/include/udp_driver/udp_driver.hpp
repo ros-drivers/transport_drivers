@@ -14,11 +14,15 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef UDP_DRIVER_UDP_DRIVER_HPP
-#define UDP_DRIVER_UDP_DRIVER_HPP
+#ifndef UDP_DRIVER__UDP_DRIVER_HPP_
+#define UDP_DRIVER__UDP_DRIVER_HPP_
+
+#include <memory>
+#include <string>
 
 #include "io_context.hpp"
 #include "udp_socket.hpp"
+
 
 namespace autoware
 {
@@ -28,34 +32,37 @@ namespace udp_driver
 {
 
 
-class UdpDriver {
+class UdpDriver
+{
 public:
-    UdpDriver(IoContext &ctx): m_ctx(ctx) {}
-    ~UdpDriver() {
-        std::cout << "[UdpDriver::~UdpDriver] INFO => Destructing..." << std::endl;
-    }
+  explicit UdpDriver(IoContext & ctx)
+  : m_ctx(ctx) {}
+  ~UdpDriver()
+  {
+    std::cout << "[UdpDriver::~UdpDriver] INFO => Destructing..." << std::endl;
+  }
 
-    void initialize_sender(const std::string &ip, uint16_t port) {
-        m_sender.reset(new UdpSocket(m_ctx, ip, port));
-    }
+  void initialize_sender(const std::string & ip, uint16_t port)
+  {
+    m_sender.reset(new UdpSocket(m_ctx, ip, port));
+  }
 
-    void initialize_receiver(const std::string &ip, uint16_t port) {
-        m_receiver.reset(new UdpSocket(m_ctx, ip, port));
-    }
+  void initialize_receiver(const std::string & ip, uint16_t port)
+  {
+    m_receiver.reset(new UdpSocket(m_ctx, ip, port));
+  }
 
-    IoContext &context() { return m_ctx; }
+  IoContext & context() {return m_ctx;}
 
-    std::shared_ptr<UdpSocket> &sender() { return m_sender; }
-    std::shared_ptr<UdpSocket> &receiver() { return m_receiver; }
+  std::shared_ptr<UdpSocket> & sender() {return m_sender;}
+  std::shared_ptr<UdpSocket> & receiver() {return m_receiver;}
 
 private:
-    IoContext &m_ctx;
-    std::shared_ptr<UdpSocket> m_sender;
-    std::shared_ptr<UdpSocket> m_receiver;
+  IoContext & m_ctx;
+  std::shared_ptr<UdpSocket> m_sender;
+  std::shared_ptr<UdpSocket> m_receiver;
 };
-
 }  // namespace udp_driver
 }  // namespace drivers
 }  // namespace autoware
-
-#endif //UDP_DRIVER_UDP_DRIVER_HPP
+#endif  // UDP_DRIVER__UDP_DRIVER_HPP_
