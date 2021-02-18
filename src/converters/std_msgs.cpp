@@ -101,7 +101,7 @@ void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::UInt64 &out)
 
 /*
  * ROS2 Message to Raw Buffer Converters
- * std_msgs::msg::Float32 variant
+ * std_msgs::msg::Float variant
  */
 void convertFromRos2Message(const std_msgs::msg::Float32::SharedPtr &in, MutSocketBuffer &out) {
   out = MutSocketBuffer(&in->data, sizeof(in->data));
@@ -113,7 +113,7 @@ void convertFromRos2Message(const std_msgs::msg::Float64::SharedPtr &in, MutSock
 
 /*
  * Raw Buffer to ROS2 Message Converters
- * std_msgs::msg::Float32 variant
+ * std_msgs::msg::Float variant
  */
 void convertToRos2Message(const MutSocketBuffer &in, std_msgs::msg::Float32 &out) {
   out.data = *boost::asio::buffer_cast<float_t *>(in);
