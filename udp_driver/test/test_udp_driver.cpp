@@ -28,6 +28,8 @@
 using namespace std::chrono_literals;
 using autoware::drivers::IoContext;
 using autoware::drivers::udp_driver::UdpSocket;
+using autoware::drivers::udp_driver::UdpDriver;
+using autoware::drivers::udp_driver::UdpDriverNode;
 
 const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
@@ -123,7 +125,7 @@ TEST(MinimalPublisher, FromRosMessageToRawUdpMessageTest) {
     ASSERT_EQ(
       rclcpp::spin_until_future_complete(
         minimal_publisher,
-        future_,
+        future_2,
         std::chrono::milliseconds(2000)),
       rclcpp::FutureReturnCode::SUCCESS);
     EXPECT_EQ(future_2.get(), true);

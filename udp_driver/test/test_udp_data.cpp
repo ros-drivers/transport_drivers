@@ -26,7 +26,7 @@ constexpr float PI = 3.14159265359;
 
 void handle_data(const MutSocketBuffer & buffer)
 {
-  float received_PI = reinterpret_cast<float>(buffer.data());
+  float received_PI = *reinterpret_cast<float *>(buffer.data());
   EXPECT_EQ(buffer.size(), sizeof(received_PI));
   EXPECT_EQ(received_PI, PI);
   std::cout << "[handle_data]" << std::endl;
@@ -68,7 +68,8 @@ TEST(UdpDataTest, BlockingSendReceiveTest) {
 
   receiver.bind();
 
-  std::size_t size = sender.send(MutSocketBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
+  std::size_t size = sender.send(
+    MutSocketBuffer(reinterpret_cast<void *>(const_cast<float *>(&PI)), sizeof(PI)));
   EXPECT_EQ(size, sizeof(PI));
 
   float received_PI = 0.0f;
@@ -97,7 +98,7 @@ TEST(UdpDataTest, NonBlockingSendReceiveTest) {
   receiver.bind();
   receiver.asyncReceive(boost::bind(handle_data, _1));
 
-  MutSocketBuffer buffer(reinterpret_cast<void *>(&PI), sizeof(PI));
+  MutSocketBuffer buffer(reinterpret_cast<void *>(const_cast<float *>(&PI)), sizeof(PI));
   sender.asyncSend(buffer);
   sender.asyncSend(buffer);
   sender.asyncSend(buffer);
@@ -125,7 +126,8 @@ TEST(UdpDataTest, BlockingSendNonBlockingReceiveTest) {
   receiver.bind();
   receiver.asyncReceive(boost::bind(handle_data, _1));
 
-  std::size_t size = sender.send(MutSocketBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
+  std::size_t size = sender.send(
+    MutSocketBuffer(reinterpret_cast<void *>(const_cast<float *>(&PI)), sizeof(PI)));
   EXPECT_EQ(size, sizeof(PI));
 
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));

@@ -105,7 +105,7 @@ private:
   void receiver_callback(const MutSocketBuffer & buffer)
   {
     std::cout << "[UdpDriverNode::receiver_callback] " <<
-      *reinterpre_cast<int32_t *> buffer.data() << std::endl;
+      *reinterpret_cast<int32_t *>(buffer.data()) << std::endl;
 
     std_msgs::msg::Int32 out;
     autoware::msgs::convertToRosMessage(buffer, out);
