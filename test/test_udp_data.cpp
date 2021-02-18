@@ -27,7 +27,6 @@ void handle_data(const MutSocketBuffer &buffer) {
   float received_PI = *(float *) buffer.data();
   EXPECT_EQ(buffer.size(), sizeof(received_PI));
   EXPECT_EQ(received_PI, PI);
-  std::cout << "[handle_data]" << std::endl;
 }
 
 TEST(UdpDataTest, LifeCycleTest) {
