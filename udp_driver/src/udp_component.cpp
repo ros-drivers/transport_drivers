@@ -56,7 +56,8 @@ void UdpComponent::handlePacket(const boost::asio::mutable_buffer & packet)
   udp_packet.src_port = this->get_port();
 
   // copy buffer into ROS msg
-  udp_packet.data.resize(packet.size());
+  std::size_t packet_size = boost::asio::buffer_size(packet);
+  udp_packet.data.resize(packet_size);
   // udp_packet.data = packet.data();
   // udp_packet.data = *reinterpret_cast<std::vector<uint8_t>*>(packet.data());
   // memcpy(&udp_packet.data, (uint8_t*)packet.data(), packet.size());
