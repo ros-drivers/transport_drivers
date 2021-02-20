@@ -54,7 +54,7 @@ if(BUILD_TESTING)
             test_udp_driver.cpp)
 
     foreach(file ${TEST_FILES})
-        get_filename_component(name "${file}" NAME_WLE)
+        get_filename_component(name "${file}" NAME_WE)
         set(TEST_UDP_DRIVER_EXE ${name})
         ament_add_gtest(${TEST_UDP_DRIVER_EXE}
                 ${HEADERS}
