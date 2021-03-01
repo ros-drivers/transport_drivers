@@ -1,3 +1,7 @@
+# transport_drivers
+
+A set of ROS2 drivers for transport-layer protocols. Currently utilizes Boost::ASIO for most transport-layer functionality.
+
 ## Supported Drivers:
 
 * **UDP Driver**
@@ -8,10 +12,6 @@
     * Implemented `ROS2` and `raw` buffer message converters for Int, UInt and Float variants in std_msgs namespace.
     * Implemented `UdpDriverNode` example and its test.
     * Implemented IoContext, UdpSocket and UdpDriver tests.
-  
-* **TCP Driver**
-    * Not Implemented yet.
     
 * **Serial Driver**
-    * Planning to implement with new `IoContext` (Blocking and NonBlocking) functionality.
-    * Current implementation contains legacy driver code (A package which contains a templated C++ class (which inherits from `rclcpp::Node`) which encapsulates basic receiving (and soon sending) of serial data.)
+A package which contains a templated C++ class (which inherits from rclcpp::Node) which encapsulates basic receiving (and soon sending) of serial data.
