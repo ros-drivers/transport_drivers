@@ -17,7 +17,9 @@
 #include "msg_converters/std_msgs.hpp"
 
 
-namespace msgs
+namespace drivers
+{
+namespace utils
 {
 
 /*
@@ -144,4 +146,5 @@ void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Float64 & o
   out.data = *boost::asio::buffer_cast<double_t *>(in);
 }
 
-}  // namespace msgs
+}  // namespace utils
+}  // namespace drivers
