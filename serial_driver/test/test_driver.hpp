@@ -36,10 +36,10 @@ public:
 };
 
 
-using autoware::drivers::serial_driver::flow_control_t;
-using autoware::drivers::serial_driver::parity_t;
-using autoware::drivers::serial_driver::stop_bits_t;
-using autoware::drivers::serial_driver::SerialDriverNode;
+using drivers::serial_driver::flow_control_t;
+using drivers::serial_driver::parity_t;
+using drivers::serial_driver::stop_bits_t;
+using drivers::serial_driver::SerialDriverNode;
 
 class SERIAL_DRIVER_PUBLIC TestDriver
   : public SerialDriverNode<TestDriver, Packet, std_msgs::msg::Int32>

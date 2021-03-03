@@ -27,10 +27,8 @@
 #include "msg_converters/converters.hpp"
 #include "udp_driver/udp_driver.hpp"
 
-using autoware::drivers::UdpSocket;
+using drivers::UdpSocket;
 
-namespace autoware
-{
 namespace drivers
 {
 
@@ -59,6 +57,5 @@ private:
 };  // class UdpDriverNode
 
 }  // namespace drivers
-}  // namespace autoware
 
 #endif  // UDP_DRIVER__EXAMPLES__UDP_DRIVER_NODE_HPP_

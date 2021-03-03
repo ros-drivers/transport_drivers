@@ -18,8 +18,6 @@
 
 #include <iostream>
 
-namespace autoware
-{
 namespace drivers
 {
 
@@ -73,4 +71,3 @@ void IoContext::waitForExit()
 }
 
 }  // namespace drivers
-}  // namespace autoware

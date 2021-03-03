@@ -41,9 +41,9 @@
 
 #include "common.hpp"
 
-namespace autoware
+namespace drivers
 {
-namespace msgs
+namespace utils
 {
 
 /*
@@ -96,7 +96,7 @@ void convertFromRos2Message(const std_msgs::msg::Float64::SharedPtr & in, MutSoc
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Float32 & out);
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Float64 & out);
 
-}  // namespace msgs
-}  // namespace autoware
+}  // namespace utils
+}  // namespace drivers
 
 #endif  // MSG_CONVERTERS__STD_MSGS_HPP_

@@ -18,8 +18,6 @@
 
 #include "udp_driver_node.hpp"
 
-namespace autoware
-{
 namespace drivers
 {
 
@@ -79,7 +77,7 @@ void UdpDriverNode::receiver_callback(const MutSocketBuffer & buffer)
     *reinterpret_cast<int32_t *>(buffer.data()) << std::endl;
 
   std_msgs::msg::Int32 out;
-  autoware::msgs::convertToRos2Message(buffer, out);
+  utils::convertToRos2Message(buffer, out);
 
   m_publisher->publish(out);
 }
@@ -90,10 +88,9 @@ void UdpDriverNode::subscriber_callback(std_msgs::msg::Int32::SharedPtr msg)
     msg->data << std::endl;
 
   MutSocketBuffer out;
-  autoware::msgs::convertFromRos2Message(msg, out);
+  utils::convertFromRos2Message(msg, out);
 
   m_udp_driver->sender()->asyncSend(out);
 }
 
 }  // namespace drivers
-}  // namespace autoware

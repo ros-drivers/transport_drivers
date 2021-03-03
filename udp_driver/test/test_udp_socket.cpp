@@ -18,8 +18,8 @@
 
 #include "udp_driver/udp_socket.hpp"
 
-using autoware::drivers::IoContext;
-using autoware::drivers::UdpSocket;
+using drivers::IoContext;
+using drivers::UdpSocket;
 
 const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;

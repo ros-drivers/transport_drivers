@@ -20,8 +20,7 @@
 #include <utility>
 #include <string>
 
-namespace autoware
-{
+
 namespace drivers
 {
 
@@ -163,4 +162,3 @@ void UdpSocket::bind()
 }
 
 }  // namespace drivers
-}  // namespace autoware
