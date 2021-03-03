@@ -16,22 +16,24 @@
 
 #include <gtest/gtest.h>
 
+#include <rclcpp/rclcpp.hpp>
+
 #include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include <rclcpp/rclcpp.hpp>
-
 #include "../examples/udp_driver_node.hpp"
 
-using namespace std::chrono_literals;
-using namespace autoware::drivers;
+using autoware::drivers::IoContext;
+using autoware::drivers::UdpSocket;
+using autoware::drivers::UdpDriverNode;
 
-const std::string ip = "127.0.0.1";
+const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
 
-TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest) {
+TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest)
+{
   rclcpp::init(0, nullptr);
   IoContext ctx;
 
@@ -44,18 +46,20 @@ TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest) {
   receiver.open();
   EXPECT_EQ(receiver.isOpen(), true);
   receiver.bind();
-  receiver.asyncReceive([&](const MutSocketBuffer &buffer) {
-    // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
-    sum += *(int32_t *) buffer.data();
-    if (sum == 45) {
-      promise_1.set_value(true);
-    }
-  });
+  receiver.asyncReceive(
+    [&](const MutSocketBuffer & buffer) {
+      // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
+      sum += *reinterpret_cast<int32_t *>(buffer.data());
+      if (sum == 45) {
+        promise_1.set_value(true);
+      }
+    });
 
   // Main UDP driver node
   // The data this node receives will be pumped to device by raw UDP packets.
   rclcpp::NodeOptions options;
-  std::shared_ptr<UdpDriverNode> node(std::make_shared<UdpDriverNode>("UdpDriverNodeTest", options, ctx));
+  std::shared_ptr<UdpDriverNode> node(
+    std::make_shared<UdpDriverNode>("UdpDriverNodeTest", options, ctx));
   node->init_sender(ip, port);
 
   // ROS node publisher that sends sequence of data in ROS messages to device
@@ -68,26 +72,36 @@ TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest) {
     std::shared_future<bool> future_2(promise_2.get_future());
 
     auto minimal_publisher = std::make_shared<rclcpp::Node>("minimal_publisher");
-    auto pub = minimal_publisher->create_publisher<std_msgs::msg::Int32>("udp_write", 100);
-    auto timer = minimal_publisher->create_wall_timer(10ms, [&](rclcpp::TimerBase &timer) {
-      static int count = 0;
-      std_msgs::msg::Int32 message;
-      message.data = count;
-      pub->publish(message);
+    auto pub = minimal_publisher->create_publisher<std_msgs::msg::Int32>(
+      "udp_write", 100);
+    auto timer = minimal_publisher->create_wall_timer(
+      std::chrono::milliseconds(10),
+      [&](rclcpp::TimerBase & timer) {
+        static int count = 0;
+        std_msgs::msg::Int32 message;
+        message.data = count;
+        pub->publish(message);
 
-      if (count++ == 9) {
-        timer.cancel();
-        promise_2.set_value(true);
-      }
-    });
+        if (count++ == 9) {
+          timer.cancel();
+          promise_2.set_value(true);
+        }
+      });
 
-    ASSERT_EQ(rclcpp::spin_until_future_complete(minimal_publisher, future_2, std::chrono::milliseconds(2000)),
-              rclcpp::FutureReturnCode::SUCCESS);
+    ASSERT_EQ(
+      rclcpp::spin_until_future_complete(
+        minimal_publisher, future_2,
+        std::chrono::milliseconds(4000)),
+      rclcpp::FutureReturnCode::SUCCESS);
     EXPECT_EQ(future_2.get(), true);
   }
 
-  ASSERT_EQ(rclcpp::spin_until_future_complete(node, future_1, std::chrono::milliseconds(2000)),
-            rclcpp::FutureReturnCode::SUCCESS);
+  ASSERT_EQ(
+    rclcpp::spin_until_future_complete(
+      node,
+      future_1,
+      std::chrono::milliseconds(4000)),
+    rclcpp::FutureReturnCode::SUCCESS);
   EXPECT_EQ(future_1.get(), true);
   EXPECT_EQ(sum, 45);
 
@@ -97,7 +111,8 @@ TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest) {
   rclcpp::shutdown();
 }
 
-TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest) {
+TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest)
+{
   rclcpp::init(0, nullptr);
   IoContext ctx;
 
@@ -105,7 +120,11 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest) {
 
   // Main Drive Node
   rclcpp::NodeOptions options;
-  std::shared_ptr<UdpDriverNode> node(std::make_shared<UdpDriverNode>("UdpDriverNodeTest", options, ctx));
+  std::shared_ptr<UdpDriverNode> node(
+    std::make_shared<UdpDriverNode>(
+      "UdpDriverNodeTest",
+      options,
+      ctx));
   node->init_receiver(ip, port);
 
   // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
@@ -115,13 +134,17 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest) {
   std::shared_future<bool> future_2(promise_2.get_future());
 
   auto minimal_subscriber = std::make_shared<rclcpp::Node>("minimal_subscriber");
-  auto sub = minimal_subscriber->create_subscription<std_msgs::msg::Int32>("udp_read", 10,
-                                                                           [&](std_msgs::msg::Int32::SharedPtr msg) {
-                                                                             sum += msg->data;
-                                                                             if (sum == 45) {
-                                                                               promise_2.set_value(true);
-                                                                             }
-                                                                           });
+  auto callback =
+    [&](std_msgs::msg::Int32::SharedPtr msg) {
+      sum += msg->data;
+      if (sum == 45) {
+        promise_2.set_value(true);
+      }
+    };
+  auto sub = minimal_subscriber->create_subscription<std_msgs::msg::Int32>(
+    "udp_read",
+    10,
+    callback);
 
   // Sender socket that could be a hardware (microcontroller, etc.)
   // Streams sequence of data in an asynchronous manner by 10 times and then shutting down
@@ -131,7 +154,7 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest) {
     EXPECT_EQ(sender.isOpen(), true);
     int32_t count = 0;
     while (count <= 9) {
-      MutSocketBuffer buffer((void *) &count, sizeof(count));
+      MutSocketBuffer buffer(reinterpret_cast<void *>(&count), sizeof(count));
       sender.asyncSend(buffer);
       count++;
     }
@@ -141,8 +164,12 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest) {
     EXPECT_EQ(sender.isOpen(), false);
   }
 
-  ASSERT_EQ(rclcpp::spin_until_future_complete(minimal_subscriber, future_2, std::chrono::milliseconds(2000)),
-            rclcpp::FutureReturnCode::SUCCESS);
+  ASSERT_EQ(
+    rclcpp::spin_until_future_complete(
+      minimal_subscriber,
+      future_2,
+      std::chrono::milliseconds(2000)),
+    rclcpp::FutureReturnCode::SUCCESS);
   EXPECT_EQ(future_2.get(), true);
   EXPECT_EQ(sum, 45);
 

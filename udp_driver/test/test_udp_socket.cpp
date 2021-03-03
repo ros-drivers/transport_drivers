@@ -15,14 +15,17 @@
 // Developed by LeoDrive, 2021
 
 #include <gtest/gtest.h>
-#include "udp_socket.hpp"
 
-using namespace autoware::drivers;
+#include "udp_driver/udp_socket.hpp"
 
-const std::string ip = "127.0.0.1";
+using autoware::drivers::IoContext;
+using autoware::drivers::UdpSocket;
+
+const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
 
-TEST(UdpSocketTest, LifeCycleTest) {
+TEST(UdpSocketTest, LifeCycleTest)
+{
   IoContext ctx;
   UdpSocket socket(ctx, ip, port);
 

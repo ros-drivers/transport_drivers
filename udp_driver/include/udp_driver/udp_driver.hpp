@@ -14,28 +14,35 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef UDP_DRIVER_UDP_DRIVER_HPP
-#define UDP_DRIVER_UDP_DRIVER_HPP
+#ifndef UDP_DRIVER__UDP_DRIVER_HPP_
+#define UDP_DRIVER__UDP_DRIVER_HPP_
 
-#include "io_context.hpp"
+#include <iostream>
+#include <memory>
+#include <string>
+
+#include "io_context/io_context.hpp"
 #include "udp_socket.hpp"
 
-namespace autoware {
-namespace drivers {
+namespace autoware
+{
+namespace drivers
+{
 
-class UdpDriver {
+class UdpDriver
+{
 public:
-  UdpDriver(const IoContext &ctx);
+  explicit UdpDriver(const IoContext & ctx);
   ~UdpDriver();
 
-  void init_sender(const std::string &ip, uint16_t port);
-  void init_receiver(const std::string &ip, uint16_t port);
+  void init_sender(const std::string & ip, uint16_t port);
+  void init_receiver(const std::string & ip, uint16_t port);
 
   std::shared_ptr<UdpSocket> sender() const;
   std::shared_ptr<UdpSocket> receiver() const;
 
 private:
-  const IoContext &m_ctx;
+  const IoContext & m_ctx;
   std::shared_ptr<UdpSocket> m_sender;
   std::shared_ptr<UdpSocket> m_receiver;
 };
@@ -43,4 +50,4 @@ private:
 }  // namespace drivers
 }  // namespace autoware
 
-#endif //UDP_DRIVER_UDP_DRIVER_HPP
+#endif  // UDP_DRIVER__UDP_DRIVER_HPP_

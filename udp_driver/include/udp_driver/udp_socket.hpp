@@ -14,25 +14,30 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef UDP_DRIVER_UDP_SOCKET_HPP
-#define UDP_DRIVER_UDP_SOCKET_HPP
+#ifndef UDP_DRIVER__UDP_SOCKET_HPP_
+#define UDP_DRIVER__UDP_SOCKET_HPP_
+
+#include <boost/array.hpp>
 
 #include <string>
-#include <boost/array.hpp>
-#include "io_context.hpp"
-#include "converters.hpp"
+
+#include "io_context/io_context.hpp"
+#include "msg_converters/converters.hpp"
 
 using boost::asio::ip::udp;
 using boost::asio::ip::address;
 
-namespace autoware {
-namespace drivers {
+namespace autoware
+{
+namespace drivers
+{
 
-typedef boost::function<void(const MutSocketBuffer &)> Functor;
+typedef boost::function<void (const MutSocketBuffer &)> Functor;
 
-class UdpSocket : private boost::noncopyable {
+class UdpSocket : private boost::noncopyable
+{
 public:
-  UdpSocket(const IoContext &ctx, const std::string &ip, uint16_t port);
+  UdpSocket(const IoContext & ctx, const std::string & ip, uint16_t port);
   ~UdpSocket();
 
   std::string ip() const;
@@ -41,23 +46,22 @@ public:
   void open();
   void close();
   bool isOpen() const;
-
   void bind();
 
   /*
    * Blocking Send Operation
    */
-  std::size_t send(const MutSocketBuffer &buff);
+  std::size_t send(const MutSocketBuffer & buff);
 
   /*
    * Blocking Receive Operation
    */
-  size_t receive(const MutSocketBuffer &buff);
+  size_t receive(const MutSocketBuffer & buff);
 
   /*
    * NonBlocking Send Operation
    */
-  void asyncSend(const MutSocketBuffer &buff);
+  void asyncSend(const MutSocketBuffer & buff);
 
   /*
    * NonBlocking Receive Operation
@@ -65,11 +69,16 @@ public:
   void asyncReceive(Functor func);
 
 private:
-  void asyncSendHandler(const boost::system::error_code &error, std::size_t bytes_transferred);
-  void asyncReceiveHandler(const boost::system::error_code &error, std::size_t bytes_transferred);
+  void asyncSendHandler(
+    const boost::system::error_code & error,
+    std::size_t bytes_transferred);
+
+  void asyncReceiveHandler(
+    const boost::system::error_code & error,
+    std::size_t bytes_transferred);
 
 private:
-  const IoContext &m_ctx;
+  const IoContext & m_ctx;
   udp::socket m_udp_socket;
   udp::endpoint m_endpoint;
   Functor m_func;
@@ -80,4 +89,4 @@ private:
 }  // namespace drivers
 }  // namespace autoware
 
-#endif //UDP_DRIVER_UDP_SOCKET_HPP
+#endif  // UDP_DRIVER__UDP_SOCKET_HPP_

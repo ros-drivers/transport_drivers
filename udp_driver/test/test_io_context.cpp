@@ -15,39 +15,48 @@
 // Developed by LeoDrive, 2021
 
 #include <gtest/gtest.h>
-#include "io_context.hpp"
 
-using namespace autoware::drivers;
+#include <vector>
+#include <memory>
 
-static constexpr int16_t LENGTH = 10;
+#include "io_context/io_context.hpp"
 
-void counter(std::shared_ptr<std::vector<int32_t>> container, int32_t count) {
+using autoware::drivers::IoContext;
+
+static constexpr size_t LENGTH = 10;
+
+void counter(std::shared_ptr<std::vector<int32_t>> container, int32_t count)
+{
   container->push_back(count);
 }
 
-void check_container_size(std::shared_ptr<std::vector<int32_t>> container) {
+void check_container_size(std::shared_ptr<std::vector<int32_t>> container)
+{
   EXPECT_EQ(container->size(), LENGTH);
 }
 
-TEST(IoContextTest, DefaultLifeCycleTest) {
+TEST(IoContextTest, DefaultLifeCycleTest)
+{
   IoContext ctx;
   EXPECT_EQ(ctx.isServiceStopped(), false);
   EXPECT_EQ(ctx.serviceThreadCount(), boost::thread::hardware_concurrency());
 }
 
-TEST(IoContextTest, ConcurrentLifeCycleTest) {
+TEST(IoContextTest, ConcurrentLifeCycleTest)
+{
   IoContext ctx(LENGTH);
   EXPECT_EQ(ctx.isServiceStopped(), false);
   EXPECT_EQ(ctx.serviceThreadCount(), LENGTH);
 }
 
-TEST(IoContextTest, SingleThreadPostTaskTest) {
+TEST(IoContextTest, SingleThreadPostTaskTest)
+{
   IoContext ctx(1);
   EXPECT_EQ(ctx.isServiceStopped(), false);
-  EXPECT_EQ(ctx.serviceThreadCount(), 1);
+  EXPECT_EQ(ctx.serviceThreadCount(), uint32_t(1));
 
   std::shared_ptr<std::vector<int32_t>> container(new std::vector<int32_t>());
-  for (int i = 0; i < LENGTH; ++i) {
+  for (size_t i = 0; i < LENGTH; ++i) {
     ctx.post(boost::bind(counter, container, i));
   }
   ctx.post(boost::bind(check_container_size, container));

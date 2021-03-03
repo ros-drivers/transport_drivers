@@ -16,21 +16,23 @@
 
 #include <gtest/gtest.h>
 
+#include <rclcpp/rclcpp.hpp>
+
 #include <chrono>
 #include <string>
 #include <vector>
 
-#include <rclcpp/rclcpp.hpp>
+#include "io_context/io_context.hpp"
+#include "udp_driver/udp_driver.hpp"
 
-#include "udp_driver.hpp"
+using autoware::drivers::IoContext;
+using autoware::drivers::UdpDriver;
 
-using namespace std::chrono_literals;
-using namespace autoware::drivers;
-
-const std::string ip = "127.0.0.1";
+const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
 
-TEST(UdpDriverTest, NonBlockingSendReceiveTest) {
+TEST(UdpDriverTest, NonBlockingSendReceiveTest)
+{
   IoContext ctx;
   UdpDriver driver(ctx);
 
@@ -40,9 +42,10 @@ TEST(UdpDriverTest, NonBlockingSendReceiveTest) {
   int32_t sum = 0;
   driver.receiver()->open();
   driver.receiver()->bind();
-  driver.receiver()->asyncReceive([&](const MutSocketBuffer &buffer) {
-    sum += *(int32_t *) buffer.data();
-  });
+  driver.receiver()->asyncReceive(
+    [&](const MutSocketBuffer & buffer) {
+      sum += *reinterpret_cast<int32_t *>(buffer.data());
+    });
 
   driver.sender()->open();
   EXPECT_EQ(driver.sender()->isOpen(), true);

@@ -14,47 +14,58 @@
 
 // Developed by LeoDrive, 2021
 
-#include "io_context.hpp"
+#include "io_context/io_context.hpp"
 
 #include <iostream>
 
-namespace autoware {
-namespace drivers {
+namespace autoware
+{
+namespace drivers
+{
 
-IoContext::IoContext(int16_t threads_count) : m_ios(new boost::asio::io_service()),
-                                              m_work(new boost::asio::io_service::work(ios())),
-                                              m_ios_thread_workers(new boost::thread_group()) {
-  if (threads_count == -1) {
+IoContext::IoContext(size_t threads_count)
+: m_ios(new boost::asio::io_service()),
+  m_work(new boost::asio::io_service::work(ios())),
+  m_ios_thread_workers(new boost::thread_group())
+{
+  if (threads_count == size_t(-1)) {
     threads_count = boost::thread::hardware_concurrency();
   }
 
-  for (int i = 0; i < threads_count; ++i) {
-    m_ios_thread_workers->create_thread(boost::bind(&boost::asio::io_service::run, &ios()));
+  for (size_t i = 0; i < threads_count; ++i) {
+    m_ios_thread_workers->create_thread(
+      boost::bind(&boost::asio::io_service::run, &ios()));
   }
 
-  std::cout << "[IoContext::IoContext] INFO => Thread(s) Created: " << serviceThreadCount() << std::endl;
+  std::cout << "[IoContext::IoContext] INFO => Thread(s) Created: " <<
+    serviceThreadCount() << std::endl;
 }
 
-IoContext::~IoContext() {
+IoContext::~IoContext()
+{
   std::cout << "[IoContext::~IoContext] INFO => Destructing..." << std::endl;
   waitForExit();
 }
 
-boost::asio::io_service &IoContext::ios() const {
+boost::asio::io_service & IoContext::ios() const
+{
   return *m_ios;
 }
 
-bool IoContext::isServiceStopped() {
+bool IoContext::isServiceStopped()
+{
   return ios().stopped();
 }
 
-uint32_t IoContext::serviceThreadCount() {
+uint32_t IoContext::serviceThreadCount()
+{
   return m_ios_thread_workers->size();
 }
 
-void IoContext::waitForExit() {
+void IoContext::waitForExit()
+{
   if (!ios().stopped()) {
-    ios().post([&]() { m_work.reset(); });
+    ios().post([&]() {m_work.reset();});
   }
 
   m_ios_thread_workers->interrupt_all();

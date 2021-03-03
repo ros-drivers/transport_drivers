@@ -14,8 +14,8 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef UDP_DRIVER__UDP_DRIVER_NODE_HPP_
-#define UDP_DRIVER__UDP_DRIVER_NODE_HPP_
+#ifndef UDP_DRIVER__EXAMPLES__UDP_DRIVER_NODE_HPP_
+#define UDP_DRIVER__EXAMPLES__UDP_DRIVER_NODE_HPP_
 
 #include <chrono>
 #include <memory>
@@ -24,25 +24,33 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/qos.hpp"
 
-#include "converters.hpp"
-#include "udp_driver.hpp"
+#include "msg_converters/converters.hpp"
+#include "udp_driver/udp_driver.hpp"
 
-namespace autoware {
-namespace drivers {
+using autoware::drivers::UdpSocket;
 
-class UdpDriverNode : public rclcpp::Node {
+namespace autoware
+{
+namespace drivers
+{
+
+class UdpDriverNode : public rclcpp::Node
+{
 public:
-  UdpDriverNode(const std::string &node_name, const rclcpp::NodeOptions &options, IoContext &ctx);
+  UdpDriverNode(
+    const std::string & node_name,
+    const rclcpp::NodeOptions & options,
+    IoContext & ctx);
   ~UdpDriverNode();
 
-  void init_sender(const std::string &ip, int16_t port);
-  void init_receiver(const std::string &ip, uint16_t port);
+  void init_sender(const std::string & ip, int16_t port);
+  void init_receiver(const std::string & ip, uint16_t port);
 
 private:
   void createPublishers();
   void createSubscribers();
 
-  void receiver_callback(const MutSocketBuffer &buffer);
+  void receiver_callback(const MutSocketBuffer & buffer);
   void subscriber_callback(std_msgs::msg::Int32::SharedPtr msg);
 
   std::shared_ptr<UdpDriver> m_udp_driver;
@@ -53,4 +61,4 @@ private:
 }  // namespace drivers
 }  // namespace autoware
 
-#endif  // UDP_DRIVER__UDP_DRIVER_NODE_HPP_
+#endif  // UDP_DRIVER__EXAMPLES__UDP_DRIVER_NODE_HPP_

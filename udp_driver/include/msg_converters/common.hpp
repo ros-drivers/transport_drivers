@@ -14,9 +14,11 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef UDP_DRIVER_CONVERTERS_HPP
-#define UDP_DRIVER_CONVERTERS_HPP
+#ifndef MSG_CONVERTERS__COMMON_HPP_
+#define MSG_CONVERTERS__COMMON_HPP_
 
-#include "converters/std_msgs.hpp"
+#include <boost/asio.hpp>
 
-#endif //UDP_DRIVER_CONVERTERS_HPP
+typedef boost::asio::mutable_buffer MutSocketBuffer;
+
+#endif  // MSG_CONVERTERS__COMMON_HPP_

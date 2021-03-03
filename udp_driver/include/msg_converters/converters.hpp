@@ -14,11 +14,9 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef TRANSPORT_DRIVER_COMMON_HPP
-#define TRANSPORT_DRIVER_COMMON_HPP
+#ifndef MSG_CONVERTERS__CONVERTERS_HPP_
+#define MSG_CONVERTERS__CONVERTERS_HPP_
 
-#include <boost/asio.hpp>
+#include "std_msgs.hpp"
 
-typedef boost::asio::mutable_buffer MutSocketBuffer;
-
-#endif //TRANSPORT_DRIVER_COMMON_HPP
+#endif  // MSG_CONVERTERS__CONVERTERS_HPP_

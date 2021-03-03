@@ -14,33 +14,44 @@
 
 // Developed by LeoDrive, 2021
 
-#include "udp_driver.hpp"
+#include "udp_driver/udp_driver.hpp"
 
 #include <iostream>
+#include <string>
+#include <memory>
 
-namespace autoware {
-namespace drivers {
+namespace autoware
+{
+namespace drivers
+{
 
-UdpDriver::UdpDriver(const IoContext &ctx) : m_ctx(ctx) {
-
+UdpDriver::UdpDriver(const IoContext & ctx)
+: m_ctx(ctx)
+{
 }
 
-UdpDriver::~UdpDriver() {
+UdpDriver::~UdpDriver()
+{
   std::cout << "[UdpDriver::~UdpDriver] INFO => Destructing..." << std::endl;
 }
 
-void UdpDriver::init_sender(const std::string &ip, uint16_t port) {
+void UdpDriver::init_sender(const std::string & ip, uint16_t port)
+{
   m_sender.reset(new UdpSocket(m_ctx, ip, port));
 }
 
-void UdpDriver::init_receiver(const std::string &ip, uint16_t port) {
+void UdpDriver::init_receiver(const std::string & ip, uint16_t port)
+{
   m_receiver.reset(new UdpSocket(m_ctx, ip, port));
 }
 
-std::shared_ptr<UdpSocket> UdpDriver::sender() const {
+std::shared_ptr<UdpSocket> UdpDriver::sender() const
+{
   return m_sender;
 }
-std::shared_ptr<UdpSocket> UdpDriver::receiver() const {
+
+std::shared_ptr<UdpSocket> UdpDriver::receiver() const
+{
   return m_receiver;
 }
 

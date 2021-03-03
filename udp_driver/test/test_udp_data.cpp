@@ -15,21 +15,25 @@
 // Developed by LeoDrive, 2021
 
 #include <gtest/gtest.h>
-#include "udp_socket.hpp"
 
-using namespace autoware::drivers;
+#include "udp_driver/udp_socket.hpp"
 
-const std::string ip = "127.0.0.1";
+using autoware::drivers::IoContext;
+using autoware::drivers::UdpSocket;
+
+const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
-constexpr float PI = 3.14159265359;
+static float PI = 3.14159265359;
 
-void handle_data(const MutSocketBuffer &buffer) {
-  float received_PI = *(float *) buffer.data();
+void handle_data(const MutSocketBuffer & buffer)
+{
+  float received_PI = *reinterpret_cast<float *>(buffer.data());
   EXPECT_EQ(buffer.size(), sizeof(received_PI));
   EXPECT_EQ(received_PI, PI);
 }
 
-TEST(UdpDataTest, LifeCycleTest) {
+TEST(UdpDataTest, LifeCycleTest)
+{
   IoContext ctx;
   UdpSocket sender(ctx, ip, port);
   UdpSocket receiver(ctx, ip, port);
@@ -53,7 +57,8 @@ TEST(UdpDataTest, LifeCycleTest) {
   EXPECT_EQ(receiver.isOpen(), false);
 }
 
-TEST(UdpDataTest, BlockingSendReceiveTest) {
+TEST(UdpDataTest, BlockingSendReceiveTest)
+{
   IoContext ctx;
   UdpSocket sender(ctx, ip, port);
   UdpSocket receiver(ctx, ip, port);
@@ -65,7 +70,7 @@ TEST(UdpDataTest, BlockingSendReceiveTest) {
 
   receiver.bind();
 
-  std::size_t size = sender.send(MutSocketBuffer((void *) &PI, sizeof(PI)));
+  std::size_t size = sender.send(MutSocketBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
   EXPECT_EQ(size, sizeof(PI));
 
   float received_PI = 0.0f;
@@ -79,9 +84,10 @@ TEST(UdpDataTest, BlockingSendReceiveTest) {
   EXPECT_EQ(receiver.isOpen(), false);
 }
 
-TEST(UdpDataTest, NonBlockingSendReceiveTest) {
+TEST(UdpDataTest, NonBlockingSendReceiveTest)
+{
   IoContext ctx(8);
-  EXPECT_EQ(ctx.serviceThreadCount(), 8);
+  EXPECT_EQ(ctx.serviceThreadCount(), uint32_t(8));
 
   UdpSocket sender(ctx, ip, port);
   UdpSocket receiver(ctx, ip, port);
@@ -94,7 +100,7 @@ TEST(UdpDataTest, NonBlockingSendReceiveTest) {
   receiver.bind();
   receiver.asyncReceive(boost::bind(handle_data, _1));
 
-  MutSocketBuffer buffer((void *) &PI, sizeof(PI));
+  MutSocketBuffer buffer(reinterpret_cast<void *>(&PI), sizeof(PI));
   sender.asyncSend(buffer);
   sender.asyncSend(buffer);
   sender.asyncSend(buffer);
@@ -109,7 +115,8 @@ TEST(UdpDataTest, NonBlockingSendReceiveTest) {
   ctx.waitForExit();
 }
 
-TEST(UdpDataTest, BlockingSendNonBlockingReceiveTest) {
+TEST(UdpDataTest, BlockingSendNonBlockingReceiveTest)
+{
   IoContext ctx(5);
   UdpSocket sender(ctx, ip, port);
   UdpSocket receiver(ctx, ip, port);
@@ -122,7 +129,7 @@ TEST(UdpDataTest, BlockingSendNonBlockingReceiveTest) {
   receiver.bind();
   receiver.asyncReceive(boost::bind(handle_data, _1));
 
-  std::size_t size = sender.send(MutSocketBuffer((void *) &PI, sizeof(PI)));
+  std::size_t size = sender.send(MutSocketBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
   EXPECT_EQ(size, sizeof(PI));
 
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -134,4 +141,3 @@ TEST(UdpDataTest, BlockingSendNonBlockingReceiveTest) {
 
   ctx.waitForExit();
 }
-

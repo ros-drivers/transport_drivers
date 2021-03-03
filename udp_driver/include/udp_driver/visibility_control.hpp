@@ -17,8 +17,6 @@
 #ifndef UDP_DRIVER__VISIBILITY_CONTROL_HPP_
 #define UDP_DRIVER__VISIBILITY_CONTROL_HPP_
 
-
-////////////////////////////////////////////////////////////////////////////////
 #if defined(__WIN32)
 #if defined(UDP_DRIVER_BUILDING_DLL) || defined(UDP_DRIVER_EXPORTS)
 #define UDP_DRIVER_PUBLIC __declspec(dllexport)
