@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>transport_driver</name>
+  <name>udp_driver</name>
   <version>0.0.6</version>
   <description>A library to write Synchronous and Asynchronous networking applications, ROS and ROS2 nodes</description>
   <maintainer email="whitleysoftwareservices@gmail.com">Joshua Whitley</maintainer>
@@ -11,11 +11,11 @@
   <url type="bugtracker">https://github.com/ros-drivers/transport_drivers/issues</url>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <buildtool_depend>autoware_auto_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
   <depend>libboost-dev</depend>
   <depend>libboost-system-dev</depend>
+  <depend>libboost-thread-dev</depend>
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
 

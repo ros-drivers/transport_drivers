@@ -16,7 +16,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-project(transport_driver)
+project(udp_driver)
 
 # Consider passing `-DCMAKE_BUILD_TYPE=Debug` option to cmake to export Debug symbols.
 if (NOT CMAKE_BUILD_TYPE)
