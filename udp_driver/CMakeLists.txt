@@ -28,10 +28,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 ## dependencies
-find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_auto REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+ament_auto_find_build_dependencies()
+
 find_package(Boost REQUIRED COMPONENTS system thread)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
@@ -40,31 +39,19 @@ endif()
 
 include_directories(include)
 
-ament_export_include_directories(include)
-ament_auto_find_build_dependencies()
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/io_context.cpp
   src/udp_socket.cpp
   src/udp_driver.cpp
   src/msg_converters/std_msgs.cpp
   examples/udp_driver_node.cpp)
-ament_target_dependencies(${PROJECT_NAME}
-  "rclcpp"
-  "std_msgs"
-  "Boost")
+ament_target_dependencies(${PROJECT_NAME} "Boost")
 
 target_compile_options(${PROJECT_NAME} PUBLIC "-O0" PRIVATE -Wno-sign-conversion -Wno-conversion)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
-install(
-  DIRECTORY include
-  DESTINATION include
-)
-
 if(BUILD_TESTING)
-  find_package(ament_cmake_gtest REQUIRED)
   find_package(ament_lint_auto REQUIRED)
-
   ament_lint_auto_find_test_dependencies()
 
   set(TEST_FILES
@@ -91,4 +78,4 @@ if(BUILD_TESTING)
   endforeach()
 endif()
 
-ament_package()
+ament_auto_package()
