@@ -24,8 +24,6 @@
 #include "io_context/io_context.hpp"
 #include "udp_socket.hpp"
 
-namespace autoware
-{
 namespace drivers
 {
 
@@ -48,6 +46,5 @@ private:
 };
 
 }  // namespace drivers
-}  // namespace autoware
 
 #endif  // UDP_DRIVER__UDP_DRIVER_HPP_

@@ -27,8 +27,6 @@
 using boost::asio::ip::udp;
 using boost::asio::ip::address;
 
-namespace autoware
-{
 namespace drivers
 {
 
@@ -87,6 +85,5 @@ private:
 };
 
 }  // namespace drivers
-}  // namespace autoware
 
 #endif  // UDP_DRIVER__UDP_SOCKET_HPP_

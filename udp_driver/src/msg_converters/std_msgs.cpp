@@ -16,8 +16,7 @@
 
 #include "msg_converters/std_msgs.hpp"
 
-namespace autoware
-{
+
 namespace msgs
 {
 
@@ -146,4 +145,3 @@ void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Float64 & o
 }
 
 }  // namespace msgs
-}  // namespace autoware

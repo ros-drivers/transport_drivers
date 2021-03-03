@@ -21,7 +21,7 @@
 
 #include "io_context/io_context.hpp"
 
-using autoware::drivers::IoContext;
+using drivers::IoContext;
 
 static constexpr size_t LENGTH = 10;
 

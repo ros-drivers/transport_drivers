@@ -20,8 +20,6 @@
 #include <string>
 #include <memory>
 
-namespace autoware
-{
 namespace drivers
 {
 
@@ -56,4 +54,3 @@ std::shared_ptr<UdpSocket> UdpDriver::receiver() const
 }
 
 }  // namespace drivers
-}  // namespace autoware

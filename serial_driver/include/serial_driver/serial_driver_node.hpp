@@ -28,8 +28,6 @@
 #include "boost/array.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-namespace autoware
-{
 namespace drivers
 {
 /// \brief A template class and associated utilities which encapsulate basic reading from a serial
@@ -348,6 +346,5 @@ private:
 };  // class SerialDriverNode
 }  // namespace serial_driver
 }  // namespace drivers
-}  // namespace autoware
 
 #endif  // SERIAL_DRIVER__SERIAL_DRIVER_NODE_HPP_

@@ -23,9 +23,6 @@
 
 #include <memory>
 
-namespace autoware
-{
-
 namespace drivers
 {
 
@@ -55,6 +52,5 @@ private:
 };
 
 }  // namespace drivers
-}  // namespace autoware
 
 #endif  // IO_CONTEXT__IO_CONTEXT_HPP_

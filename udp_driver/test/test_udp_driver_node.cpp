@@ -25,9 +25,9 @@
 
 #include "../examples/udp_driver_node.hpp"
 
-using autoware::drivers::IoContext;
-using autoware::drivers::UdpSocket;
-using autoware::drivers::UdpDriverNode;
+using drivers::IoContext;
+using drivers::UdpSocket;
+using drivers::UdpDriverNode;
 
 const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
