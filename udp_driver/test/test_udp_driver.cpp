@@ -1,4 +1,4 @@
-// Copyright 2018 Apex.AI, Inc.
+// Copyright 2021 LeoDrive.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,77 +12,57 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Co-developed by Tier IV, Inc. and Apex.AI, Inc.
+// Developed by LeoDrive, 2021
 
-#include <boost/array.hpp>
-#include <boost/asio.hpp>
+#include <gtest/gtest.h>
+
+#include <rclcpp/rclcpp.hpp>
+
+#include <chrono>
 #include <string>
-#include <thread>
 #include <vector>
-#include "gtest/gtest.h"
-#include "test_driver.hpp"
 
+#include "io_context/io_context.hpp"
+#include "udp_driver/udp_driver.hpp"
 
-using test_udp_driver::TestDriver;
-using test_udp_driver::Packet;
-namespace
+using autoware::drivers::IoContext;
+using autoware::drivers::UdpDriver;
+
+const char ip[] = "127.0.0.1";
+constexpr uint16_t port = 8000;
+
+TEST(UdpDriverTest, NonBlockingSendReceiveTest)
 {
-class udp_driver : public ::testing::Test
-{
-protected:
-  void start_ping(const std::vector<int> & values)
-  {
-    boost::asio::io_service io_service;
-    boost::asio::ip::udp::socket socket(io_service);
-    socket.open(boost::asio::ip::udp::v4());
-    boost::system::error_code err;
+  IoContext ctx;
+  UdpDriver driver(ctx);
 
-    for (auto val : values) {
-      Packet * pkt = new Packet(val);
-      auto sent = socket.send_to(boost::asio::buffer(pkt, sizeof(*pkt)), m_ping_endpoint, 0, err);
-      if (err && err != boost::asio::error::message_size) {
-        std::cerr << "Could not send packet: " << err.message();
-      }
-    }
+  driver.init_sender(ip, port);
+  driver.init_receiver(ip, port);
+
+  int32_t sum = 0;
+  driver.receiver()->open();
+  driver.receiver()->bind();
+  driver.receiver()->asyncReceive(
+    [&](const MutSocketBuffer & buffer) {
+      sum += *reinterpret_cast<int32_t *>(buffer.data());
+    });
+
+  driver.sender()->open();
+  EXPECT_EQ(driver.sender()->isOpen(), true);
+
+  for (int val : {1, 2, 3, 4, 5}) {
+    driver.sender()->asyncSend(MutSocketBuffer(&val, sizeof(val)));
   }
 
-  void init_pinger_endpoint(const std::string & ip, const uint16_t & port)
-  {
-    m_ping_endpoint = boost::asio::ip::udp::endpoint(
-      boost::asio::ip::address::from_string(
-        ip), static_cast<uint16_t>(port));
-  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-  boost::asio::ip::udp::endpoint m_ping_endpoint;
-};
-}  // namespace
+  EXPECT_EQ(sum, 15);
 
+  driver.sender()->close();
+  EXPECT_EQ(driver.sender()->isOpen(), false);
 
-// tests udp_driver_node's get_packet function which receives udp packages
-TEST_F(udp_driver, basic)
-{
-  // rclcpp::init required to start the node
-  rclcpp::init(0, nullptr);
+  driver.receiver()->close();
+  EXPECT_EQ(driver.receiver()->isOpen(), false);
 
-  // setting values to send
-  std::vector<int> values(10);
-  std::generate(values.begin(), values.end(), [n = 0]() mutable {return n++;});
-
-  // setting up udp_driver_node instance
-  std::string ip = "127.0.0.1";
-  uint16_t port = 9001;
-  rclcpp::NodeOptions options;
-  TestDriver driver("foo", options, TestDriver::UdpConfig {ip, port});
-
-
-  // setting up the pinger
-  init_pinger_endpoint(ip, port);
-
-  start_ping(values);
-
-
-  for (auto val : values) {
-    driver.run(1U);
-    EXPECT_EQ(driver.get_last_value(), val);
-  }
+  ctx.waitForExit();
 }

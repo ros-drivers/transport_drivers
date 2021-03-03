@@ -1,4 +1,4 @@
-// Copyright 2018 Apex.AI, Inc.
+// Copyright 2021 LeoDrive.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <gtest/gtest.h>
+// Developed by LeoDrive, 2021
 
-int main(int argc, char * argv[])
-{
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
+#ifndef MSG_CONVERTERS__COMMON_HPP_
+#define MSG_CONVERTERS__COMMON_HPP_
+
+#include <boost/asio.hpp>
+
+typedef boost::asio::mutable_buffer MutSocketBuffer;
+
+#endif  // MSG_CONVERTERS__COMMON_HPP_

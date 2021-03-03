@@ -1,4 +1,4 @@
-// Copyright 2018 Apex.AI, Inc.
+// Copyright 2021 LeoDrive.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Developed by LeoDrive, 2021
+
 #include <gtest/gtest.h>
 
-int main(int argc, char * argv[])
+#include "udp_driver/udp_socket.hpp"
+
+using autoware::drivers::IoContext;
+using autoware::drivers::UdpSocket;
+
+const char ip[] = "127.0.0.1";
+constexpr uint16_t port = 8000;
+
+TEST(UdpSocketTest, LifeCycleTest)
 {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+  IoContext ctx;
+  UdpSocket socket(ctx, ip, port);
+
+  EXPECT_EQ(socket.ip(), ip);
+  EXPECT_EQ(socket.port(), port);
+
+  EXPECT_EQ(socket.isOpen(), false);
+  socket.open();
+  EXPECT_EQ(socket.isOpen(), true);
+  socket.close();
+  EXPECT_EQ(socket.isOpen(), false);
 }
