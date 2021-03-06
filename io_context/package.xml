@@ -1,23 +1,20 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>udp_driver</name>
+  <name>io_context</name>
   <version>0.0.6</version>
-  <description>A library to write Synchronous and Asynchronous networking applications, ROS and ROS2 nodes</description>
+  <description>A library to write Synchronous and Asynchronous networking applications</description>
   <maintainer email="whitleysoftwareservices@gmail.com">Joshua Whitley</maintainer>
   <license>Apache License 2.0</license>
 
   <url type="repository">https://github.com/ros-drivers/transport_drivers</url>
   <url type="bugtracker">https://github.com/ros-drivers/transport_drivers/issues</url>
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
   <depend>libboost-dev</depend>
   <depend>libboost-system-dev</depend>
   <depend>libboost-thread-dev</depend>
-  <depend>rclcpp</depend>
-  <depend>io_context</depend>
   <depend>std_msgs</depend>
 
   <test_depend>ament_cmake_gtest</test_depend>

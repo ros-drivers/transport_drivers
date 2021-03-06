@@ -3,7 +3,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,11 +16,11 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-project(udp_driver)
+project(io_context)
 
 # Consider passing `-DCMAKE_BUILD_TYPE=Debug` option to cmake to export Debug symbols.
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE Release)
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
@@ -32,46 +32,32 @@ find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
 find_package(Boost REQUIRED COMPONENTS system thread)
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS})
-  link_directories(${Boost_LIBRARY_DIRS})
-endif()
-
-include_directories(include)
 
 ament_auto_add_library(${PROJECT_NAME} SHARED
-  src/udp_socket.cpp
-  src/udp_driver.cpp
-  examples/udp_driver_node.cpp)
-ament_target_dependencies(${PROJECT_NAME} "Boost")
+  src/io_context.cpp
+  src/msg_converters/std_msgs.cpp
+)
 
-target_compile_options(${PROJECT_NAME} PUBLIC "-O0" PRIVATE -Wno-sign-conversion -Wno-conversion)
+
+if(Boost_FOUND)
+  ament_target_dependencies(${PROJECT_NAME} "Boost")
+  target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+endif()
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+  get_filename_component(name test_io_context NAME_WLE)
+  set(TEST_UDP_DRIVER_EXE ${name})
 
-  set(TEST_FILES
-    test_udp_socket.cpp
-    test_udp_data.cpp
-    test_udp_driver.cpp
-    test_udp_driver_node.cpp)
+  ament_add_gtest(${TEST_UDP_DRIVER_EXE}
+          test/${name}.cpp)
+  ament_target_dependencies(${TEST_UDP_DRIVER_EXE} std_msgs Boost)
 
-  foreach(file ${TEST_FILES})
-    get_filename_component(name "${file}" NAME_WE)
-    set(TEST_UDP_DRIVER_EXE ${name})
-
-    ament_add_gtest(${TEST_UDP_DRIVER_EXE}
-      test/gtest_main.cpp
-      test/${name}.cpp)
-    ament_target_dependencies(${TEST_UDP_DRIVER_EXE}
-      rclcpp
-      std_msgs
-      Boost)
-
-    target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
-    target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME})
-  endforeach()
+  target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
+  target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME})
 endif()
+
+target_compile_options(${PROJECT_NAME} PUBLIC "-O0" PRIVATE -Wall)
 
 ament_auto_package()
