@@ -68,6 +68,12 @@ rclcpp_components_register_node(${PROJECT_NAME}_nodes
   EXECUTABLE udp_sender_node_exe
 )
 
+ament_auto_add_executable(udp_bridge_node_exe
+  src/udp_bridge_node.cpp
+)
+
+target_link_libraries(udp_bridge_node_exe ${PROJECT_NAME} ${PROJECT_NAME}_nodes)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
