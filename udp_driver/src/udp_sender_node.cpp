@@ -14,80 +14,113 @@
 
 // Developed by LeoDrive, 2021
 
-#include "udp_driver/udp_driver_node.hpp"
+#include "udp_driver/udp_sender_node.hpp"
 
+#include <memory>
 #include <string>
+
+namespace lc = rclcpp_lifecycle;
+using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
+using lifecycle_msgs::msg::State;
 
 namespace drivers
 {
 namespace udp_driver
 {
 
-UdpSenderNode::UdpSenderNode(
-  const std::string & node_name,
-  const rclcpp::NodeOptions & options,
-  IoContext & ctx)
-: Node(node_name, options),
-  m_udp_driver(new UdpDriver(ctx))
+UdpSenderNode::UdpSenderNode(const rclcpp::NodeOptions & options)
+: lc::LifecycleNode("udp_sender_node", options),
+  m_ctx(new IoContext(1))
 {
+  get_params();
 }
 
-void UdpSenderNode::init_sender(const std::string & ip, int16_t port)
+UdpSenderNode::UdpSenderNode(
+  const rclcpp::NodeOptions & options,
+  const std::shared_ptr<IoContext> & ctx)
+: lc::LifecycleNode("udp_sender_node", options),
+  m_ctx{ctx}
 {
-  m_udp_driver->init_sender(ip, port);
-  if (!m_udp_driver->sender()->isOpen()) {
-    m_udp_driver->sender()->open();
+  get_params();
+}
+
+LNI::CallbackReturn UdpSenderNode::on_configure(const lc::State & state)
+{
+  (void)state;
+
+  m_udp_driver = std::make_unique<UdpDriver>(*m_ctx);
+
+  try {
+    m_udp_driver->init_sender(m_ip, m_port);
+    if (!m_udp_driver->sender()->isOpen()) {
+      m_udp_driver->sender()->open();
+    }
+  } catch (const std::exception & ex) {
+    RCLCPP_ERROR(
+      get_logger(), "Error creating UDP sender: %s:%i - %s",
+      m_ip.c_str(), m_port, ex.what());
+    return LNI::CallbackReturn::FAILURE;
   }
 
-  createSubscribers();
-}
-
-void UdpSenderNode::init_receiver(const std::string & ip, uint16_t port)
-{
-  createPublishers();
-
-  m_udp_driver->init_receiver(ip, port);
-  m_udp_driver->receiver()->open();
-  m_udp_driver->receiver()->bind();
-  m_udp_driver->receiver()->asyncReceive(
-    boost::bind(&UdpSenderNode::receiver_callback, this, _1));
-}
-
-void UdpSenderNode::createPublishers()
-{
-  m_publisher = this->create_publisher<std_msgs::msg::Int32>(
-    "udp_read", rclcpp::QoS(100));
-}
-
-void UdpSenderNode::createSubscribers()
-{
   auto qos = rclcpp::QoS(rclcpp::KeepLast(32)).best_effort();
   auto callback = std::bind(&UdpSenderNode::subscriber_callback, this, std::placeholders::_1);
 
   m_subscriber = this->create_subscription<std_msgs::msg::Int32>(
     "udp_write", qos, callback);
+
+  RCLCPP_DEBUG(get_logger(), "UDP sender successfully configured.");
+
+  return LNI::CallbackReturn::SUCCESS;
 }
 
-void UdpSenderNode::receiver_callback(const MutSocketBuffer & buffer)
+LNI::CallbackReturn UdpSenderNode::on_activate(const lc::State & state)
 {
-  std::cout << "[UdpSenderNode::receiver_callback] " <<
-    *reinterpret_cast<int32_t *>(buffer.data()) << std::endl;
+  (void)state;
+  RCLCPP_DEBUG(get_logger(), "UDP sender activated.");
+  return LNI::CallbackReturn::SUCCESS;
+}
 
-  std_msgs::msg::Int32 out;
-  drivers::common::convertToRos2Message(buffer, out);
+LNI::CallbackReturn UdpSenderNode::on_deactivate(const lc::State & state)
+{
+  (void)state;
+  RCLCPP_DEBUG(get_logger(), "UDP sender deactivated.");
+  return LNI::CallbackReturn::SUCCESS;
+}
 
-  m_publisher->publish(out);
+LNI::CallbackReturn UdpSenderNode::on_cleanup(const lc::State & state)
+{
+  (void)state;
+  m_udp_driver->sender()->close();
+  m_udp_driver.reset();
+  m_subscriber.reset();
+  RCLCPP_DEBUG(get_logger(), "UDP sender cleaned up.");
+  return LNI::CallbackReturn::SUCCESS;
+}
+
+LNI::CallbackReturn UdpSenderNode::on_shutdown(const lc::State & state)
+{
+  (void)state;
+  RCLCPP_DEBUG(get_logger(), "UDP sender shutting down.");
+  return LNI::CallbackReturn::SUCCESS;
+}
+
+void UdpSenderNode::get_params()
+{
+  m_ip = declare_parameter("ip").get<std::string>();
+  m_port = declare_parameter("port").get<int16_t>();
+
+  RCLCPP_INFO(get_logger(), "ip: %s", m_ip.c_str());
+  RCLCPP_INFO(get_logger(), "port: %i", m_port);
 }
 
 void UdpSenderNode::subscriber_callback(std_msgs::msg::Int32::SharedPtr msg)
 {
-  std::cout << "[UdpSenderNode::subscriber_callback] " <<
-    msg->data << std::endl;
+  if (this->get_current_state().id() == State::PRIMARY_STATE_ACTIVE) {
+    MutSocketBuffer out;
+    drivers::common::convertFromRos2Message(msg, out);
 
-  MutSocketBuffer out;
-  drivers::common::convertFromRos2Message(msg, out);
-
-  m_udp_driver->sender()->asyncSend(out);
+    m_udp_driver->sender()->asyncSend(out);
+  }
 }
 
 }  // namespace udp_driver

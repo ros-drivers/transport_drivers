@@ -53,6 +53,7 @@ ament_target_dependencies(${PROJECT_NAME} "Boost")
 
 ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
   src/udp_receiver_node.cpp
+  src/udp_sender_node.cpp
 )
 ament_target_dependencies(${PROJECT_NAME}_nodes "Boost")
 target_link_libraries(${PROJECT_NAME}_nodes ${PROJECT_NAME})
@@ -60,6 +61,11 @@ target_link_libraries(${PROJECT_NAME}_nodes ${PROJECT_NAME})
 rclcpp_components_register_node(${PROJECT_NAME}_nodes
   PLUGIN "drivers::udp_driver::UdpReceiverNode"
   EXECUTABLE udp_receiver_node_exe
+)
+
+rclcpp_components_register_node(${PROJECT_NAME}_nodes
+  PLUGIN "drivers::udp_driver::UdpSenderNode"
+  EXECUTABLE udp_sender_node_exe
 )
 
 if(BUILD_TESTING)
