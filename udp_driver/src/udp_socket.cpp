@@ -38,7 +38,6 @@ UdpSocket::UdpSocket(
 
 UdpSocket::~UdpSocket()
 {
-  std::cout << "[UdpSocket::~UdpSocket] INFO => Destructing..." << std::endl;
   close();
 }
 
@@ -47,7 +46,7 @@ std::size_t UdpSocket::send(const MutSocketBuffer & buff)
   try {
     return m_udp_socket.send_to(buff, m_endpoint);
   } catch (const boost::system::system_error & error) {
-    std::cout << "[UdpSocket::send] Error => " <<
+    std::cerr << "[UdpSocket::send] Error => " <<
       error.what() << std::endl;
     return -1;
   }
@@ -65,7 +64,7 @@ size_t UdpSocket::receive(const MutSocketBuffer & buff)
     error);
 
   if (error && error != boost::asio::error::message_size) {
-    std::cout << "[UdpSocket::receive] Error => " <<
+    std::cerr << "[UdpSocket::receive] Error => " <<
       error.message() << std::endl;
     return -1;
   }
@@ -100,7 +99,7 @@ void UdpSocket::asyncSendHandler(
 {
   (void)bytes_transferred;
   if (error) {
-    std::cout << "[UdpSocket::asyncSendHandler] Error => " <<
+    std::cerr << "[UdpSocket::asyncSendHandler] Error => " <<
       error.message() << std::endl;
   }
 }
@@ -111,7 +110,7 @@ void UdpSocket::asyncReceiveHandler(
 {
   (void)bytes_transferred;
   if (error) {
-    std::cout << "[UdpSocket::asyncReceiveHandler] Error => " <<
+    std::cerr << "[UdpSocket::asyncReceiveHandler] Error => " <<
       error.message() << std::endl;
     return;
   }
@@ -148,7 +147,7 @@ void UdpSocket::close()
   boost::system::error_code error;
   m_udp_socket.close(error);
   if (error) {
-    std::cout << "[UdpSocket::close] Error => " <<
+    std::cerr << "[UdpSocket::close] Error => " <<
       error.message() << std::endl;
   }
 }

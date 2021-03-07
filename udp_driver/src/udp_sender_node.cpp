@@ -23,7 +23,7 @@ namespace drivers
 namespace udp_driver
 {
 
-UdpDriverNode::UdpDriverNode(
+UdpSenderNode::UdpSenderNode(
   const std::string & node_name,
   const rclcpp::NodeOptions & options,
   IoContext & ctx)
@@ -32,7 +32,7 @@ UdpDriverNode::UdpDriverNode(
 {
 }
 
-void UdpDriverNode::init_sender(const std::string & ip, int16_t port)
+void UdpSenderNode::init_sender(const std::string & ip, int16_t port)
 {
   m_udp_driver->init_sender(ip, port);
   if (!m_udp_driver->sender()->isOpen()) {
@@ -42,7 +42,7 @@ void UdpDriverNode::init_sender(const std::string & ip, int16_t port)
   createSubscribers();
 }
 
-void UdpDriverNode::init_receiver(const std::string & ip, uint16_t port)
+void UdpSenderNode::init_receiver(const std::string & ip, uint16_t port)
 {
   createPublishers();
 
@@ -50,27 +50,27 @@ void UdpDriverNode::init_receiver(const std::string & ip, uint16_t port)
   m_udp_driver->receiver()->open();
   m_udp_driver->receiver()->bind();
   m_udp_driver->receiver()->asyncReceive(
-    boost::bind(&UdpDriverNode::receiver_callback, this, _1));
+    boost::bind(&UdpSenderNode::receiver_callback, this, _1));
 }
 
-void UdpDriverNode::createPublishers()
+void UdpSenderNode::createPublishers()
 {
   m_publisher = this->create_publisher<std_msgs::msg::Int32>(
     "udp_read", rclcpp::QoS(100));
 }
 
-void UdpDriverNode::createSubscribers()
+void UdpSenderNode::createSubscribers()
 {
   auto qos = rclcpp::QoS(rclcpp::KeepLast(32)).best_effort();
-  auto callback = std::bind(&UdpDriverNode::subscriber_callback, this, std::placeholders::_1);
+  auto callback = std::bind(&UdpSenderNode::subscriber_callback, this, std::placeholders::_1);
 
   m_subscriber = this->create_subscription<std_msgs::msg::Int32>(
     "udp_write", qos, callback);
 }
 
-void UdpDriverNode::receiver_callback(const MutSocketBuffer & buffer)
+void UdpSenderNode::receiver_callback(const MutSocketBuffer & buffer)
 {
-  std::cout << "[UdpDriverNode::receiver_callback] " <<
+  std::cout << "[UdpSenderNode::receiver_callback] " <<
     *reinterpret_cast<int32_t *>(buffer.data()) << std::endl;
 
   std_msgs::msg::Int32 out;
@@ -79,9 +79,9 @@ void UdpDriverNode::receiver_callback(const MutSocketBuffer & buffer)
   m_publisher->publish(out);
 }
 
-void UdpDriverNode::subscriber_callback(std_msgs::msg::Int32::SharedPtr msg)
+void UdpSenderNode::subscriber_callback(std_msgs::msg::Int32::SharedPtr msg)
 {
-  std::cout << "[UdpDriverNode::subscriber_callback] " <<
+  std::cout << "[UdpSenderNode::subscriber_callback] " <<
     msg->data << std::endl;
 
   MutSocketBuffer out;

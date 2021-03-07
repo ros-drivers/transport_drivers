@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef UDP_DRIVER__UDP_DRIVER_NODE_HPP_
-#define UDP_DRIVER__UDP_DRIVER_NODE_HPP_
+#ifndef UDP_DRIVER__UDP_SENDER_NODE_HPP_
+#define UDP_DRIVER__UDP_SENDER_NODE_HPP_
 
 #include "udp_driver/udp_driver.hpp"
 
@@ -30,10 +30,10 @@ namespace drivers
 namespace udp_driver
 {
 
-class UdpDriverNode : public rclcpp::Node
+class UdpSenderNode : public rclcpp::Node
 {
 public:
-  UdpDriverNode(
+  UdpSenderNode(
     const std::string & node_name,
     const rclcpp::NodeOptions & options,
     IoContext & ctx);
@@ -51,9 +51,9 @@ private:
   std::shared_ptr<UdpDriver> m_udp_driver;
   std::shared_ptr<typename rclcpp::Publisher<std_msgs::msg::Int32>> m_publisher;
   std::shared_ptr<typename rclcpp::Subscription<std_msgs::msg::Int32>> m_subscriber;
-};  // class UdpDriverNode
+};  // class UdpSenderNode
 
 }  // namespace udp_driver
 }  // namespace drivers
 
-#endif  // UDP_DRIVER__UDP_DRIVER_NODE_HPP_
+#endif  // UDP_DRIVER__UDP_SENDER_NODE_HPP_

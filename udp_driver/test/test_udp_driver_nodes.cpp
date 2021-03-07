@@ -16,6 +16,7 @@
 
 #include <gtest/gtest.h>
 
+#include <lifecycle_msgs/msg/state.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include <chrono>
@@ -23,16 +24,18 @@
 #include <string>
 #include <vector>
 
-#include "udp_driver/udp_driver_node.hpp"
+#include "udp_driver/udp_receiver_node.hpp"
 
 using drivers::common::IoContext;
 using drivers::udp_driver::UdpSocket;
-using drivers::udp_driver::UdpDriverNode;
+using drivers::udp_driver::UdpReceiverNode;
+using lifecycle_msgs::msg::State;
 
 const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
 
-TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest)
+/*
+TEST(UdpSenderNodeTest, DISABLED_FromRosMessageToRawUdpMessageTest)
 {
   rclcpp::init(0, nullptr);
   IoContext ctx;
@@ -110,22 +113,24 @@ TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest)
 
   rclcpp::shutdown();
 }
+*/
 
-TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest)
+TEST(UdpReceiverNodeTest, FromRawUdpMessageToRosMessageTest)
 {
   rclcpp::init(0, nullptr);
-  IoContext ctx;
+  const auto ctx = std::make_shared<IoContext>();
 
   int32_t sum = 0;
 
   // Main Drive Node
   rclcpp::NodeOptions options;
-  std::shared_ptr<UdpDriverNode> node(
-    std::make_shared<UdpDriverNode>(
-      "UdpDriverNodeTest",
-      options,
-      ctx));
-  node->init_receiver(ip, port);
+  options.append_parameter_override("ip", ip);
+  options.append_parameter_override("port", port);
+  auto node = std::make_shared<UdpReceiverNode>(options, ctx);
+
+  // Transition the node to active
+  EXPECT_EQ(node->configure().id(), State::PRIMARY_STATE_INACTIVE);
+  EXPECT_EQ(node->activate().id(), State::PRIMARY_STATE_ACTIVE);
 
   // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
   // Test node that receives sequence of data from a topic published by main node
@@ -149,7 +154,7 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest)
   // Sender socket that could be a hardware (microcontroller, etc.)
   // Streams sequence of data in an asynchronous manner by 10 times and then shutting down
   {
-    UdpSocket sender(ctx, ip, port);
+    UdpSocket sender(*ctx, ip, port);
     sender.open();
     EXPECT_EQ(sender.isOpen(), true);
     int32_t count = 0;
@@ -172,6 +177,10 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest)
     rclcpp::FutureReturnCode::SUCCESS);
   EXPECT_EQ(future_2.get(), true);
   EXPECT_EQ(sum, 45);
+
+  // Transition the node to finalized
+  EXPECT_EQ(node->deactivate().id(), State::PRIMARY_STATE_INACTIVE);
+  EXPECT_EQ(node->shutdown().id(), State::PRIMARY_STATE_FINALIZED);
 
   rclcpp::shutdown();
 }
