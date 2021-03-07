@@ -22,15 +22,12 @@
 
 namespace drivers
 {
+namespace udp_driver
+{
 
 UdpDriver::UdpDriver(const IoContext & ctx)
 : m_ctx(ctx)
 {
-}
-
-UdpDriver::~UdpDriver()
-{
-  std::cout << "[UdpDriver::~UdpDriver] INFO => Destructing..." << std::endl;
 }
 
 void UdpDriver::init_sender(const std::string & ip, uint16_t port)
@@ -53,4 +50,5 @@ std::shared_ptr<UdpSocket> UdpDriver::receiver() const
   return m_receiver;
 }
 
+}  // namespace udp_driver
 }  // namespace drivers

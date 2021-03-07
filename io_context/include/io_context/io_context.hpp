@@ -25,6 +25,8 @@
 
 namespace drivers
 {
+namespace common
+{
 
 class IoContext : private boost::noncopyable
 {
@@ -51,6 +53,7 @@ private:
   std::shared_ptr<boost::thread_group> m_ios_thread_workers;
 };
 
+}  // namespace common
 }  // namespace drivers
 
 #endif  // IO_CONTEXT__IO_CONTEXT_HPP_

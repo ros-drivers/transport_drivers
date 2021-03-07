@@ -19,7 +19,7 @@
 
 namespace drivers
 {
-namespace utils
+namespace common
 {
 
 /*
@@ -146,5 +146,5 @@ void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Float64 & o
   out.data = *boost::asio::buffer_cast<double_t *>(in);
 }
 
-}  // namespace utils
+}  // namespace common
 }  // namespace drivers

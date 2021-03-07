@@ -26,12 +26,13 @@
 
 namespace drivers
 {
+namespace udp_driver
+{
 
 class UdpDriver
 {
 public:
   explicit UdpDriver(const IoContext & ctx);
-  ~UdpDriver();
 
   void init_sender(const std::string & ip, uint16_t port);
   void init_receiver(const std::string & ip, uint16_t port);
@@ -45,6 +46,7 @@ private:
   std::shared_ptr<UdpSocket> m_receiver;
 };
 
+}  // namespace udp_driver
 }  // namespace drivers
 
 #endif  // UDP_DRIVER__UDP_DRIVER_HPP_

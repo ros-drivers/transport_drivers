@@ -15,8 +15,16 @@
 # Maintained by LeoDrive, 2021
 
 cmake_minimum_required(VERSION 3.5)
-
 project(udp_driver)
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
 # Consider passing `-DCMAKE_BUILD_TYPE=Debug` option to cmake to export Debug symbols.
 if(NOT CMAKE_BUILD_TYPE)
@@ -37,15 +45,16 @@ if(Boost_FOUND)
   link_directories(${Boost_LIBRARY_DIRS})
 endif()
 
-include_directories(include)
-
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/udp_socket.cpp
   src/udp_driver.cpp
-  examples/udp_driver_node.cpp)
+  src/udp_driver_node.cpp)
 ament_target_dependencies(${PROJECT_NAME} "Boost")
 
-target_compile_options(${PROJECT_NAME} PUBLIC "-O0" PRIVATE -Wno-sign-conversion -Wno-conversion)
+#rclcpp_components_register_node(udp_driver_node
+  #PLUGIN "drivers::udp_driver::UdpDriverNode"
+  #EXECUTABLE ${PROJECT_NAME}_node_exe
+#)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -62,7 +71,6 @@ if(BUILD_TESTING)
     set(TEST_UDP_DRIVER_EXE ${name})
 
     ament_add_gtest(${TEST_UDP_DRIVER_EXE}
-      test/gtest_main.cpp
       test/${name}.cpp)
     ament_target_dependencies(${TEST_UDP_DRIVER_EXE}
       rclcpp

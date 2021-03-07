@@ -23,6 +23,8 @@
 
 namespace drivers
 {
+namespace udp_driver
+{
 
 UdpSocket::UdpSocket(
   const IoContext & ctx,
@@ -161,4 +163,5 @@ void UdpSocket::bind()
   m_udp_socket.bind(m_endpoint);
 }
 
+}  // namespace udp_driver
 }  // namespace drivers

@@ -14,11 +14,13 @@
 
 // Developed by LeoDrive, 2021
 
+#include "udp_driver/udp_driver_node.hpp"
+
 #include <string>
 
-#include "udp_driver_node.hpp"
-
 namespace drivers
+{
+namespace udp_driver
 {
 
 UdpDriverNode::UdpDriverNode(
@@ -28,11 +30,6 @@ UdpDriverNode::UdpDriverNode(
 : Node(node_name, options),
   m_udp_driver(new UdpDriver(ctx))
 {
-}
-
-UdpDriverNode::~UdpDriverNode()
-{
-  std::cout << "[UdpDriverNode::~UdpDriverNode] INFO => Destructing..." << std::endl;
 }
 
 void UdpDriverNode::init_sender(const std::string & ip, int16_t port)
@@ -77,7 +74,7 @@ void UdpDriverNode::receiver_callback(const MutSocketBuffer & buffer)
     *reinterpret_cast<int32_t *>(buffer.data()) << std::endl;
 
   std_msgs::msg::Int32 out;
-  utils::convertToRos2Message(buffer, out);
+  drivers::common::convertToRos2Message(buffer, out);
 
   m_publisher->publish(out);
 }
@@ -88,9 +85,10 @@ void UdpDriverNode::subscriber_callback(std_msgs::msg::Int32::SharedPtr msg)
     msg->data << std::endl;
 
   MutSocketBuffer out;
-  utils::convertFromRos2Message(msg, out);
+  drivers::common::convertFromRos2Message(msg, out);
 
   m_udp_driver->sender()->asyncSend(out);
 }
 
+}  // namespace udp_driver
 }  // namespace drivers
