@@ -56,11 +56,6 @@ ament_target_dependencies(${PROJECT_NAME} "Boost")
   #EXECUTABLE ${PROJECT_NAME}_node_exe
 #)
 
-#rclcpp_components_register_node(udp_driver_node
-  #PLUGIN "drivers::udp_driver::UdpDriverNode"
-  #EXECUTABLE ${PROJECT_NAME}_node_exe
-#)
-
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
