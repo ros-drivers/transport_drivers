@@ -23,11 +23,11 @@
 #include <string>
 #include <vector>
 
-#include "../examples/udp_driver_node.hpp"
+#include "udp_driver/udp_driver_node.hpp"
 
-using drivers::IoContext;
-using drivers::UdpSocket;
-using drivers::UdpDriverNode;
+using drivers::common::IoContext;
+using drivers::udp_driver::UdpSocket;
+using drivers::udp_driver::UdpDriverNode;
 
 const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;

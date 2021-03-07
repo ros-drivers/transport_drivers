@@ -1,4 +1,4 @@
-// Copyright 2021 LeoDrive.
+// Copyright 2021 LeoDrive, Copyright 2021 the Autoware Foundation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Developed by LeoDrive, 2021
+#ifndef UDP_DRIVER__UDP_DRIVER_NODE_HPP_
+#define UDP_DRIVER__UDP_DRIVER_NODE_HPP_
 
-#ifndef UDP_DRIVER__EXAMPLES__UDP_DRIVER_NODE_HPP_
-#define UDP_DRIVER__EXAMPLES__UDP_DRIVER_NODE_HPP_
+#include "udp_driver/udp_driver.hpp"
+
+#include <rclcpp/rclcpp.hpp>
 
 #include <chrono>
 #include <memory>
 #include <string>
 
-#include "rclcpp/rclcpp.hpp"
-#include "rclcpp/qos.hpp"
-
 #include "msg_converters/converters.hpp"
-#include "udp_driver/udp_driver.hpp"
-
-using drivers::UdpSocket;
 
 namespace drivers
+{
+namespace udp_driver
 {
 
 class UdpDriverNode : public rclcpp::Node
@@ -39,7 +37,6 @@ public:
     const std::string & node_name,
     const rclcpp::NodeOptions & options,
     IoContext & ctx);
-  ~UdpDriverNode();
 
   void init_sender(const std::string & ip, int16_t port);
   void init_receiver(const std::string & ip, uint16_t port);
@@ -56,6 +53,7 @@ private:
   std::shared_ptr<typename rclcpp::Subscription<std_msgs::msg::Int32>> m_subscriber;
 };  // class UdpDriverNode
 
+}  // namespace udp_driver
 }  // namespace drivers
 
-#endif  // UDP_DRIVER__EXAMPLES__UDP_DRIVER_NODE_HPP_
+#endif  // UDP_DRIVER__UDP_DRIVER_NODE_HPP_

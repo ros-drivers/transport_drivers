@@ -26,8 +26,11 @@
 
 using boost::asio::ip::udp;
 using boost::asio::ip::address;
+using drivers::common::IoContext;
 
 namespace drivers
+{
+namespace udp_driver
 {
 
 typedef boost::function<void (const MutSocketBuffer &)> Functor;
@@ -84,6 +87,7 @@ private:
   boost::array<uint8_t, m_recv_buffer_size> m_recv_buffer;
 };
 
+}  // namespace udp_driver
 }  // namespace drivers
 
 #endif  // UDP_DRIVER__UDP_SOCKET_HPP_

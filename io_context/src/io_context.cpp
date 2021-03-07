@@ -20,6 +20,8 @@
 
 namespace drivers
 {
+namespace common
+{
 
 IoContext::IoContext(size_t threads_count)
 : m_ios(new boost::asio::io_service()),
@@ -70,4 +72,5 @@ void IoContext::waitForExit()
   m_ios_thread_workers->join_all();
 }
 
+}  // namespace common
 }  // namespace drivers
