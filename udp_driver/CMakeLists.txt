@@ -45,8 +45,6 @@ if(Boost_FOUND)
   link_directories(${Boost_LIBRARY_DIRS})
 endif()
 
-include_directories(include)
-
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/udp_socket.cpp
   src/udp_driver.cpp
