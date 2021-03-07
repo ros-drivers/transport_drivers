@@ -51,8 +51,6 @@ ament_auto_add_library(${PROJECT_NAME} SHARED
   src/udp_driver_node.cpp)
 ament_target_dependencies(${PROJECT_NAME} "Boost")
 
-target_compile_options(${PROJECT_NAME} PUBLIC "-O0" PRIVATE -Wno-sign-conversion -Wno-conversion)
-
 #rclcpp_components_register_node(udp_driver_node
   #PLUGIN "drivers::udp_driver::UdpDriverNode"
   #EXECUTABLE ${PROJECT_NAME}_node_exe
@@ -73,7 +71,6 @@ if(BUILD_TESTING)
     set(TEST_UDP_DRIVER_EXE ${name})
 
     ament_add_gtest(${TEST_UDP_DRIVER_EXE}
-      test/gtest_main.cpp
       test/${name}.cpp)
     ament_target_dependencies(${TEST_UDP_DRIVER_EXE}
       rclcpp
