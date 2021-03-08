@@ -43,7 +43,6 @@ IoContext::IoContext(size_t threads_count)
 
 IoContext::~IoContext()
 {
-  std::cout << "[IoContext::~IoContext] INFO => Destructing..." << std::endl;
   waitForExit();
 }
 

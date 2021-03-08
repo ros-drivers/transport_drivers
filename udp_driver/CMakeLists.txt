@@ -48,13 +48,31 @@ endif()
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/udp_socket.cpp
   src/udp_driver.cpp
-  src/udp_driver_node.cpp)
+)
 ament_target_dependencies(${PROJECT_NAME} "Boost")
 
-#rclcpp_components_register_node(udp_driver_node
-  #PLUGIN "drivers::udp_driver::UdpDriverNode"
-  #EXECUTABLE ${PROJECT_NAME}_node_exe
-#)
+ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
+  src/udp_receiver_node.cpp
+  src/udp_sender_node.cpp
+)
+ament_target_dependencies(${PROJECT_NAME}_nodes "Boost")
+target_link_libraries(${PROJECT_NAME}_nodes ${PROJECT_NAME})
+
+rclcpp_components_register_node(${PROJECT_NAME}_nodes
+  PLUGIN "drivers::udp_driver::UdpReceiverNode"
+  EXECUTABLE udp_receiver_node_exe
+)
+
+rclcpp_components_register_node(${PROJECT_NAME}_nodes
+  PLUGIN "drivers::udp_driver::UdpSenderNode"
+  EXECUTABLE udp_sender_node_exe
+)
+
+ament_auto_add_executable(udp_bridge_node_exe
+  src/udp_bridge_node.cpp
+)
+
+target_link_libraries(udp_bridge_node_exe ${PROJECT_NAME} ${PROJECT_NAME}_nodes)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -64,7 +82,7 @@ if(BUILD_TESTING)
     test_udp_socket.cpp
     test_udp_data.cpp
     test_udp_driver.cpp
-    test_udp_driver_node.cpp)
+    test_udp_driver_nodes.cpp)
 
   foreach(file ${TEST_FILES})
     get_filename_component(name "${file}" NAME_WE)
@@ -75,10 +93,11 @@ if(BUILD_TESTING)
     ament_target_dependencies(${TEST_UDP_DRIVER_EXE}
       rclcpp
       std_msgs
+      lifecycle_msgs
       Boost)
 
     target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
-    target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME})
+    target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME} ${PROJECT_NAME}_nodes)
   endforeach()
 endif()
 

@@ -16,6 +16,7 @@
 
 #include <gtest/gtest.h>
 
+#include <lifecycle_msgs/msg/state.hpp>
 #include <rclcpp/rclcpp.hpp>
 
 #include <chrono>
@@ -23,26 +24,29 @@
 #include <string>
 #include <vector>
 
-#include "udp_driver/udp_driver_node.hpp"
+#include "udp_driver/udp_receiver_node.hpp"
+#include "udp_driver/udp_sender_node.hpp"
 
 using drivers::common::IoContext;
 using drivers::udp_driver::UdpSocket;
-using drivers::udp_driver::UdpDriverNode;
+using drivers::udp_driver::UdpReceiverNode;
+using drivers::udp_driver::UdpSenderNode;
+using lifecycle_msgs::msg::State;
 
 const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
 
-TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest)
+TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
 {
   rclcpp::init(0, nullptr);
-  IoContext ctx;
+  const auto ctx = std::make_shared<IoContext>();
 
   int32_t sum = 0;
   std::promise<bool> promise_1;
   std::shared_future<bool> future_1(promise_1.get_future());
 
   // Raw UDP packets receiver, It could be a hardware (microcontroller, etc.)
-  UdpSocket receiver(ctx, ip, port);
+  UdpSocket receiver(*ctx, ip, port);
   receiver.open();
   EXPECT_EQ(receiver.isOpen(), true);
   receiver.bind();
@@ -58,9 +62,13 @@ TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest)
   // Main UDP driver node
   // The data this node receives will be pumped to device by raw UDP packets.
   rclcpp::NodeOptions options;
-  std::shared_ptr<UdpDriverNode> node(
-    std::make_shared<UdpDriverNode>("UdpDriverNodeTest", options, ctx));
-  node->init_sender(ip, port);
+  options.append_parameter_override("ip", ip);
+  options.append_parameter_override("port", port);
+  auto node = std::make_shared<UdpSenderNode>(options, ctx);
+
+  // Transition the node to active
+  EXPECT_EQ(node->configure().id(), State::PRIMARY_STATE_INACTIVE);
+  EXPECT_EQ(node->activate().id(), State::PRIMARY_STATE_ACTIVE);
 
   // ROS node publisher that sends sequence of data in ROS messages to device
   // The node sends data by 10 times and then shutting down
@@ -108,24 +116,29 @@ TEST(UdpDriverNodeTest, FromRosMessageToRawUdpMessageTest)
   receiver.close();
   EXPECT_EQ(receiver.isOpen(), false);
 
+  // Transition the node to finalized
+  EXPECT_EQ(node->deactivate().id(), State::PRIMARY_STATE_INACTIVE);
+  EXPECT_EQ(node->shutdown().id(), State::PRIMARY_STATE_FINALIZED);
+
   rclcpp::shutdown();
 }
 
-TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest)
+TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
 {
   rclcpp::init(0, nullptr);
-  IoContext ctx;
+  const auto ctx = std::make_shared<IoContext>();
 
   int32_t sum = 0;
 
   // Main Drive Node
   rclcpp::NodeOptions options;
-  std::shared_ptr<UdpDriverNode> node(
-    std::make_shared<UdpDriverNode>(
-      "UdpDriverNodeTest",
-      options,
-      ctx));
-  node->init_receiver(ip, port);
+  options.append_parameter_override("ip", ip);
+  options.append_parameter_override("port", port);
+  auto node = std::make_shared<UdpReceiverNode>(options, ctx);
+
+  // Transition the node to active
+  EXPECT_EQ(node->configure().id(), State::PRIMARY_STATE_INACTIVE);
+  EXPECT_EQ(node->activate().id(), State::PRIMARY_STATE_ACTIVE);
 
   // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
   // Test node that receives sequence of data from a topic published by main node
@@ -149,7 +162,7 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest)
   // Sender socket that could be a hardware (microcontroller, etc.)
   // Streams sequence of data in an asynchronous manner by 10 times and then shutting down
   {
-    UdpSocket sender(ctx, ip, port);
+    UdpSocket sender(*ctx, ip, port);
     sender.open();
     EXPECT_EQ(sender.isOpen(), true);
     int32_t count = 0;
@@ -172,6 +185,10 @@ TEST(UdpDriverNodeTest, FromRawUdpMessageToRosMessageTest)
     rclcpp::FutureReturnCode::SUCCESS);
   EXPECT_EQ(future_2.get(), true);
   EXPECT_EQ(sum, 45);
+
+  // Transition the node to finalized
+  EXPECT_EQ(node->deactivate().id(), State::PRIMARY_STATE_INACTIVE);
+  EXPECT_EQ(node->shutdown().id(), State::PRIMARY_STATE_FINALIZED);
 
   rclcpp::shutdown();
 }
