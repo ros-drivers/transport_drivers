@@ -56,6 +56,8 @@ if(BUILD_TESTING)
 
   target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
   target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME})
+  target_compile_definitions(${TEST_UDP_DRIVER_EXE} PRIVATE
+    ASIO_STANDALONE)
 endif()
 
 target_compile_options(${PROJECT_NAME} PUBLIC "-O0" PRIVATE -Wall)
