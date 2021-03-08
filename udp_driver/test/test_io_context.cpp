@@ -39,7 +39,7 @@ TEST(IoContextTest, DefaultLifeCycleTest)
 {
   IoContext ctx;
   EXPECT_EQ(ctx.isServiceStopped(), false);
-  EXPECT_EQ(ctx.serviceThreadCount(), boost::thread::hardware_concurrency());
+  EXPECT_EQ(ctx.serviceThreadCount(), std::thread::hardware_concurrency());
 }
 
 TEST(IoContextTest, ConcurrentLifeCycleTest)
@@ -57,7 +57,7 @@ TEST(IoContextTest, SingleThreadPostTaskTest)
 
   std::shared_ptr<std::vector<int32_t>> container(new std::vector<int32_t>());
   for (size_t i = 0; i < LENGTH; ++i) {
-    ctx.post(boost::bind(counter, container, i));
+    ctx.post(std::bind(counter, container, i));
   }
-  ctx.post(boost::bind(check_container_size, container));
+  ctx.post(std::bind(check_container_size, container));
 }

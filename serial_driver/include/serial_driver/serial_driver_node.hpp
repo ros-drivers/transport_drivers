@@ -24,8 +24,8 @@
 #include <chrono>
 #include <memory>
 #include <string>
-#include "boost/asio.hpp"
-#include "boost/array.hpp"
+
+#include "asio.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 namespace drivers
@@ -256,18 +256,18 @@ private:
 
 private:
   /// \brief Receives a package via serial port and returns the length of the data in the buffer
-  size_t get_packet(PacketT & pkt, boost::asio::serial_port & port)
+  size_t get_packet(PacketT & pkt, asio::serial_port & port)
   {
-    boost::system::error_code serial_error;
+    asio::error_code serial_error;
     constexpr size_t max_data_size = 64 * 1024;
-    const size_t len = boost::asio::read(
-      port, boost::asio::buffer(
+    const size_t len = asio::read(
+      port, asio::buffer(
         &pkt,
-        max_data_size), boost::asio::transfer_exactly(sizeof(pkt)),
+        max_data_size), asio::transfer_exactly(sizeof(pkt)),
       serial_error);
 
-    if (serial_error && serial_error != boost::asio::error::message_size) {
-      throw boost::system::system_error(serial_error);
+    if (serial_error && serial_error != asio::error::message_size) {
+      throw std::system_error(serial_error);
     }
 
     return len;
@@ -278,22 +278,22 @@ private:
     parity_t parity, stop_bits_t stop_bits)
   {
     m_serial_port.open(device_name);
-    m_serial_port.set_option(boost::asio::serial_port_base::baud_rate(baud_rate));
+    m_serial_port.set_option(asio::serial_port_base::baud_rate(baud_rate));
     switch (flow_control) {
       case flow_control_t::hardware:
         m_serial_port.set_option(
-          boost::asio::serial_port::flow_control(
-            boost::asio::serial_port::flow_control::hardware));
+          asio::serial_port::flow_control(
+            asio::serial_port::flow_control::hardware));
         break;
       case flow_control_t::software:
         m_serial_port.set_option(
-          boost::asio::serial_port::flow_control(
-            boost::asio::serial_port::flow_control::software));
+          asio::serial_port::flow_control(
+            asio::serial_port::flow_control::software));
         break;
       case flow_control_t::none:
         m_serial_port.set_option(
-          boost::asio::serial_port::flow_control(
-            boost::asio::serial_port::flow_control::none));
+          asio::serial_port::flow_control(
+            asio::serial_port::flow_control::none));
         break;
       default:
         throw std::domain_error("Unknown value for flow_control");
@@ -302,18 +302,18 @@ private:
     switch (parity) {
       case parity_t::none:
         m_serial_port.set_option(
-          boost::asio::serial_port::parity(
-            boost::asio::serial_port::parity::none));
+          asio::serial_port::parity(
+            asio::serial_port::parity::none));
         break;
       case parity_t::odd:
         m_serial_port.set_option(
-          boost::asio::serial_port::parity(
-            boost::asio::serial_port::parity::odd));
+          asio::serial_port::parity(
+            asio::serial_port::parity::odd));
         break;
       case parity_t::even:
         m_serial_port.set_option(
-          boost::asio::serial_port::parity(
-            boost::asio::serial_port::parity::even));
+          asio::serial_port::parity(
+            asio::serial_port::parity::even));
         break;
       default:
         throw std::domain_error("Unknown value for parity");
@@ -322,18 +322,18 @@ private:
     switch (stop_bits) {
       case stop_bits_t::one:
         m_serial_port.set_option(
-          boost::asio::serial_port::stop_bits(
-            boost::asio::serial_port::stop_bits::one));
+          asio::serial_port::stop_bits(
+            asio::serial_port::stop_bits::one));
         break;
       case stop_bits_t::onepointfive:
         m_serial_port.set_option(
-          boost::asio::serial_port::stop_bits(
-            boost::asio::serial_port::stop_bits::onepointfive));
+          asio::serial_port::stop_bits(
+            asio::serial_port::stop_bits::onepointfive));
         break;
       case stop_bits_t::two:
         m_serial_port.set_option(
-          boost::asio::serial_port::stop_bits(
-            boost::asio::serial_port::stop_bits::two));
+          asio::serial_port::stop_bits(
+            asio::serial_port::stop_bits::two));
         break;
       default:
         throw std::domain_error("Unknown value for stop_bits");
@@ -341,8 +341,8 @@ private:
   }
 
   const std::shared_ptr<typename rclcpp::Publisher<OutputT>> m_pub_ptr;
-  boost::asio::io_service m_io_service;
-  boost::asio::serial_port m_serial_port;
+  asio::io_service m_io_service;
+  asio::serial_port m_serial_port;
 };  // class SerialDriverNode
 }  // namespace serial_driver
 }  // namespace drivers

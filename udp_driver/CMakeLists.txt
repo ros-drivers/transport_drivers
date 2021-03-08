@@ -39,17 +39,16 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
-find_package(Boost REQUIRED COMPONENTS system thread)
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS})
-  link_directories(${Boost_LIBRARY_DIRS})
-endif()
+# add package modules path, not needed in dependend packages
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+
+find_package(ASIO REQUIRED)
 
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/udp_socket.cpp
   src/udp_driver.cpp
 )
-ament_target_dependencies(${PROJECT_NAME} "Boost")
+ament_target_dependencies(${PROJECT_NAME} "ASIO")
 
 ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
   src/udp_receiver_node.cpp
@@ -94,7 +93,7 @@ if(BUILD_TESTING)
       rclcpp
       std_msgs
       lifecycle_msgs
-      Boost)
+      ASIO)
 
     target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
     target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME} ${PROJECT_NAME}_nodes)

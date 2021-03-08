@@ -14,9 +14,6 @@
   <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
   <depend>io_context</depend>
-  <depend>libboost-dev</depend>
-  <depend>libboost-system-dev</depend>
-  <depend>libboost-thread-dev</depend>
   <depend>lifecycle_msgs</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>

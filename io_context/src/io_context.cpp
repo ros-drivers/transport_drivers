@@ -18,23 +18,27 @@
 
 #include <iostream>
 
+#include "asio.hpp"
+
 namespace drivers
 {
 namespace common
 {
 
 IoContext::IoContext(size_t threads_count)
-: m_ios(new boost::asio::io_service()),
-  m_work(new boost::asio::io_service::work(ios())),
-  m_ios_thread_workers(new boost::thread_group())
+: m_ios(new asio::io_service()),
+  m_work(new asio::io_service::work(ios())),
+  m_ios_thread_workers(new drivers::common::thread_group())
 {
   if (threads_count == size_t(-1)) {
-    threads_count = boost::thread::hardware_concurrency();
+    threads_count = std::thread::hardware_concurrency();
   }
 
   for (size_t i = 0; i < threads_count; ++i) {
     m_ios_thread_workers->create_thread(
-      boost::bind(&boost::asio::io_service::run, &ios()));
+      [this]() {
+        ios().run();
+      });
   }
 
   std::cout << "[IoContext::IoContext] INFO => Thread(s) Created: " <<
@@ -46,7 +50,7 @@ IoContext::~IoContext()
   waitForExit();
 }
 
-boost::asio::io_service & IoContext::ios() const
+asio::io_service & IoContext::ios() const
 {
   return *m_ios;
 }
@@ -67,7 +71,7 @@ void IoContext::waitForExit()
     ios().post([&]() {m_work.reset();});
   }
 
-  m_ios_thread_workers->interrupt_all();
+  // m_ios_thread_workers->interrupt_all();
   m_ios_thread_workers->join_all();
 }
 

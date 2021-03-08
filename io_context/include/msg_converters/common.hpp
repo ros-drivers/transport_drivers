@@ -17,8 +17,8 @@
 #ifndef MSG_CONVERTERS__COMMON_HPP_
 #define MSG_CONVERTERS__COMMON_HPP_
 
-#include <boost/asio.hpp>
+#include <asio.hpp>
 
-typedef boost::asio::mutable_buffer MutSocketBuffer;
+using MutSocketBuffer = asio::mutable_buffer;
 
 #endif  // MSG_CONVERTERS__COMMON_HPP_

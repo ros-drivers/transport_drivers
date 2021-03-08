@@ -98,7 +98,7 @@ TEST(UdpDataTest, NonBlockingSendReceiveTest)
   EXPECT_EQ(receiver.isOpen(), true);
 
   receiver.bind();
-  receiver.asyncReceive(boost::bind(handle_data, _1));
+  receiver.asyncReceive(std::bind(handle_data, std::placeholders::_1));
 
   MutSocketBuffer buffer(reinterpret_cast<void *>(&PI), sizeof(PI));
   sender.asyncSend(buffer);
@@ -127,7 +127,7 @@ TEST(UdpDataTest, BlockingSendNonBlockingReceiveTest)
   EXPECT_EQ(receiver.isOpen(), true);
 
   receiver.bind();
-  receiver.asyncReceive(boost::bind(handle_data, _1));
+  receiver.asyncReceive(std::bind(handle_data, std::placeholders::_1));
 
   std::size_t size = sender.send(MutSocketBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
   EXPECT_EQ(size, sizeof(PI));

@@ -19,7 +19,9 @@
 #include <iostream>
 #include <utility>
 #include <string>
+#include <system_error>
 
+#include "asio.hpp"
 
 namespace drivers
 {
@@ -45,7 +47,7 @@ std::size_t UdpSocket::send(const MutSocketBuffer & buff)
 {
   try {
     return m_udp_socket.send_to(buff, m_endpoint);
-  } catch (const boost::system::system_error & error) {
+  } catch (const std::system_error & error) {
     std::cerr << "[UdpSocket::send] Error => " <<
       error.what() << std::endl;
     return -1;
@@ -54,8 +56,8 @@ std::size_t UdpSocket::send(const MutSocketBuffer & buff)
 
 size_t UdpSocket::receive(const MutSocketBuffer & buff)
 {
-  boost::system::error_code error;
-  boost::asio::ip::udp::endpoint sender_endpoint;
+  asio::error_code error;
+  asio::ip::udp::endpoint sender_endpoint;
 
   std::size_t len = m_udp_socket.receive_from(
     buff,
@@ -63,7 +65,7 @@ size_t UdpSocket::receive(const MutSocketBuffer & buff)
     0,
     error);
 
-  if (error && error != boost::asio::error::message_size) {
+  if (error && error != asio::error::message_size) {
     std::cerr << "[UdpSocket::receive] Error => " <<
       error.message() << std::endl;
     return -1;
@@ -74,27 +76,27 @@ size_t UdpSocket::receive(const MutSocketBuffer & buff)
 void UdpSocket::asyncSend(const MutSocketBuffer & buff)
 {
   m_udp_socket.async_send_to(
-    buff, m_endpoint, boost::bind(
-      &UdpSocket::asyncSendHandler,
-      this,
-      boost::asio::placeholders::error,
-      boost::asio::placeholders::bytes_transferred));
+    buff, m_endpoint,
+    [this](std::error_code error, std::size_t bytes_transferred)
+    {
+      asyncSendHandler(error, bytes_transferred);
+    });
 }
 
 void UdpSocket::asyncReceive(Functor func)
 {
   m_func = std::move(func);
   m_udp_socket.async_receive_from(
-    boost::asio::buffer(m_recv_buffer, m_recv_buffer_size),
+    asio::buffer(m_recv_buffer, m_recv_buffer_size),
     m_endpoint,
-    boost::bind(
-      &UdpSocket::asyncReceiveHandler, this,
-      boost::asio::placeholders::error,
-      boost::asio::placeholders::bytes_transferred));
+    [this](std::error_code error, std::size_t bytes_transferred)
+    {
+      asyncReceiveHandler(error, bytes_transferred);
+    });
 }
 
 void UdpSocket::asyncSendHandler(
-  const boost::system::error_code & error,
+  const asio::error_code & error,
   std::size_t bytes_transferred)
 {
   (void)bytes_transferred;
@@ -105,7 +107,7 @@ void UdpSocket::asyncSendHandler(
 }
 
 void UdpSocket::asyncReceiveHandler(
-  const boost::system::error_code & error,
+  const asio::error_code & error,
   std::size_t bytes_transferred)
 {
   (void)bytes_transferred;
@@ -118,12 +120,12 @@ void UdpSocket::asyncReceiveHandler(
   if (bytes_transferred > 0 && m_func) {
     m_func(MutSocketBuffer(m_recv_buffer.data(), bytes_transferred));
     m_udp_socket.async_receive_from(
-      boost::asio::buffer(m_recv_buffer, m_recv_buffer_size),
+      asio::buffer(m_recv_buffer, m_recv_buffer_size),
       m_endpoint,
-      boost::bind(
-        &UdpSocket::asyncReceiveHandler, this,
-        boost::asio::placeholders::error,
-        boost::asio::placeholders::bytes_transferred));
+      [this](std::error_code error, std::size_t bytes_transferred)
+      {
+        asyncReceiveHandler(error, bytes_transferred);
+      });
   }
 }
 
@@ -144,7 +146,7 @@ void UdpSocket::open()
 
 void UdpSocket::close()
 {
-  boost::system::error_code error;
+  asio::error_code error;
   m_udp_socket.close(error);
   if (error) {
     std::cerr << "[UdpSocket::close] Error => " <<

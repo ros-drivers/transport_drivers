@@ -19,12 +19,15 @@ project(serial_driver)
 
 ## dependencies
 find_package(ament_cmake_auto REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system)
 
 ament_auto_find_build_dependencies()
 
-include_directories(include ${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
+# add package modules path, not needed in dependend packages
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+
+find_package(ASIO REQUIRED)
+
+include_directories(include ${ASIO_INCLUDE_DIRS})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto)
@@ -34,14 +37,13 @@ if(BUILD_TESTING)
   add_library(${TEST_LIB} SHARED test/test_driver.hpp test/test_driver.cpp)
   ament_target_dependencies(${TEST_LIB} "rclcpp" "std_msgs")
   target_include_directories(${TEST_LIB} PRIVATE include)
-  target_link_libraries(${TEST_LIB} ${Boost_LIBRARIES})
 
   # Unit tests
   set(TEST_SERIAL_DRIVER_EXE test_serial_driver)
   ament_add_gtest(${TEST_SERIAL_DRIVER_EXE}
     test/gtest_main.cpp
     test/test_serial_driver.cpp)
-  ament_target_dependencies(${TEST_SERIAL_DRIVER_EXE}  "Boost")
+  ament_target_dependencies(${TEST_SERIAL_DRIVER_EXE} "ASIO")
   target_include_directories(${TEST_SERIAL_DRIVER_EXE} PRIVATE include)
   target_link_libraries(${TEST_SERIAL_DRIVER_EXE} ${TEST_LIB} util)
 endif()
