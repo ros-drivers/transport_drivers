@@ -37,6 +37,8 @@ if(BUILD_TESTING)
   add_library(${TEST_LIB} SHARED test/test_driver.hpp test/test_driver.cpp)
   ament_target_dependencies(${TEST_LIB} "rclcpp" "std_msgs")
   target_include_directories(${TEST_LIB} PRIVATE include)
+  target_compile_definitions(${TEST_LIB} PRIVATE
+    ASIO_STANDALONE)
 
   # Unit tests
   set(TEST_SERIAL_DRIVER_EXE test_serial_driver)
@@ -46,6 +48,8 @@ if(BUILD_TESTING)
   ament_target_dependencies(${TEST_SERIAL_DRIVER_EXE} "ASIO")
   target_include_directories(${TEST_SERIAL_DRIVER_EXE} PRIVATE include)
   target_link_libraries(${TEST_SERIAL_DRIVER_EXE} ${TEST_LIB} util)
+  target_compile_definitions(${TEST_SERIAL_DRIVER_EXE} PRIVATE
+    ASIO_STANDALONE)
 endif()
 
 ament_auto_package(

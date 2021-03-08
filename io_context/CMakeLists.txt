@@ -41,6 +41,8 @@ ament_auto_add_library(${PROJECT_NAME} SHARED
   src/msg_converters/std_msgs.cpp
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${ASIO_INCLUDE_DIRS})
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  ASIO_STANDALONE)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

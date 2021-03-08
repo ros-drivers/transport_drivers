@@ -49,6 +49,8 @@ ament_auto_add_library(${PROJECT_NAME} SHARED
   src/udp_driver.cpp
 )
 ament_target_dependencies(${PROJECT_NAME} "ASIO")
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  ASIO_STANDALONE)
 
 ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
   src/udp_receiver_node.cpp
