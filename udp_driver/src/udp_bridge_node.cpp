@@ -28,6 +28,8 @@ using drivers::udp_driver::UdpSenderNode;
 using lifecycle_msgs::msg::State;
 using lifecycle_msgs::msg::Transition;
 
+/// \brief The purpose of this node is to provide both UDP sending
+///        and receiving capability using a shared IoContext.
 int main(int argc, char ** argv)
 {
   // Force flush of the stdout buffer
