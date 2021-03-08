@@ -16,6 +16,8 @@
 
 #include "msg_converters/std_msgs.hpp"
 
+#include <cmath>
+
 #include <asio.hpp>
 
 namespace drivers
