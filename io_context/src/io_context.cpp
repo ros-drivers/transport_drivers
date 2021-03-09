@@ -71,7 +71,7 @@ void IoContext::waitForExit()
     ios().post([&]() {m_work.reset();});
   }
 
-  // m_ios_thread_workers->interrupt_all();
+  ios().stop();
   m_ios_thread_workers->join_all();
 }
 
