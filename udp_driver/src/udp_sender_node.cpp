@@ -45,6 +45,13 @@ UdpSenderNode::UdpSenderNode(
   get_params();
 }
 
+UdpSenderNode::~UdpSenderNode()
+{
+  if (m_owned_ctx) {
+    m_owned_ctx->waitForExit();
+  }
+}
+
 LNI::CallbackReturn UdpSenderNode::on_configure(const lc::State & state)
 {
   (void)state;

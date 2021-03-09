@@ -51,6 +51,9 @@ public:
     const rclcpp::NodeOptions &,
     const IoContext & ctx);
 
+  /// \brief Destructor - required to manage owned IoContext
+  ~UdpReceiverNode();
+
   /// \brief Callback from transition to "configuring" state.
   /// \param[in] state The current state that the node is in.
   LNI::CallbackReturn on_configure(const lc::State & state) override;
@@ -77,7 +80,7 @@ public:
 private:
   void get_params();
 
-  std::unique_ptr<const IoContext> m_owned_ctx{};
+  std::unique_ptr<IoContext> m_owned_ctx{};
   std::string m_ip{};
   int16_t m_port{};
   std::unique_ptr<UdpDriver> m_udp_driver;

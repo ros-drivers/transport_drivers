@@ -121,6 +121,8 @@ TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
   EXPECT_EQ(node->shutdown().id(), State::PRIMARY_STATE_FINALIZED);
 
   rclcpp::shutdown();
+
+  ctx.waitForExit();
 }
 
 TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
@@ -191,4 +193,6 @@ TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
   EXPECT_EQ(node->shutdown().id(), State::PRIMARY_STATE_FINALIZED);
 
   rclcpp::shutdown();
+
+  ctx.waitForExit();
 }

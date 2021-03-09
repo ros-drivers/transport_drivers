@@ -43,6 +43,13 @@ UdpReceiverNode::UdpReceiverNode(
   get_params();
 }
 
+UdpReceiverNode::~UdpReceiverNode()
+{
+  if (m_owned_ctx) {
+    m_owned_ctx->waitForExit();
+  }
+}
+
 LNI::CallbackReturn UdpReceiverNode::on_configure(const lc::State & state)
 {
   (void)state;
