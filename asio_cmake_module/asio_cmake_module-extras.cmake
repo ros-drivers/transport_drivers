@@ -11,9 +11,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include(FindPackageHandleStandardArgs)
-
-find_path(ASIO_INCLUDE_DIRS NAMES asio.hpp)
-find_package_handle_standard_args(ASIO DEFAULT_MSG ASIO_INCLUDE_DIRS
-)
-mark_as_advanced(ASIO_INCLUDE_DIRS)
+list(INSERT CMAKE_MODULE_PATH 0 "${asio_cmake_module_DIR}/Modules")

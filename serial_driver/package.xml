@@ -12,6 +12,7 @@
   <author>Esteve Fernandez</author>
 
   <buildtool_depend>ament_cmake_auto</buildtool_depend>
+  <buildtool_depend>asio_cmake_module</buildtool_depend>
 
   <depend>asio</depend>
   <depend>rclcpp</depend>

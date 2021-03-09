@@ -22,9 +22,7 @@ find_package(ament_cmake_auto REQUIRED)
 
 ament_auto_find_build_dependencies()
 
-# add package modules path, not needed in dependend packages
-list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-
+find_package(asio_cmake_module REQUIRED)
 find_package(ASIO REQUIRED)
 
 include_directories(include ${ASIO_INCLUDE_DIRS})
