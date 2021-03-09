@@ -14,5 +14,6 @@
 #
 # Co-developed by Tier IV, Inc. and Apex.AI, Inc.
 
+find_package(asio_cmake_module REQUIRED)
 find_package(ASIO REQUIRED)
 list(APPEND serial_driver_INCLUDE_DIRS ${ASIO_INCLUDE_DIRS})
