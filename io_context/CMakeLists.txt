@@ -31,18 +31,18 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
-find_package(Boost REQUIRED COMPONENTS system thread)
+# add package modules path, not needed in dependend packages
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+
+find_package(ASIO REQUIRED)
 
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/io_context.cpp
   src/msg_converters/std_msgs.cpp
 )
-
-
-if(Boost_FOUND)
-  ament_target_dependencies(${PROJECT_NAME} "Boost")
-  target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
-endif()
+target_include_directories(${PROJECT_NAME} PUBLIC ${ASIO_INCLUDE_DIRS})
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  ASIO_STANDALONE)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -52,12 +52,16 @@ if(BUILD_TESTING)
 
   ament_add_gtest(${TEST_UDP_DRIVER_EXE}
           test/${name}.cpp)
-  ament_target_dependencies(${TEST_UDP_DRIVER_EXE} std_msgs Boost)
+  ament_target_dependencies(${TEST_UDP_DRIVER_EXE} std_msgs "ASIO")
 
   target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
   target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME})
+  target_compile_definitions(${TEST_UDP_DRIVER_EXE} PRIVATE
+    ASIO_STANDALONE)
 endif()
 
 target_compile_options(${PROJECT_NAME} PUBLIC "-O0" PRIVATE -Wall)
 
-ament_auto_package()
+ament_auto_package(
+  CONFIG_EXTRAS_POST "io_context-extras.cmake"
+)

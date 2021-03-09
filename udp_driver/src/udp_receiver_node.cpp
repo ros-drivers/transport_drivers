@@ -53,7 +53,7 @@ LNI::CallbackReturn UdpReceiverNode::on_configure(const lc::State & state)
     m_udp_driver->receiver()->open();
     m_udp_driver->receiver()->bind();
     m_udp_driver->receiver()->asyncReceive(
-      boost::bind(&UdpReceiverNode::receiver_callback, this, _1));
+      std::bind(&UdpReceiverNode::receiver_callback, this, std::placeholders::_1));
   } catch (const std::exception & ex) {
     RCLCPP_ERROR(
       get_logger(), "Error creating UDP receiver: %s:%i - %s",

@@ -16,6 +16,9 @@
 
 #include "msg_converters/std_msgs.hpp"
 
+#include <cmath>
+
+#include "asio.hpp"
 
 namespace drivers
 {
@@ -52,22 +55,22 @@ void convertFromRos2Message(const std_msgs::msg::Int64::SharedPtr & in, MutSocke
  */
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Int8 & out)
 {
-  out.data = *boost::asio::buffer_cast<int8_t *>(in);
+  out.data = *asio::buffer_cast<int8_t *>(in);
 }
 
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Int16 & out)
 {
-  out.data = *boost::asio::buffer_cast<int16_t *>(in);
+  out.data = *asio::buffer_cast<int16_t *>(in);
 }
 
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Int32 & out)
 {
-  out.data = *boost::asio::buffer_cast<int32_t *>(in);
+  out.data = *asio::buffer_cast<int32_t *>(in);
 }
 
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Int64 & out)
 {
-  out.data = *boost::asio::buffer_cast<int64_t *>(in);
+  out.data = *asio::buffer_cast<int64_t *>(in);
 }
 
 /*
@@ -100,22 +103,22 @@ void convertFromRos2Message(const std_msgs::msg::UInt64::SharedPtr & in, MutSock
  */
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::UInt8 & out)
 {
-  out.data = *boost::asio::buffer_cast<int8_t *>(in);
+  out.data = *asio::buffer_cast<int8_t *>(in);
 }
 
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::UInt16 & out)
 {
-  out.data = *boost::asio::buffer_cast<int16_t *>(in);
+  out.data = *asio::buffer_cast<int16_t *>(in);
 }
 
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::UInt32 & out)
 {
-  out.data = *boost::asio::buffer_cast<int32_t *>(in);
+  out.data = *asio::buffer_cast<int32_t *>(in);
 }
 
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::UInt64 & out)
 {
-  out.data = *boost::asio::buffer_cast<int64_t *>(in);
+  out.data = *asio::buffer_cast<int64_t *>(in);
 }
 
 /*
@@ -138,12 +141,12 @@ void convertFromRos2Message(const std_msgs::msg::Float64::SharedPtr & in, MutSoc
  */
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Float32 & out)
 {
-  out.data = *boost::asio::buffer_cast<float_t *>(in);
+  out.data = *asio::buffer_cast<float_t *>(in);
 }
 
 void convertToRos2Message(const MutSocketBuffer & in, std_msgs::msg::Float64 & out)
 {
-  out.data = *boost::asio::buffer_cast<double_t *>(in);
+  out.data = *asio::buffer_cast<double_t *>(in);
 }
 
 }  // namespace common

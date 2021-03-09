@@ -78,7 +78,8 @@ TEST_F(serial_driver, basic)
   );
 
   for (auto val : values) {
-    write(master_fd, reinterpret_cast<char *>(&val), sizeof(val));
+    ssize_t result = write(master_fd, reinterpret_cast<char *>(&val), sizeof(val));
+    (void)result;
     driver.run(1U);
     EXPECT_EQ(driver.get_last_value(), val);
   }

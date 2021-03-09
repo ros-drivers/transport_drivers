@@ -17,15 +17,15 @@
 #ifndef UDP_DRIVER__UDP_SOCKET_HPP_
 #define UDP_DRIVER__UDP_SOCKET_HPP_
 
-#include <boost/array.hpp>
+#include <array>
 
 #include <string>
 
 #include "io_context/io_context.hpp"
 #include "msg_converters/converters.hpp"
 
-using boost::asio::ip::udp;
-using boost::asio::ip::address;
+using asio::ip::udp;
+using asio::ip::address;
 using drivers::common::IoContext;
 
 namespace drivers
@@ -33,13 +33,16 @@ namespace drivers
 namespace udp_driver
 {
 
-typedef boost::function<void (const MutSocketBuffer &)> Functor;
+using Functor = std::function<void (const MutSocketBuffer &)>;
 
-class UdpSocket : private boost::noncopyable
+class UdpSocket
 {
 public:
   UdpSocket(const IoContext & ctx, const std::string & ip, uint16_t port);
   ~UdpSocket();
+
+  UdpSocket(const UdpSocket &) = delete;
+  UdpSocket & operator=(const UdpSocket &) = delete;
 
   std::string ip() const;
   uint16_t port() const;
@@ -71,11 +74,11 @@ public:
 
 private:
   void asyncSendHandler(
-    const boost::system::error_code & error,
+    const asio::error_code & error,
     std::size_t bytes_transferred);
 
   void asyncReceiveHandler(
-    const boost::system::error_code & error,
+    const asio::error_code & error,
     std::size_t bytes_transferred);
 
 private:
@@ -84,7 +87,7 @@ private:
   udp::endpoint m_endpoint;
   Functor m_func;
   static const size_t m_recv_buffer_size{2048};
-  boost::array<uint8_t, m_recv_buffer_size> m_recv_buffer;
+  std::array<uint8_t, m_recv_buffer_size> m_recv_buffer;
 };
 
 }  // namespace udp_driver
