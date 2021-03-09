@@ -76,6 +76,8 @@ ament_auto_add_executable(udp_bridge_node_exe
 )
 
 target_link_libraries(udp_bridge_node_exe ${PROJECT_NAME} ${PROJECT_NAME}_nodes)
+target_compile_definitions(udp_bridge_node_exe PRIVATE
+  ASIO_STANDALONE)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
