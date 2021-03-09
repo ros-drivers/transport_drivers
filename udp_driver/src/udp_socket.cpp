@@ -22,6 +22,7 @@
 #include <system_error>
 
 #include "asio.hpp"
+#include "rclcpp/logging.hpp"
 
 namespace drivers
 {
@@ -48,8 +49,7 @@ std::size_t UdpSocket::send(const MutSocketBuffer & buff)
   try {
     return m_udp_socket.send_to(buff, m_endpoint);
   } catch (const std::system_error & error) {
-    std::cerr << "[UdpSocket::send] Error => " <<
-      error.what() << std::endl;
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger("UdpSocket::send"), error.what());
     return -1;
   }
 }
@@ -66,8 +66,7 @@ size_t UdpSocket::receive(const MutSocketBuffer & buff)
     error);
 
   if (error && error != asio::error::message_size) {
-    std::cerr << "[UdpSocket::receive] Error => " <<
-      error.message() << std::endl;
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger("UdpSocket::receive"), error.message());
     return -1;
   }
   return len;
@@ -101,8 +100,7 @@ void UdpSocket::asyncSendHandler(
 {
   (void)bytes_transferred;
   if (error) {
-    std::cerr << "[UdpSocket::asyncSendHandler] Error => " <<
-      error.message() << std::endl;
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger("UdpSocket::asyncSendHandler"), error.message());
   }
 }
 
@@ -112,8 +110,7 @@ void UdpSocket::asyncReceiveHandler(
 {
   (void)bytes_transferred;
   if (error) {
-    std::cerr << "[UdpSocket::asyncReceiveHandler] Error => " <<
-      error.message() << std::endl;
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger("UdpSocket::asyncReceiveHandler"), error.message());
     return;
   }
 
@@ -149,8 +146,7 @@ void UdpSocket::close()
   asio::error_code error;
   m_udp_socket.close(error);
   if (error) {
-    std::cerr << "[UdpSocket::close] Error => " <<
-      error.message() << std::endl;
+    RCLCPP_ERROR_STREAM(rclcpp::get_logger("UdpSocket::close"), error.message());
   }
 }
 

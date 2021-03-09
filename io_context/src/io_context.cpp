@@ -19,6 +19,7 @@
 #include <iostream>
 
 #include "asio.hpp"
+#include "rclcpp/logging.hpp"
 
 namespace drivers
 {
@@ -41,8 +42,9 @@ IoContext::IoContext(size_t threads_count)
       });
   }
 
-  std::cout << "[IoContext::IoContext] INFO => Thread(s) Created: " <<
-    serviceThreadCount() << std::endl;
+  RCLCPP_INFO_STREAM(
+    rclcpp::get_logger("IoContext::IoContext"), "Thread(s) Created: " <<
+      serviceThreadCount());
 }
 
 IoContext::~IoContext()
