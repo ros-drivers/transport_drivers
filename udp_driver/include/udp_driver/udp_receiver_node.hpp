@@ -78,7 +78,6 @@ private:
   void get_params();
 
   std::unique_ptr<const IoContext> m_owned_ctx{};
-  const IoContext & m_ctx;
   std::string m_ip{};
   int16_t m_port{};
   std::unique_ptr<UdpDriver> m_udp_driver;
