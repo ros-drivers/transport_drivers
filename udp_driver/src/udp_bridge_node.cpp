@@ -41,7 +41,7 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   rclcpp::executors::SingleThreadedExecutor exec;
   rclcpp::NodeOptions options;
-  const auto ctx = std::make_shared<IoContext>();
+  IoContext ctx{};
 
   auto receiver_node = std::make_shared<UdpReceiverNode>(options, ctx);
   auto sender_node = std::make_shared<UdpSenderNode>(options, ctx);

@@ -28,14 +28,15 @@ namespace udp_driver
 
 UdpReceiverNode::UdpReceiverNode(const rclcpp::NodeOptions & options)
 : lc::LifecycleNode("udp_receiver_node", options),
-  m_ctx{new IoContext(1)}
+  m_owned_ctx{new IoContext(1)},
+  m_ctx{*m_owned_ctx}
 {
   get_params();
 }
 
 UdpReceiverNode::UdpReceiverNode(
   const rclcpp::NodeOptions & options,
-  const std::shared_ptr<IoContext> & ctx)
+  const IoContext & ctx)
 : lc::LifecycleNode("udp_receiver_node", options),
   m_ctx{ctx}
 {
@@ -46,7 +47,7 @@ LNI::CallbackReturn UdpReceiverNode::on_configure(const lc::State & state)
 {
   (void)state;
 
-  m_udp_driver = std::make_unique<UdpDriver>(*m_ctx);
+  m_udp_driver = std::make_unique<UdpDriver>(m_ctx);
 
   try {
     m_udp_driver->init_receiver(m_ip, m_port);

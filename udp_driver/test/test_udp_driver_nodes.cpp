@@ -39,14 +39,14 @@ constexpr uint16_t port = 8000;
 TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
 {
   rclcpp::init(0, nullptr);
-  const auto ctx = std::make_shared<IoContext>();
+  IoContext ctx{};
 
   int32_t sum = 0;
   std::promise<bool> promise_1;
   std::shared_future<bool> future_1(promise_1.get_future());
 
   // Raw UDP packets receiver, It could be a hardware (microcontroller, etc.)
-  UdpSocket receiver(*ctx, ip, port);
+  UdpSocket receiver(ctx, ip, port);
   receiver.open();
   EXPECT_EQ(receiver.isOpen(), true);
   receiver.bind();
@@ -126,7 +126,7 @@ TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
 TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
 {
   rclcpp::init(0, nullptr);
-  const auto ctx = std::make_shared<IoContext>();
+  IoContext ctx{};
 
   int32_t sum = 0;
 
@@ -162,7 +162,7 @@ TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
   // Sender socket that could be a hardware (microcontroller, etc.)
   // Streams sequence of data in an asynchronous manner by 10 times and then shutting down
   {
-    UdpSocket sender(*ctx, ip, port);
+    UdpSocket sender(ctx, ip, port);
     sender.open();
     EXPECT_EQ(sender.isOpen(), true);
     int32_t count = 0;

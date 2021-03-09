@@ -49,7 +49,7 @@ public:
   /// \param[in] ctx A shared IoContext
   UdpReceiverNode(
     const rclcpp::NodeOptions &,
-    const std::shared_ptr<IoContext> & ctx);
+    const IoContext & ctx);
 
   /// \brief Callback from transition to "configuring" state.
   /// \param[in] state The current state that the node is in.
@@ -77,7 +77,8 @@ public:
 private:
   void get_params();
 
-  std::shared_ptr<IoContext> m_ctx;
+  std::unique_ptr<const IoContext> m_owned_ctx{};
+  const IoContext & m_ctx;
   std::string m_ip{};
   int16_t m_port{};
   std::unique_ptr<UdpDriver> m_udp_driver;
