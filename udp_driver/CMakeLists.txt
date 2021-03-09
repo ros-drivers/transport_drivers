@@ -104,4 +104,6 @@ if(BUILD_TESTING)
   endforeach()
 endif()
 
-ament_auto_package()
+ament_auto_package(
+  CONFIG_EXTRAS_POST "udp_driver-extras.cmake"
+)

@@ -62,4 +62,6 @@ endif()
 
 target_compile_options(${PROJECT_NAME} PUBLIC "-O0" PRIVATE -Wall)
 
-ament_auto_package()
+ament_auto_package(
+  CONFIG_EXTRAS_POST "io_context-extras.cmake"
+)

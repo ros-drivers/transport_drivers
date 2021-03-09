@@ -13,6 +13,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_auto</buildtool_depend>
 
+  <depend>asio</depend>
   <depend>io_context</depend>
   <depend>lifecycle_msgs</depend>
   <depend>rclcpp</depend>
