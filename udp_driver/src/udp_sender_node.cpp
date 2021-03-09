@@ -106,8 +106,19 @@ LNI::CallbackReturn UdpSenderNode::on_shutdown(const lc::State & state)
 
 void UdpSenderNode::get_params()
 {
-  m_ip = declare_parameter("ip").get<std::string>();
-  m_port = declare_parameter("port").get<int16_t>();
+  try {
+    m_ip = declare_parameter("ip").get<std::string>();
+  } catch (rclcpp::ParameterTypeException & ex) {
+    RCLCPP_ERROR(get_logger(), "The ip paramter provided was invalid");
+    throw ex;
+  }
+
+  try {
+    m_port = declare_parameter("port").get<int16_t>();
+  } catch (rclcpp::ParameterTypeException & ex) {
+    RCLCPP_ERROR(get_logger(), "The port paramter provided was invalid");
+    throw ex;
+  }
 
   RCLCPP_INFO(get_logger(), "ip: %s", m_ip.c_str());
   RCLCPP_INFO(get_logger(), "port: %i", m_port);
