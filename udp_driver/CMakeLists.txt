@@ -58,6 +58,8 @@ ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
 )
 ament_target_dependencies(${PROJECT_NAME}_nodes "ASIO")
 target_link_libraries(${PROJECT_NAME}_nodes ${PROJECT_NAME})
+target_compile_definitions(${PROJECT_NAME}_nodes PRIVATE
+  ASIO_STANDALONE)
 
 rclcpp_components_register_node(${PROJECT_NAME}_nodes
   PLUGIN "drivers::udp_driver::UdpReceiverNode"
