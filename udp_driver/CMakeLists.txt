@@ -38,8 +38,6 @@ ament_auto_add_library(${PROJECT_NAME} SHARED
   src/udp_driver.cpp
 )
 ament_target_dependencies(${PROJECT_NAME} "ASIO")
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-  ASIO_STANDALONE)
 
 ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
   src/udp_receiver_node.cpp
@@ -47,8 +45,6 @@ ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
 )
 ament_target_dependencies(${PROJECT_NAME}_nodes "ASIO")
 target_link_libraries(${PROJECT_NAME}_nodes ${PROJECT_NAME})
-target_compile_definitions(${PROJECT_NAME}_nodes PRIVATE
-  ASIO_STANDALONE)
 
 rclcpp_components_register_node(${PROJECT_NAME}_nodes
   PLUGIN "drivers::udp_driver::UdpReceiverNode"
@@ -65,8 +61,7 @@ ament_auto_add_executable(udp_bridge_node_exe
 )
 
 target_link_libraries(udp_bridge_node_exe ${PROJECT_NAME} ${PROJECT_NAME}_nodes)
-target_compile_definitions(udp_bridge_node_exe PRIVATE
-  ASIO_STANDALONE)
+ament_target_dependencies(udp_bridge_node_exe ASIO)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -92,8 +87,6 @@ if(BUILD_TESTING)
 
     target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
     target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME} ${PROJECT_NAME}_nodes)
-    target_compile_definitions(${TEST_UDP_DRIVER_EXE} PRIVATE
-      ASIO_STANDALONE)
   endforeach()
 endif()
 
