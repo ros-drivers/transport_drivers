@@ -32,6 +32,12 @@ ament_auto_find_build_dependencies()
 find_package(asio_cmake_module REQUIRED)
 find_package(ASIO REQUIRED)
 
+ament_auto_add_library(${PROJECT_NAME} SHARED
+  src/serial_port.cpp
+  src/serial_driver.cpp
+)
+ament_target_dependencies(${PROJECT_NAME} "ASIO")
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto)
   ament_lint_auto_find_test_dependencies()
