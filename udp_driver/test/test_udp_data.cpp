@@ -25,7 +25,7 @@ const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
 static float PI = 3.14159265359;
 
-void handle_data(const MutSocketBuffer & buffer)
+void handle_data(const MutBuffer & buffer)
 {
   float received_PI = *reinterpret_cast<float *>(buffer.data());
   EXPECT_EQ(buffer.size(), sizeof(received_PI));
@@ -70,11 +70,11 @@ TEST(UdpDataTest, BlockingSendReceiveTest)
 
   receiver.bind();
 
-  std::size_t size = sender.send(MutSocketBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
+  std::size_t size = sender.send(MutBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
   EXPECT_EQ(size, sizeof(PI));
 
   float received_PI = 0.0f;
-  size = receiver.receive(MutSocketBuffer(&received_PI, sizeof(received_PI)));
+  size = receiver.receive(MutBuffer(&received_PI, sizeof(received_PI)));
   EXPECT_EQ(size, sizeof(received_PI));
   EXPECT_EQ(received_PI, PI);
 
@@ -100,7 +100,7 @@ TEST(UdpDataTest, NonBlockingSendReceiveTest)
   receiver.bind();
   receiver.asyncReceive(std::bind(handle_data, std::placeholders::_1));
 
-  MutSocketBuffer buffer(reinterpret_cast<void *>(&PI), sizeof(PI));
+  MutBuffer buffer(reinterpret_cast<void *>(&PI), sizeof(PI));
   sender.asyncSend(buffer);
   sender.asyncSend(buffer);
   sender.asyncSend(buffer);
@@ -129,7 +129,7 @@ TEST(UdpDataTest, BlockingSendNonBlockingReceiveTest)
   receiver.bind();
   receiver.asyncReceive(std::bind(handle_data, std::placeholders::_1));
 
-  std::size_t size = sender.send(MutSocketBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
+  std::size_t size = sender.send(MutBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
   EXPECT_EQ(size, sizeof(PI));
 
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));

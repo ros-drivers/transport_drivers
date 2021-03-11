@@ -14,11 +14,11 @@
 
 // Developed by LeoDrive, 2021
 
-#ifndef MSG_CONVERTERS__COMMON_HPP_
-#define MSG_CONVERTERS__COMMON_HPP_
+#ifndef IO_CONTEXT__COMMON_HPP_
+#define IO_CONTEXT__COMMON_HPP_
 
 #include <asio.hpp>
 
-using MutSocketBuffer = asio::mutable_buffer;
+using MutBuffer = asio::mutable_buffer;
 
-#endif  // MSG_CONVERTERS__COMMON_HPP_
+#endif  // IO_CONTEXT__COMMON_HPP_

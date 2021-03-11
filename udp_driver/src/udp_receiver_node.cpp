@@ -127,7 +127,7 @@ void UdpReceiverNode::get_params()
   RCLCPP_INFO(get_logger(), "port: %i", m_port);
 }
 
-void UdpReceiverNode::receiver_callback(const MutSocketBuffer & buffer)
+void UdpReceiverNode::receiver_callback(const MutBuffer & buffer)
 {
   std_msgs::msg::Int32 out;
   drivers::common::convertToRos2Message(buffer, out);
