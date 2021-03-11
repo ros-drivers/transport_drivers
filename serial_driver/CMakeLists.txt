@@ -14,18 +14,23 @@
 #
 # Co-developed by Tier IV, Inc. and Apex.AI, Inc.
 cmake_minimum_required(VERSION 3.5)
-
 project(serial_driver)
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
 ## dependencies
 find_package(ament_cmake_auto REQUIRED)
-
 ament_auto_find_build_dependencies()
 
 find_package(asio_cmake_module REQUIRED)
 find_package(ASIO REQUIRED)
-
-include_directories(include ${ASIO_INCLUDE_DIRS})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto)
