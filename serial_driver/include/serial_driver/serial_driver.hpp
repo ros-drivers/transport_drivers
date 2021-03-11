@@ -15,15 +15,31 @@
 #ifndef SERIAL_DRIVER__SERIAL_DRIVER_HPP_
 #define SERIAL_DRIVER__SERIAL_DRIVER_HPP_
 
+#include <memory>
 #include <string>
 
-#include "io_context/common.hpp"
 #include "io_context/io_context.hpp"
+#include "serial_driver/serial_port.hpp"
 
 namespace drivers
 {
 namespace serial_driver
 {
+
+class SerialDriver
+{
+public:
+  explicit SerialDriver(const IoContext & ctx);
+
+  void init_port(const std::string & device_name, const SerialPortConfig & config);
+
+  std::shared_ptr<SerialPort> port() const;
+
+private:
+  const IoContext & m_ctx;
+  std::shared_ptr<SerialPort> m_port;
+};
+
 }  // namespace serial_driver
 }  // namespace drivers
 

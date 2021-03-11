@@ -14,10 +14,30 @@
 
 #include "serial_driver/serial_driver.hpp"
 
+#include <memory>
+#include <string>
+
 namespace drivers
 {
 namespace serial_driver
 {
+
+SerialDriver::SerialDriver(const IoContext & ctx)
+: m_ctx(ctx)
+{
+}
+
+void SerialDriver::init_port(
+  const std::string & device_name,
+  const SerialPortConfig & config)
+{
+  m_port.reset(new SerialPort(m_ctx, device_name, config));
+}
+
+std::shared_ptr<SerialPort> SerialDriver::port() const
+{
+  return m_port;
+}
 
 }  // namespace serial_driver
 }  // namespace drivers
