@@ -54,6 +54,28 @@ ament_target_dependencies(${PROJECT_NAME}_nodes "ASIO")
 if(BUILD_TESTING)
   find_package(ament_lint_auto)
   ament_lint_auto_find_test_dependencies()
+
+  set(TEST_FILES
+    test/test_serial_driver.cpp
+    test/test_serial_port.cpp
+  )
+
+  foreach(file ${TEST_FILES})
+    get_filename_component(name "${file}" NAME_WE)
+    set(TEST_SERIAL_DRIVER_EXE ${name})
+
+    ament_add_gtest(${TEST_SERIAL_DRIVER_EXE}
+      test/${name}.cpp
+    )
+    ament_target_dependencies(${TEST_SERIAL_DRIVER_EXE}
+      rclcpp
+      example_interfaces
+      lifecycle_msgs
+      ASIO
+    )
+    target_include_directories(${TEST_SERIAL_DRIVER_EXE} PRIVATE include)
+    target_link_libraries(${TEST_SERIAL_DRIVER_EXE} ${PROJECT_NAME} ${PROJECT_NAME_NODES})
+  endforeach()
 endif()
 
 ament_auto_package(

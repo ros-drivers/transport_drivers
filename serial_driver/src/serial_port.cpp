@@ -42,22 +42,12 @@ SerialPort::~SerialPort()
 
 size_t SerialPort::send(const MutBuffer & buff)
 {
-  try {
-    return m_serial_port.write_some(buff);
-  } catch (const std::system_error & ex) {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("SerialPort::send"), ex.what());
-    return -1;
-  }
+  return m_serial_port.write_some(buff);
 }
 
 size_t SerialPort::receive(const MutBuffer & buff)
 {
-  try {
-    return m_serial_port.read_some(buff);
-  } catch (const std::system_error & ex) {
-    RCLCPP_ERROR_STREAM(rclcpp::get_logger("SerialPort::receive"), ex.what());
-    return -1;
-  }
+  return m_serial_port.read_some(buff);
 }
 
 void SerialPort::async_send(const MutBuffer & buff)
