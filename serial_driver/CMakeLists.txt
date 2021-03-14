@@ -54,20 +54,6 @@ ament_target_dependencies(${PROJECT_NAME}_nodes "ASIO")
 if(BUILD_TESTING)
   find_package(ament_lint_auto)
   ament_lint_auto_find_test_dependencies()
-
-  set(TEST_LIB "${PROJECT_NAME}_test")
-  add_library(${TEST_LIB} SHARED test/test_driver.hpp test/test_driver.cpp)
-  ament_target_dependencies(${TEST_LIB} "rclcpp" "std_msgs" "ASIO")
-  target_include_directories(${TEST_LIB} PRIVATE include)
-
-  # Unit tests
-  set(TEST_SERIAL_DRIVER_EXE test_serial_driver)
-  ament_add_gtest(${TEST_SERIAL_DRIVER_EXE}
-    test/gtest_main.cpp
-    test/test_serial_driver.cpp)
-  ament_target_dependencies(${TEST_SERIAL_DRIVER_EXE} "ASIO")
-  target_include_directories(${TEST_SERIAL_DRIVER_EXE} PRIVATE include)
-  target_link_libraries(${TEST_SERIAL_DRIVER_EXE} ${TEST_LIB} util)
 endif()
 
 ament_auto_package(
