@@ -1,4 +1,4 @@
-// Copyright 2021 LeoDrive.
+// Copyright 2021 LeoDrive, Copyright 2021 The Autoware Foundation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Developed by LeoDrive, 2021
+#include "msg_converters/example_interfaces.hpp"
 
-#ifndef MSG_CONVERTERS__CONVERTERS_HPP_
-#define MSG_CONVERTERS__CONVERTERS_HPP_
+#include <vector>
 
-#include "example_interfaces.hpp"
-#include "std_msgs.hpp"
-#include "udp_msgs.hpp"
+using example_interfaces::msg::UInt8MultiArray;
 
-#endif  // MSG_CONVERTERS__CONVERTERS_HPP_
+namespace drivers
+{
+namespace common
+{
+
+void from_msg(const UInt8MultiArray::SharedPtr & in, MutBuffer & out)
+{
+  out = MutBuffer(&in->data, sizeof(in->data));
+}
+
+void to_msg(const MutBuffer & in, UInt8MultiArray & out)
+{
+  out.data.reserve(sizeof(in));
+  out.data = *asio::buffer_cast<std::vector<uint8_t> *>(in);
+}
+
+}  // namespace common
+}  // namespace drivers
