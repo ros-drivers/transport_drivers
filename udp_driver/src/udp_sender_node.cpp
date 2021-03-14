@@ -132,7 +132,7 @@ void UdpSenderNode::get_params()
 void UdpSenderNode::subscriber_callback(std_msgs::msg::Int32::SharedPtr msg)
 {
   if (this->get_current_state().id() == State::PRIMARY_STATE_ACTIVE) {
-    MutSocketBuffer out;
+    MutBuffer out;
     drivers::common::convertFromRos2Message(msg, out);
 
     m_udp_driver->sender()->asyncSend(out);

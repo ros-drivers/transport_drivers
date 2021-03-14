@@ -51,7 +51,7 @@ TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
   EXPECT_EQ(receiver.isOpen(), true);
   receiver.bind();
   receiver.asyncReceive(
-    [&](const MutSocketBuffer & buffer) {
+    [&](const MutBuffer & buffer) {
       // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
       sum += *reinterpret_cast<int32_t *>(buffer.data());
       if (sum == 45) {
@@ -169,7 +169,7 @@ TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
     EXPECT_EQ(sender.isOpen(), true);
     int32_t count = 0;
     while (count <= 9) {
-      MutSocketBuffer buffer(reinterpret_cast<void *>(&count), sizeof(count));
+      MutBuffer buffer(reinterpret_cast<void *>(&count), sizeof(count));
       sender.asyncSend(buffer);
       count++;
     }

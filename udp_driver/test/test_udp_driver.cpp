@@ -43,7 +43,7 @@ TEST(UdpDriverTest, NonBlockingSendReceiveTest)
   driver.receiver()->open();
   driver.receiver()->bind();
   driver.receiver()->asyncReceive(
-    [&](const MutSocketBuffer & buffer) {
+    [&](const MutBuffer & buffer) {
       sum += *reinterpret_cast<int32_t *>(buffer.data());
     });
 
@@ -51,7 +51,7 @@ TEST(UdpDriverTest, NonBlockingSendReceiveTest)
   EXPECT_EQ(driver.sender()->isOpen(), true);
 
   for (int val : {1, 2, 3, 4, 5}) {
-    driver.sender()->asyncSend(MutSocketBuffer(&val, sizeof(val)));
+    driver.sender()->asyncSend(MutBuffer(&val, sizeof(val)));
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));

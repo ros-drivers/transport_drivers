@@ -33,7 +33,7 @@ namespace drivers
 namespace udp_driver
 {
 
-using Functor = std::function<void (const MutSocketBuffer &)>;
+using Functor = std::function<void (const MutBuffer &)>;
 
 class UdpSocket
 {
@@ -55,17 +55,17 @@ public:
   /*
    * Blocking Send Operation
    */
-  std::size_t send(const MutSocketBuffer & buff);
+  std::size_t send(const MutBuffer & buff);
 
   /*
    * Blocking Receive Operation
    */
-  size_t receive(const MutSocketBuffer & buff);
+  size_t receive(const MutBuffer & buff);
 
   /*
    * NonBlocking Send Operation
    */
-  void asyncSend(const MutSocketBuffer & buff);
+  void asyncSend(const MutBuffer & buff);
 
   /*
    * NonBlocking Receive Operation

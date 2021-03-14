@@ -44,7 +44,7 @@ UdpSocket::~UdpSocket()
   close();
 }
 
-std::size_t UdpSocket::send(const MutSocketBuffer & buff)
+std::size_t UdpSocket::send(const MutBuffer & buff)
 {
   try {
     return m_udp_socket.send_to(buff, m_endpoint);
@@ -54,7 +54,7 @@ std::size_t UdpSocket::send(const MutSocketBuffer & buff)
   }
 }
 
-size_t UdpSocket::receive(const MutSocketBuffer & buff)
+size_t UdpSocket::receive(const MutBuffer & buff)
 {
   asio::error_code error;
   asio::ip::udp::endpoint sender_endpoint;
@@ -72,7 +72,7 @@ size_t UdpSocket::receive(const MutSocketBuffer & buff)
   return len;
 }
 
-void UdpSocket::asyncSend(const MutSocketBuffer & buff)
+void UdpSocket::asyncSend(const MutBuffer & buff)
 {
   m_udp_socket.async_send_to(
     buff, m_endpoint,
@@ -115,7 +115,7 @@ void UdpSocket::asyncReceiveHandler(
   }
 
   if (bytes_transferred > 0 && m_func) {
-    m_func(MutSocketBuffer(m_recv_buffer.data(), bytes_transferred));
+    m_func(MutBuffer(m_recv_buffer.data(), bytes_transferred));
     m_udp_socket.async_receive_from(
       asio::buffer(m_recv_buffer, m_recv_buffer_size),
       m_endpoint,

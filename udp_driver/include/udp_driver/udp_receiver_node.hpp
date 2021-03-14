@@ -75,7 +75,7 @@ public:
   LNI::CallbackReturn on_shutdown(const lc::State & state) override;
 
   /// \breif Callback for receiving a UDP datagram
-  void receiver_callback(const MutSocketBuffer & buffer);
+  void receiver_callback(const MutBuffer & buffer);
 
 private:
   void get_params();
