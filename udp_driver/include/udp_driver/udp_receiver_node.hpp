@@ -82,9 +82,9 @@ private:
 
   std::unique_ptr<IoContext> m_owned_ctx{};
   std::string m_ip{};
-  int16_t m_port{};
+  uint16_t m_port{};
   std::unique_ptr<UdpDriver> m_udp_driver;
-  lc::LifecyclePublisher<std_msgs::msg::Int32>::SharedPtr m_publisher;
+  lc::LifecyclePublisher<udp_msgs::msg::UdpPacket>::SharedPtr m_publisher;
 };  // class UdpReceiverNode
 
 }  // namespace udp_driver

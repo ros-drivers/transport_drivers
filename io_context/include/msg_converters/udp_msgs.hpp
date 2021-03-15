@@ -1,4 +1,4 @@
-// Copyright 2021 LeoDrive.
+// Copyright 2021 Evan Flynn.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Developed by LeoDrive, 2021
+// Developed by Evan Flynn, 2021
 
-#ifndef MSG_CONVERTERS__CONVERTERS_HPP_
-#define MSG_CONVERTERS__CONVERTERS_HPP_
+#ifndef MSG_CONVERTERS__UDP_MSGS_HPP_
+#define MSG_CONVERTERS__UDP_MSGS_HPP_
 
-#include "std_msgs.hpp"
-#include "udp_msgs.hpp"
+#include <udp_msgs/msg/udp_packet.hpp>
 
-#endif  // MSG_CONVERTERS__CONVERTERS_HPP_
+#include "converters.hpp"
+
+namespace drivers
+{
+namespace common
+{
+
+/*
+ * ROS2 Message to Raw Buffer Converters
+ * udp_msgs::msg::UdpPacket variant
+ */
+void from_msg(const udp_msgs::msg::UdpPacket & in, MutBuffer & out);
+void to_msg(const MutBuffer & in, udp_msgs::msg::UdpPacket & out);
+
+}  // namespace common
+}  // namespace drivers
+
+#endif  // MSG_CONVERTERS__UDP_MSGS_HPP_

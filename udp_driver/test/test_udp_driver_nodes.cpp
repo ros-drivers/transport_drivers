@@ -41,7 +41,7 @@ TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
   rclcpp::init(0, nullptr);
   IoContext ctx{};
 
-  int32_t sum = 0;
+  uint16_t sum = 0;
   std::promise<bool> promise_1;
   std::shared_future<bool> future_1(promise_1.get_future());
 
@@ -53,7 +53,13 @@ TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
   receiver.asyncReceive(
     [&](const MutBuffer & buffer) {
       // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
-      sum += *reinterpret_cast<int32_t *>(buffer.data());
+      std::cout << "packet received" << std::endl;
+      udp_msgs::msg::UdpPacket packet;
+      drivers::common::to_msg(buffer, packet);
+      for (int i = 0; i < static_cast<int>(packet.data.size()); i++) {
+        sum += *reinterpret_cast<const uint16_t *>(packet.data[i]);
+        std::cout << sum << std::endl;
+      }
       if (sum == 45) {
         promise_1.set_value(true);
       }
@@ -80,19 +86,22 @@ TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
     std::shared_future<bool> future_2(promise_2.get_future());
 
     auto minimal_publisher = std::make_shared<rclcpp::Node>("minimal_publisher");
-    auto pub = minimal_publisher->create_publisher<std_msgs::msg::Int32>(
+    auto pub = minimal_publisher->create_publisher<udp_msgs::msg::UdpPacket>(
       "udp_write", 100);
+
+    udp_msgs::msg::UdpPacket message;
+    uint16_t count = 0;
+
     auto timer = minimal_publisher->create_wall_timer(
       std::chrono::milliseconds(10),
       [&](rclcpp::TimerBase & timer) {
-        static int count = 0;
-        std_msgs::msg::Int32 message;
-        message.data = count;
+        message.data.push_back(count);
+        std::cout << count << std::endl;
         pub->publish(message);
-
         if (count++ == 9) {
           timer.cancel();
           promise_2.set_value(true);
+          std::cout << "count is 9, set to true!" << std::endl;
         }
       });
 
@@ -150,13 +159,13 @@ TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
 
   auto minimal_subscriber = std::make_shared<rclcpp::Node>("minimal_subscriber");
   auto callback =
-    [&](std_msgs::msg::Int32::SharedPtr msg) {
-      sum += msg->data;
+    [&](udp_msgs::msg::UdpPacket::SharedPtr msg) {
+      sum += msg->data[msg->data.size()];
       if (sum == 45) {
         promise_2.set_value(true);
       }
     };
-  auto sub = minimal_subscriber->create_subscription<std_msgs::msg::Int32>(
+  auto sub = minimal_subscriber->create_subscription<udp_msgs::msg::UdpPacket>(
     "udp_read",
     10,
     callback);

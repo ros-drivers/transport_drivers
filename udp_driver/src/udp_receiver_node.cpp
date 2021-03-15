@@ -67,7 +67,7 @@ LNI::CallbackReturn UdpReceiverNode::on_configure(const lc::State & state)
     return LNI::CallbackReturn::FAILURE;
   }
 
-  m_publisher = this->create_publisher<std_msgs::msg::Int32>(
+  m_publisher = this->create_publisher<udp_msgs::msg::UdpPacket>(
     "udp_read", rclcpp::QoS(100));
 
   RCLCPP_DEBUG(get_logger(), "UDP receiver successfully configured.");
@@ -117,7 +117,7 @@ void UdpReceiverNode::get_params()
   }
 
   try {
-    m_port = declare_parameter("port").get<int16_t>();
+    m_port = declare_parameter("port").get<uint16_t>();
   } catch (rclcpp::ParameterTypeException & ex) {
     RCLCPP_ERROR(get_logger(), "The port paramter provided was invalid");
     throw ex;
@@ -129,8 +129,14 @@ void UdpReceiverNode::get_params()
 
 void UdpReceiverNode::receiver_callback(const MutBuffer & buffer)
 {
-  std_msgs::msg::Int32 out;
-  drivers::common::convertToRos2Message(buffer, out);
+  udp_msgs::msg::UdpPacket out;
+
+  out.header.frame_id = m_ip;
+  out.header.stamp = this->now();
+  out.address = m_ip;
+  out.src_port = m_port;
+
+  drivers::common::to_msg(buffer, out);
 
   m_publisher->publish(out);
 }
