@@ -18,6 +18,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace lc = rclcpp_lifecycle;
 using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
@@ -132,12 +133,16 @@ void UdpSenderNode::get_params()
 void UdpSenderNode::subscriber_callback(udp_msgs::msg::UdpPacket::SharedPtr msg)
 {
   if (this->get_current_state().id() == State::PRIMARY_STATE_ACTIVE) {
-    MutBuffer out;
-    drivers::common::from_msg(*msg, out);
-
+    std::vector<uint8_t> out;
+    RCLCPP_INFO(get_logger(), "msg size: %i", msg->data.size());
+    drivers::common::from_msg(msg, out);
+    RCLCPP_INFO(get_logger(), "sent size: %i", out.size());
     m_udp_driver->sender()->asyncSend(out);
   }
 }
 
 }  // namespace udp_driver
 }  // namespace drivers
+
+#include <rclcpp_components/register_node_macro.hpp>  // NOLINT
+RCLCPP_COMPONENTS_REGISTER_NODE(drivers::udp_driver::UdpSenderNode)

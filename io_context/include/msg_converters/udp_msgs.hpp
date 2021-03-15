@@ -19,7 +19,10 @@
 
 #include <udp_msgs/msg/udp_packet.hpp>
 
+#include <vector>
+
 #include "converters.hpp"
+
 
 namespace drivers
 {
@@ -30,8 +33,8 @@ namespace common
  * ROS2 Message to Raw Buffer Converters
  * udp_msgs::msg::UdpPacket variant
  */
-void from_msg(const udp_msgs::msg::UdpPacket & in, MutBuffer & out);
-void to_msg(const MutBuffer & in, udp_msgs::msg::UdpPacket & out);
+void from_msg(const udp_msgs::msg::UdpPacket::SharedPtr & in, std::vector<uint8_t> & out);
+void to_msg(const std::vector<uint8_t> & in, udp_msgs::msg::UdpPacket & out);
 
 }  // namespace common
 }  // namespace drivers

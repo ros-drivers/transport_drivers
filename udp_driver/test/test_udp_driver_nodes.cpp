@@ -49,16 +49,18 @@ TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
   UdpSocket receiver(ctx, ip, port);
   receiver.open();
   EXPECT_EQ(receiver.isOpen(), true);
+  sum = 0;
   receiver.bind();
   receiver.asyncReceive(
-    [&](const MutBuffer & buffer) {
+    [&](const std::vector<uint8_t> & buffer) {
       // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
       std::cout << "packet received" << std::endl;
-      udp_msgs::msg::UdpPacket packet;
-      drivers::common::to_msg(buffer, packet);
-      for (int i = 0; i < static_cast<int>(packet.data.size()); i++) {
-        sum += *reinterpret_cast<const uint16_t *>(packet.data[i]);
-        std::cout << sum << std::endl;
+      sum = 0;
+      // convert buffer to std::vector<uint8_t>
+      std::cout << "buffer size: " << static_cast<int>(buffer.size()) << std::endl;
+      for (int i = 0; i < static_cast<int>(buffer.size()); i += 2) {
+        sum += *reinterpret_cast<const uint16_t *>(&buffer[i]);
+        std::cout << "sum: " << sum << std::endl;
       }
       if (sum == 45) {
         promise_1.set_value(true);
@@ -89,19 +91,21 @@ TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
     auto pub = minimal_publisher->create_publisher<udp_msgs::msg::UdpPacket>(
       "udp_write", 100);
 
-    udp_msgs::msg::UdpPacket message;
     uint16_t count = 0;
 
     auto timer = minimal_publisher->create_wall_timer(
       std::chrono::milliseconds(10),
       [&](rclcpp::TimerBase & timer) {
-        message.data.push_back(count);
-        std::cout << count << std::endl;
+        udp_msgs::msg::UdpPacket message;
+        // push back each byte to the byte vector
+        message.data.resize((count + 1) * 2);
+        for (int i = 0; i <= count; i++) {
+          std::memcpy(&message.data[i * 2], &i, sizeof(i));
+        }
         pub->publish(message);
         if (count++ == 9) {
           timer.cancel();
           promise_2.set_value(true);
-          std::cout << "count is 9, set to true!" << std::endl;
         }
       });
 
@@ -178,7 +182,8 @@ TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
     EXPECT_EQ(sender.isOpen(), true);
     int32_t count = 0;
     while (count <= 9) {
-      MutBuffer buffer(reinterpret_cast<void *>(&count), sizeof(count));
+      std::vector<uint8_t> buffer;
+      buffer.push_back(*reinterpret_cast<uint8_t *>(&count));
       sender.asyncSend(buffer);
       count++;
     }

@@ -27,15 +27,17 @@ namespace common
  * ROS2 Message to Raw Buffer Converters
  * udp_msgs::msg::UdpPacket variant
  */
-void from_msg(const udp_msgs::msg::UdpPacket & in, MutBuffer & out)
+void from_msg(const udp_msgs::msg::UdpPacket::SharedPtr & in, std::vector<uint8_t> & out)
 {
-  out = MutBuffer(const_cast<std::vector<uint8_t> *>(&in.data), sizeof(in.data));
+  out = in->data;
+  // MutBuffer(const_cast<std::vector<uint8_t> *>(&in->data), sizeof(in->data));
 }
 
-void to_msg(const MutBuffer & in, udp_msgs::msg::UdpPacket & out)
+void to_msg(const std::vector<uint8_t> & in, udp_msgs::msg::UdpPacket & out)
 {
-  out.data.reserve(sizeof(in));
-  out.data = *asio::buffer_cast<std::vector<uint8_t> *>(in);
+  out.data.resize(in.size());
+  out.data = in;
+  // out.data = *asio::buffer_cast<std::vector<uint8_t> *>(in);
 }
 
 }  // namespace common

@@ -18,8 +18,8 @@
 #define UDP_DRIVER__UDP_SOCKET_HPP_
 
 #include <array>
-
 #include <string>
+#include <vector>
 
 #include "io_context/io_context.hpp"
 #include "msg_converters/converters.hpp"
@@ -33,7 +33,7 @@ namespace drivers
 namespace udp_driver
 {
 
-using Functor = std::function<void (const MutBuffer &)>;
+using Functor = std::function<void (const std::vector<uint8_t> &)>;
 
 class UdpSocket
 {
@@ -65,7 +65,7 @@ public:
   /*
    * NonBlocking Send Operation
    */
-  void asyncSend(const MutBuffer & buff);
+  void asyncSend(const std::vector<uint8_t> & buff);
 
   /*
    * NonBlocking Receive Operation
@@ -87,7 +87,7 @@ private:
   udp::endpoint m_endpoint;
   Functor m_func;
   static const size_t m_recv_buffer_size{2048};
-  std::array<uint8_t, m_recv_buffer_size> m_recv_buffer;
+  std::vector<uint8_t> m_recv_buffer;
 };
 
 }  // namespace udp_driver

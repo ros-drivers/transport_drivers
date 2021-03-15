@@ -13,8 +13,9 @@
 // limitations under the License.
 
 // Developed by LeoDrive, 2021
-
 #include <gtest/gtest.h>
+
+#include <vector>
 
 #include "udp_driver/udp_socket.hpp"
 
@@ -25,9 +26,9 @@ const char ip[] = "127.0.0.1";
 constexpr uint16_t port = 8000;
 static float PI = 3.14159265359;
 
-void handle_data(const MutBuffer & buffer)
+void handle_data(const std::vector<uint8_t> & buffer)
 {
-  float received_PI = *reinterpret_cast<float *>(buffer.data());
+  float received_PI = *reinterpret_cast<const float *>(&buffer[0]);
   EXPECT_EQ(buffer.size(), sizeof(received_PI));
   EXPECT_EQ(received_PI, PI);
 }
@@ -100,7 +101,10 @@ TEST(UdpDataTest, NonBlockingSendReceiveTest)
   receiver.bind();
   receiver.asyncReceive(std::bind(handle_data, std::placeholders::_1));
 
-  MutBuffer buffer(reinterpret_cast<void *>(&PI), sizeof(PI));
+  std::vector<uint8_t> buffer;
+  buffer.resize(sizeof(PI));
+  std::memcpy(buffer.data(), &PI, sizeof(PI));
+
   sender.asyncSend(buffer);
   sender.asyncSend(buffer);
   sender.asyncSend(buffer);

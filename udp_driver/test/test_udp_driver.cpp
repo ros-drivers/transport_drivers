@@ -43,15 +43,18 @@ TEST(UdpDriverTest, NonBlockingSendReceiveTest)
   driver.receiver()->open();
   driver.receiver()->bind();
   driver.receiver()->asyncReceive(
-    [&](const MutBuffer & buffer) {
-      sum += *reinterpret_cast<int32_t *>(buffer.data());
+    [&](const std::vector<uint8_t> & buffer) {
+      sum += *reinterpret_cast<const int32_t *>(&buffer[0]);
     });
 
   driver.sender()->open();
   EXPECT_EQ(driver.sender()->isOpen(), true);
 
+  std::vector<uint8_t> send_vector;
   for (int val : {1, 2, 3, 4, 5}) {
-    driver.sender()->asyncSend(MutBuffer(&val, sizeof(val)));
+    send_vector.clear();
+    send_vector.push_back(*reinterpret_cast<uint8_t *>(&val));
+    driver.sender()->asyncSend(send_vector);
   }
 
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));

@@ -16,6 +16,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace lc = rclcpp_lifecycle;
 using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
@@ -127,7 +128,7 @@ void UdpReceiverNode::get_params()
   RCLCPP_INFO(get_logger(), "port: %i", m_port);
 }
 
-void UdpReceiverNode::receiver_callback(const MutBuffer & buffer)
+void UdpReceiverNode::receiver_callback(const std::vector<uint8_t> & buffer)
 {
   udp_msgs::msg::UdpPacket out;
 
@@ -136,7 +137,7 @@ void UdpReceiverNode::receiver_callback(const MutBuffer & buffer)
   out.address = m_ip;
   out.src_port = m_port;
 
-  drivers::common::to_msg(buffer, out);
+  out.data = buffer;
 
   m_publisher->publish(out);
 }
