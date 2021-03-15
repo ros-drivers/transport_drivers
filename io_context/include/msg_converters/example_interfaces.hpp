@@ -26,7 +26,7 @@ namespace drivers
 namespace common
 {
 
-void from_msg(const UInt8MultiArray::SharedPtr & in, MutBuffer & out);
+void from_msg(const UInt8MultiArray & in, MutBuffer & out);
 
 void to_msg(const MutBuffer & in, UInt8MultiArray & out);
 
