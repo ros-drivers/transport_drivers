@@ -110,6 +110,13 @@ LNI::CallbackReturn SerialBridgeNode::on_cleanup(const lc::State & state)
   return LNI::CallbackReturn::SUCCESS;
 }
 
+LNI::CallbackReturn SerialBridgeNode::on_shutdown(const lc::State & state)
+{
+  (void)state;
+  RCLCPP_DEBUG(get_logger(), "Serial bridge shutting down.");
+  return LNI::CallbackReturn::SUCCESS;
+}
+
 void SerialBridgeNode::get_params()
 {
   uint32_t baud_rate{};
