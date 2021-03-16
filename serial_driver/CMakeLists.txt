@@ -80,4 +80,7 @@ endif()
 
 ament_auto_package(
   CONFIG_EXTRAS_POST "serial_driver-extras.cmake"
+  INSTALL_TO_SHARE
+    launch
+    params
 )
