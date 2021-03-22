@@ -30,7 +30,7 @@ void from_msg(const UInt8MultiArray & in, MutBuffer & out)
 
 void to_msg(const MutBuffer & in, UInt8MultiArray & out)
 {
-  out.data.reserve(sizeof(in));
+  out.data.reserve(in.size());
   out.data = *asio::buffer_cast<std::vector<uint8_t> *>(in);
 }
 
