@@ -54,13 +54,10 @@ TEST(UdpSenderNodeTest, RosMessageToRawUdpMessageSharedContext)
   receiver.asyncReceive(
     [&](const std::vector<uint8_t> & buffer) {
       // Receive stream => 0 + 1 + 2+ 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45
-      std::cout << "packet received" << std::endl;
       sum = 0;
       // convert buffer to std::vector<uint8_t>
-      std::cout << "buffer size: " << static_cast<int>(buffer.size()) << std::endl;
       for (int i = 0; i < static_cast<int>(buffer.size()); i += 2) {
         sum += *reinterpret_cast<const uint16_t *>(&buffer[i]);
-        std::cout << "sum: " << sum << std::endl;
       }
       if (sum == 45) {
         promise_1.set_value(true);
@@ -164,7 +161,14 @@ TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
   auto minimal_subscriber = std::make_shared<rclcpp::Node>("minimal_subscriber");
   auto callback =
     [&](udp_msgs::msg::UdpPacket::SharedPtr msg) {
-      sum += msg->data[msg->data.size()];
+      sum = 0;
+      // convert buffer to std::vector<uint8_t>
+      std::cout << "msg size: " << msg->data.size() << std::endl;
+      for (int i = 0; i < static_cast<int>(msg->data.size()); i += 4) {
+        sum += *reinterpret_cast<const int32_t *>(&msg->data[i]);
+        std::cout << "sum: " << sum << std::endl;
+      }
+
       if (sum == 45) {
         promise_2.set_value(true);
       }
@@ -183,7 +187,10 @@ TEST(UdpReceiverNodeTest, RawUdpMessageToRosMessageSharedContext)
     int32_t count = 0;
     while (count <= 9) {
       std::vector<uint8_t> buffer;
-      buffer.push_back(*reinterpret_cast<uint8_t *>(&count));
+      buffer.resize((count + 1) * 4);  // resize vector to length of bytes
+      for (int32_t i = 0; i <= count; i++) {
+        std::memcpy(&buffer[i * 4], &i, sizeof(i));
+      }
       sender.asyncSend(buffer);
       count++;
     }

@@ -30,14 +30,12 @@ namespace common
 void from_msg(const udp_msgs::msg::UdpPacket::SharedPtr & in, std::vector<uint8_t> & out)
 {
   out = in->data;
-  // MutBuffer(const_cast<std::vector<uint8_t> *>(&in->data), sizeof(in->data));
 }
 
 void to_msg(const std::vector<uint8_t> & in, udp_msgs::msg::UdpPacket & out)
 {
   out.data.resize(in.size());
   out.data = in;
-  // out.data = *asio::buffer_cast<std::vector<uint8_t> *>(in);
 }
 
 }  // namespace common

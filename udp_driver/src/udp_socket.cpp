@@ -91,9 +91,10 @@ void UdpSocket::asyncReceive(Functor func)
   m_udp_socket.async_receive_from(
     asio::buffer(m_recv_buffer),
     m_endpoint,
-    std::bind(
-      &UdpSocket::asyncReceiveHandler, this,
-      std::placeholders::_1, std::placeholders::_2));
+    [this](std::error_code error, std::size_t bytes_transferred)
+    {
+      asyncReceiveHandler(error, bytes_transferred);
+    });
 }
 
 void UdpSocket::asyncSendHandler(
@@ -119,12 +120,15 @@ void UdpSocket::asyncReceiveHandler(
   if (bytes_transferred > 0 && m_func) {
     m_recv_buffer.resize(bytes_transferred);
     m_func(m_recv_buffer);
+    m_recv_buffer.resize(m_recv_buffer_size);
     m_udp_socket.async_receive_from(
       asio::buffer(m_recv_buffer),
       m_endpoint,
-      std::bind(
-        &UdpSocket::asyncReceiveHandler, this,
-        std::placeholders::_1, std::placeholders::_2));
+      [this](std::error_code error, std::size_t bytes_tf)
+      {
+        m_recv_buffer.resize(bytes_tf);
+        asyncReceiveHandler(error, bytes_tf);
+      });
   }
 }
 
