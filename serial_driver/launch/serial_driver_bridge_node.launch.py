@@ -17,17 +17,17 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import EmitEvent
-from launch.actions import RegisterEventHandler
+from launch.actions import (DeclareLaunchArgument, EmitEvent,
+                            RegisterEventHandler)
+from launch.event_handlers import OnProcessStart
 from launch.event_handlers.on_shutdown import OnShutdown
 from launch.events import matches_action
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, TextSubstitution
 from launch_ros.actions import LifecycleNode
 from launch_ros.event_handlers import OnStateTransition
 from launch_ros.events.lifecycle import ChangeState
 from launch_ros.events.lifecycle import matches_node_name
-import lifecycle_msgs.msg
+from lifecycle_msgs.msg import Transition
 
 
 def generate_launch_description():
@@ -45,39 +45,48 @@ def generate_launch_description():
         package='serial_driver',
         executable='serial_bridge_node_exe',
         name=node_name,
-        namespace='',
+        namespace=TextSubstitution(text=''),
         parameters=[LaunchConfiguration('params_file')],
         output='screen',
     )
 
-    configure_event = EmitEvent(
-        event=ChangeState(
-            lifecycle_node_matcher=matches_action(bridge_node),
-            transition_id=lifecycle_msgs.msg.Transition.TRANSITION_CONFIGURE,
+    configure_event_handler = RegisterEventHandler(
+        event_handler=OnProcessStart(
+            target_action=bridge_node,
+            on_start=[
+                EmitEvent(
+                    event=ChangeState(
+                        lifecycle_node_matcher=matches_action(bridge_node),
+                        transition_id=Transition.TRANSITION_CONFIGURE,
+                    ),
+                ),
+            ],
         )
     )
 
-    activate_event = RegisterEventHandler(
-        OnStateTransition(
-            target_lifecycle_node=bridge_node, goal_state='inactive',
+    activate_event_handler = RegisterEventHandler(
+        event_handler=OnStateTransition(
+            target_lifecycle_node=bridge_node,
+            start_state='configuring',
+            goal_state='inactive',
             entities=[
                 EmitEvent(
                     event=ChangeState(
                         lifecycle_node_matcher=matches_action(bridge_node),
-                        transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
-                    )
-                )
-            ]
+                        transition_id=Transition.TRANSITION_ACTIVATE,
+                    ),
+                ),
+            ],
         )
     )
 
-    shutdown_event = RegisterEventHandler(
-        OnShutdown(
+    shutdown_event_handler = RegisterEventHandler(
+        event_handler=OnShutdown(
             on_shutdown=[
                 EmitEvent(
                     event=ChangeState(
                         lifecycle_node_matcher=matches_node_name(node_name),
-                        transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVE_SHUTDOWN,
+                        transition_id=Transition.TRANSITION_ACTIVE_SHUTDOWN,
                     )
                 )
             ]
@@ -87,7 +96,7 @@ def generate_launch_description():
     return LaunchDescription([
         params_declare,
         bridge_node,
-        configure_event,
-        activate_event,
-        shutdown_event,
+        configure_event_handler,
+        activate_event_handler,
+        shutdown_event_handler,
     ])
