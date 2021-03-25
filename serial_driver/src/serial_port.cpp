@@ -117,10 +117,10 @@ SerialPortConfig SerialPort::serial_port_config() const
 void SerialPort::open()
 {
   m_serial_port.open(m_device_name);
-  m_serial_port.set_option(sbp::baud_rate(m_port_config.get_baud_rate_asio()));
-  m_serial_port.set_option(sbp::flow_control(m_port_config.get_flow_control_asio()));
-  m_serial_port.set_option(sbp::parity(m_port_config.get_parity_asio()));
-  m_serial_port.set_option(sbp::stop_bits(m_port_config.get_stop_bits_asio()));
+  m_serial_port.set_option(spb::baud_rate(m_port_config.get_baud_rate_asio()));
+  m_serial_port.set_option(spb::flow_control(m_port_config.get_flow_control_asio()));
+  m_serial_port.set_option(spb::parity(m_port_config.get_parity_asio()));
+  m_serial_port.set_option(spb::stop_bits(m_port_config.get_stop_bits_asio()));
 }
 
 void SerialPort::close()

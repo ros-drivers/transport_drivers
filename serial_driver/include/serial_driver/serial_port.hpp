@@ -22,7 +22,7 @@
 #include "io_context/common.hpp"
 #include "io_context/io_context.hpp"
 
-using sbp = asio::serial_port_base;
+using spb = asio::serial_port_base;
 using drivers::common::IoContext;
 
 namespace drivers
@@ -78,9 +78,9 @@ public:
 
   /// \brief Function that returns the configured baud rate as an ASIO object
   /// \returns The configured baud rate as an ASIO baud_rate object
-  sbp::baud_rate get_baud_rate_asio() const
+  spb::baud_rate get_baud_rate_asio() const
   {
-    return sbp::baud_rate{m_baud_rate};
+    return spb::baud_rate{m_baud_rate};
   }
 
   /// \breif Function that returns the configured flow control
@@ -92,18 +92,18 @@ public:
 
   /// \breif Function that returns the configured flow control as an ASIO object
   /// \returns The configured flow control type as an ASIO flow_control object
-  sbp::flow_control::type get_flow_control_asio() const
+  spb::flow_control::type get_flow_control_asio() const
   {
     switch (m_flow_control) {
       case FlowControl::HARDWARE:
-        return sbp::flow_control::hardware;
+        return spb::flow_control::hardware;
         break;
       case FlowControl::SOFTWARE:
-        return sbp::flow_control::software;
+        return spb::flow_control::software;
         break;
       case FlowControl::NONE:
       default:
-        return sbp::flow_control::none;
+        return spb::flow_control::none;
     }
   }
 
@@ -116,18 +116,18 @@ public:
 
   /// \brief Function that returns the configured parity type as an ASIO object
   /// \returns The configured parity type as an ASIO parity object
-  sbp::parity::type get_parity_asio() const
+  spb::parity::type get_parity_asio() const
   {
     switch (m_parity) {
       case Parity::ODD:
-        return sbp::parity::odd;
+        return spb::parity::odd;
         break;
       case Parity::EVEN:
-        return sbp::parity::even;
+        return spb::parity::even;
         break;
       case Parity::NONE:
       default:
-        return sbp::parity::none;
+        return spb::parity::none;
     }
   }
 
@@ -140,18 +140,18 @@ public:
 
   /// \brief Function that returns the configured stop bits as an ASIO object
   /// \returns The configured stop bits as an ASIO stop_bits object
-  sbp::stop_bits::type get_stop_bits_asio() const
+  spb::stop_bits::type get_stop_bits_asio() const
   {
     switch (m_stop_bits) {
       case StopBits::ONE_POINT_FIVE:
-        return sbp::stop_bits::onepointfive;
+        return spb::stop_bits::onepointfive;
         break;
       case StopBits::TWO:
-        return sbp::stop_bits::two;
+        return spb::stop_bits::two;
         break;
       case StopBits::ONE:
       default:
-        return sbp::stop_bits::one;
+        return spb::stop_bits::one;
     }
   }
 
