@@ -65,7 +65,7 @@ LNI::CallbackReturn SerialBridgeNode::on_configure(const lc::State & state)
   } catch (const std::exception & ex) {
     RCLCPP_ERROR(
       get_logger(), "Error creating serial port: %s - %s",
-      m_device_name, ex.what());
+      m_device_name.c_str(), ex.what());
     return LNI::CallbackReturn::FAILURE;
   }
 
