@@ -45,7 +45,7 @@ ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
 
 rclcpp_components_register_node(${PROJECT_NAME}_nodes
   PLUGIN "drivers::serial_driver::SerialBridgeNode"
-  EXECUTABLE "serial_bridge_node_exe"
+  EXECUTABLE "serial_bridge"
 )
 
 target_link_libraries(${PROJECT_NAME}_nodes ${PROJECT_NAME})

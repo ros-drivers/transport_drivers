@@ -43,7 +43,7 @@ def generate_launch_description():
 
     bridge_node = LifecycleNode(
         package='serial_driver',
-        executable='serial_bridge_node_exe',
+        executable='serial_bridge',
         name=node_name,
         namespace=TextSubstitution(text=''),
         parameters=[LaunchConfiguration('params_file')],
