@@ -75,16 +75,16 @@ public:
   LNI::CallbackReturn on_shutdown(const lc::State & state) override;
 
   /// \brief Callback for sending a UDP datagram
-  void subscriber_callback(std_msgs::msg::Int32::SharedPtr msg);
+  void subscriber_callback(udp_msgs::msg::UdpPacket::SharedPtr msg);
 
 private:
   void get_params();
 
   std::unique_ptr<IoContext> m_owned_ctx{};
   std::string m_ip{};
-  int16_t m_port{};
+  uint16_t m_port{};
   std::unique_ptr<UdpDriver> m_udp_driver;
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr m_subscriber;
+  rclcpp::Subscription<udp_msgs::msg::UdpPacket>::SharedPtr m_subscriber;
 };  // class UdpSenderNode
 
 }  // namespace udp_driver

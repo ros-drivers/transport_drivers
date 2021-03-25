@@ -24,6 +24,7 @@
 #include <chrono>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "msg_converters/converters.hpp"
 
@@ -75,16 +76,16 @@ public:
   LNI::CallbackReturn on_shutdown(const lc::State & state) override;
 
   /// \breif Callback for receiving a UDP datagram
-  void receiver_callback(const MutBuffer & buffer);
+  void receiver_callback(const std::vector<uint8_t> & buffer);
 
 private:
   void get_params();
 
   std::unique_ptr<IoContext> m_owned_ctx{};
   std::string m_ip{};
-  int16_t m_port{};
+  uint16_t m_port{};
   std::unique_ptr<UdpDriver> m_udp_driver;
-  lc::LifecyclePublisher<std_msgs::msg::Int32>::SharedPtr m_publisher;
+  lc::LifecyclePublisher<udp_msgs::msg::UdpPacket>::SharedPtr m_publisher;
 };  // class UdpReceiverNode
 
 }  // namespace udp_driver

@@ -18,6 +18,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace lc = rclcpp_lifecycle;
 using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
@@ -71,7 +72,7 @@ LNI::CallbackReturn UdpSenderNode::on_configure(const lc::State & state)
   auto qos = rclcpp::QoS(rclcpp::KeepLast(32)).best_effort();
   auto callback = std::bind(&UdpSenderNode::subscriber_callback, this, std::placeholders::_1);
 
-  m_subscriber = this->create_subscription<std_msgs::msg::Int32>(
+  m_subscriber = this->create_subscription<udp_msgs::msg::UdpPacket>(
     "udp_write", qos, callback);
 
   RCLCPP_DEBUG(get_logger(), "UDP sender successfully configured.");
@@ -119,7 +120,7 @@ void UdpSenderNode::get_params()
   }
 
   try {
-    m_port = declare_parameter("port").get<int16_t>();
+    m_port = declare_parameter("port").get<uint16_t>();
   } catch (rclcpp::ParameterTypeException & ex) {
     RCLCPP_ERROR(get_logger(), "The port paramter provided was invalid");
     throw ex;
@@ -129,15 +130,19 @@ void UdpSenderNode::get_params()
   RCLCPP_INFO(get_logger(), "port: %i", m_port);
 }
 
-void UdpSenderNode::subscriber_callback(std_msgs::msg::Int32::SharedPtr msg)
+void UdpSenderNode::subscriber_callback(udp_msgs::msg::UdpPacket::SharedPtr msg)
 {
   if (this->get_current_state().id() == State::PRIMARY_STATE_ACTIVE) {
-    MutBuffer out;
-    drivers::common::convertFromRos2Message(msg, out);
-
+    std::vector<uint8_t> out;
+    RCLCPP_INFO(get_logger(), "msg size: %i", msg->data.size());
+    drivers::common::from_msg(msg, out);
+    RCLCPP_INFO(get_logger(), "sent size: %i", out.size());
     m_udp_driver->sender()->asyncSend(out);
   }
 }
 
 }  // namespace udp_driver
 }  // namespace drivers
+
+#include <rclcpp_components/register_node_macro.hpp>  // NOLINT
+RCLCPP_COMPONENTS_REGISTER_NODE(drivers::udp_driver::UdpSenderNode)

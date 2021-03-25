@@ -82,6 +82,7 @@ if(BUILD_TESTING)
     ament_target_dependencies(${TEST_UDP_DRIVER_EXE}
       rclcpp
       std_msgs
+      udp_msgs
       lifecycle_msgs
       ASIO)
 

@@ -20,6 +20,7 @@
 #include <utility>
 #include <string>
 #include <system_error>
+#include <vector>
 
 #include "asio.hpp"
 #include "rclcpp/logging.hpp"
@@ -72,10 +73,10 @@ size_t UdpSocket::receive(const MutBuffer & buff)
   return len;
 }
 
-void UdpSocket::asyncSend(const MutBuffer & buff)
+void UdpSocket::asyncSend(const std::vector<uint8_t> & buff)
 {
   m_udp_socket.async_send_to(
-    buff, m_endpoint,
+    asio::buffer(buff), m_endpoint,
     [this](std::error_code error, std::size_t bytes_transferred)
     {
       asyncSendHandler(error, bytes_transferred);
@@ -85,8 +86,10 @@ void UdpSocket::asyncSend(const MutBuffer & buff)
 void UdpSocket::asyncReceive(Functor func)
 {
   m_func = std::move(func);
+  m_recv_buffer.resize(m_recv_buffer_size);
+
   m_udp_socket.async_receive_from(
-    asio::buffer(m_recv_buffer, m_recv_buffer_size),
+    asio::buffer(m_recv_buffer),
     m_endpoint,
     [this](std::error_code error, std::size_t bytes_transferred)
     {
@@ -115,13 +118,16 @@ void UdpSocket::asyncReceiveHandler(
   }
 
   if (bytes_transferred > 0 && m_func) {
-    m_func(MutBuffer(m_recv_buffer.data(), bytes_transferred));
+    m_recv_buffer.resize(bytes_transferred);
+    m_func(m_recv_buffer);
+    m_recv_buffer.resize(m_recv_buffer_size);
     m_udp_socket.async_receive_from(
-      asio::buffer(m_recv_buffer, m_recv_buffer_size),
+      asio::buffer(m_recv_buffer),
       m_endpoint,
-      [this](std::error_code error, std::size_t bytes_transferred)
+      [this](std::error_code error, std::size_t bytes_tf)
       {
-        asyncReceiveHandler(error, bytes_transferred);
+        m_recv_buffer.resize(bytes_tf);
+        asyncReceiveHandler(error, bytes_tf);
       });
   }
 }
