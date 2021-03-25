@@ -19,7 +19,7 @@
 
 #include "serial_driver/serial_port.hpp"
 
-using sbp = asio::serial_port_base;
+using spb = asio::serial_port_base;
 using drivers::serial_driver::FlowControl;
 using drivers::serial_driver::Parity;
 using drivers::serial_driver::SerialPort;
@@ -46,10 +46,10 @@ TEST(SerialPortTest, PropertiesTest)
   EXPECT_EQ(port.serial_port_config().get_stop_bits(), sb);
 
   // Test ASIO types
-  EXPECT_EQ(port.serial_port_config().get_baud_rate_asio().value(), sbp::baud_rate{baud}.value());
-  EXPECT_EQ(port.serial_port_config().get_flow_control_asio(), sbp::flow_control::none);
-  EXPECT_EQ(port.serial_port_config().get_parity_asio(), sbp::parity::none);
-  EXPECT_EQ(port.serial_port_config().get_stop_bits_asio(), sbp::stop_bits::one);
+  EXPECT_EQ(port.serial_port_config().get_baud_rate_asio().value(), spb::baud_rate{baud}.value());
+  EXPECT_EQ(port.serial_port_config().get_flow_control_asio(), spb::flow_control::none);
+  EXPECT_EQ(port.serial_port_config().get_parity_asio(), spb::parity::none);
+  EXPECT_EQ(port.serial_port_config().get_stop_bits_asio(), spb::stop_bits::one);
 
   ctx.waitForExit();
 }
