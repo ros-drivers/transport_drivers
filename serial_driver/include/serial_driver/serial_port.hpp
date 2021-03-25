@@ -17,6 +17,7 @@
 
 #include <array>
 #include <string>
+#include <vector>
 
 #include "io_context/common.hpp"
 #include "io_context/io_context.hpp"
@@ -29,7 +30,7 @@ namespace drivers
 namespace serial_driver
 {
 
-using Functor = std::function<void (const MutBuffer &)>;
+using Functor = std::function<void (std::vector<uint8_t> &)>;
 
 enum class FlowControl
 {
@@ -198,16 +199,16 @@ public:
   /// \brief Blocking send operation
   /// \param[in] buff A buffer containing the data to send
   /// \returns The number of bytes sent
-  size_t send(const MutBuffer & buff);
+  size_t send(const std::vector<uint8_t> & buff);
 
   /// \brief Bocking receive operation
   /// \param[out] buff A buffer to be populated with the read data
   /// \returns The number of bytes read
-  size_t receive(const MutBuffer & buff);
+  size_t receive(std::vector<uint8_t> & buff);
 
   /// \brief Non-blocking send operation
   /// \param[in] buff A buffer containing the data to send
-  void async_send(const MutBuffer & buff);
+  void async_send(const std::vector<uint8_t> & buff);
 
   /// \brief Non-blocking receive operation
   /// \param[in] func A function to be called when data are received
@@ -228,7 +229,7 @@ private:
   SerialPortConfig m_port_config;
   Functor m_func;
   static constexpr size_t m_recv_buffer_size{2048};
-  std::array<uint8_t, m_recv_buffer_size> m_recv_buffer;
+  std::vector<uint8_t> m_recv_buffer;
 };
 
 }  // namespace serial_driver

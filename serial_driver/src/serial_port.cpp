@@ -18,6 +18,7 @@
 
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace drivers
 {
@@ -33,6 +34,7 @@ SerialPort::SerialPort(
   m_serial_port(ctx.ios()),
   m_port_config(serial_port_config)
 {
+  m_recv_buffer.resize(m_recv_buffer_size);
 }
 
 SerialPort::~SerialPort()
@@ -40,20 +42,20 @@ SerialPort::~SerialPort()
   close();
 }
 
-size_t SerialPort::send(const MutBuffer & buff)
+size_t SerialPort::send(const std::vector<uint8_t> & buff)
 {
-  return m_serial_port.write_some(buff);
+  return m_serial_port.write_some(asio::buffer(buff.data(), buff.size()));
 }
 
-size_t SerialPort::receive(const MutBuffer & buff)
+size_t SerialPort::receive(std::vector<uint8_t> & buff)
 {
-  return m_serial_port.read_some(buff);
+  return m_serial_port.read_some(asio::mutable_buffer(buff.data(), buff.size()));
 }
 
-void SerialPort::async_send(const MutBuffer & buff)
+void SerialPort::async_send(const std::vector<uint8_t> & buff)
 {
   m_serial_port.async_write_some(
-    buff,
+    asio::buffer(buff),
     [this](std::error_code error, size_t bytes_transferred)
     {
       async_send_handler(error, bytes_transferred);
@@ -64,7 +66,7 @@ void SerialPort::async_receive(Functor func)
 {
   m_func = std::move(func);
   m_serial_port.async_read_some(
-    asio::buffer(m_recv_buffer, m_recv_buffer_size),
+    asio::buffer(m_recv_buffer),
     [this](std::error_code error, size_t bytes_transferred)
     {
       async_receive_handler(error, bytes_transferred);
@@ -92,9 +94,9 @@ void SerialPort::async_receive_handler(
   }
 
   if (bytes_transferred > 0 && m_func) {
-    m_func(MutBuffer(m_recv_buffer.data(), bytes_transferred));
+    m_func(m_recv_buffer);
     m_serial_port.async_read_some(
-      asio::buffer(m_recv_buffer, m_recv_buffer_size),
+      asio::buffer(m_recv_buffer),
       [this](std::error_code error, size_t bytes_transferred)
       {
         async_receive_handler(error, bytes_transferred);

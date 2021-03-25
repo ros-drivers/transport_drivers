@@ -24,6 +24,7 @@
 #include <chrono>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "msg_converters/converters.hpp"
 
@@ -79,7 +80,7 @@ public:
   void subscriber_callback(const UInt8MultiArray::SharedPtr msg);
 
   /// \breif Callback for when serial data are received
-  void receive_callback(const MutBuffer & buffer);
+  void receive_callback(const std::vector<uint8_t> & buffer);
 
 private:
   void get_params();

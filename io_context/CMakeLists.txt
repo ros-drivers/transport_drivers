@@ -35,7 +35,6 @@ find_package(ASIO REQUIRED)
 
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/io_context.cpp
-  src/msg_converters/example_interfaces.cpp
   src/msg_converters/std_msgs.cpp
   src/msg_converters/udp_msgs.cpp
 )

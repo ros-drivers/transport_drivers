@@ -16,6 +16,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace lc = rclcpp_lifecycle;
 using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
@@ -195,7 +196,7 @@ void SerialBridgeNode::get_params()
   m_device_config = std::make_unique<SerialPortConfig>(baud_rate, fc, pt, sb);
 }
 
-void SerialBridgeNode::receive_callback(const MutBuffer & buffer)
+void SerialBridgeNode::receive_callback(const std::vector<uint8_t> & buffer)
 {
   UInt8MultiArray out;
   drivers::common::to_msg(buffer, out);
@@ -205,7 +206,7 @@ void SerialBridgeNode::receive_callback(const MutBuffer & buffer)
 void SerialBridgeNode::subscriber_callback(const UInt8MultiArray::SharedPtr msg)
 {
   if (this->get_current_state().id() == State::PRIMARY_STATE_ACTIVE) {
-    MutBuffer out;
+    std::vector<uint8_t> out;
     drivers::common::from_msg(*msg, out);
     m_serial_driver->port()->async_send(out);
   }

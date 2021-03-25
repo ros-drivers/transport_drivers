@@ -17,6 +17,9 @@
 
 #include <example_interfaces/msg/u_int8_multi_array.hpp>
 
+#include <algorithm>
+#include <vector>
+
 #include "io_context/common.hpp"
 
 using example_interfaces::msg::UInt8MultiArray;
@@ -26,9 +29,15 @@ namespace drivers
 namespace common
 {
 
-void from_msg(const UInt8MultiArray & in, MutBuffer & out);
+inline void from_msg(const UInt8MultiArray & in, std::vector<uint8_t> & out)
+{
+  std::copy(in.data.begin(), in.data.end(), out.begin());
+}
 
-void to_msg(const MutBuffer & in, UInt8MultiArray & out);
+inline void to_msg(const std::vector<uint8_t> & in, UInt8MultiArray & out)
+{
+  std::copy(in.begin(), in.end(), out.data.begin());
+}
 
 }  // namespace common
 }  // namespace drivers

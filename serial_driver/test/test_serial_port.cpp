@@ -15,6 +15,7 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <vector>
 
 #include "serial_driver/serial_port.hpp"
 
@@ -59,9 +60,11 @@ TEST(SerialPortTest, StateTest)
   SerialPortConfig config(baud, fc, pt, sb);
   SerialPort port(ctx, dev_name, config);
 
+  std::vector<uint8_t> send_recv_buff;
+
   EXPECT_FALSE(port.is_open());
-  EXPECT_THROW(port.send(MutBuffer()), asio::system_error);
-  EXPECT_THROW(port.receive(MutBuffer()), asio::system_error);
+  EXPECT_THROW(port.send(send_recv_buff), asio::system_error);
+  EXPECT_THROW(port.receive(send_recv_buff), asio::system_error);
 
   // Can't test other functions without available port
 
