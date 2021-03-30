@@ -45,23 +45,23 @@ UdpSocket::~UdpSocket()
   close();
 }
 
-std::size_t UdpSocket::send(const MutBuffer & buff)
+std::size_t UdpSocket::send(std::vector<uint8_t> & buff)
 {
   try {
-    return m_udp_socket.send_to(buff, m_endpoint);
+    return m_udp_socket.send_to(asio::buffer(buff), m_endpoint);
   } catch (const std::system_error & error) {
     RCLCPP_ERROR_STREAM(rclcpp::get_logger("UdpSocket::send"), error.what());
     return -1;
   }
 }
 
-size_t UdpSocket::receive(const MutBuffer & buff)
+size_t UdpSocket::receive(std::vector<uint8_t> & buff)
 {
   asio::error_code error;
   asio::ip::udp::endpoint sender_endpoint;
 
   std::size_t len = m_udp_socket.receive_from(
-    buff,
+    asio::buffer(buff),
     m_endpoint,
     0,
     error);
@@ -73,7 +73,7 @@ size_t UdpSocket::receive(const MutBuffer & buff)
   return len;
 }
 
-void UdpSocket::asyncSend(const std::vector<uint8_t> & buff)
+void UdpSocket::asyncSend(std::vector<uint8_t> & buff)
 {
   m_udp_socket.async_send_to(
     asio::buffer(buff), m_endpoint,

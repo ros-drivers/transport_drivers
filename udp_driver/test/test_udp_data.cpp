@@ -71,11 +71,18 @@ TEST(UdpDataTest, BlockingSendReceiveTest)
 
   receiver.bind();
 
-  std::size_t size = sender.send(MutBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
+  std::vector<uint8_t> vector_to_send;
+  vector_to_send.resize(sizeof(PI));
+  std::memcpy(&vector_to_send[0], &PI, sizeof(PI));
+  std::size_t size = sender.send(vector_to_send);
   EXPECT_EQ(size, sizeof(PI));
 
   float received_PI = 0.0f;
-  size = receiver.receive(MutBuffer(&received_PI, sizeof(received_PI)));
+  std::vector<uint8_t> vector_to_fill;
+  vector_to_fill.resize(sizeof(received_PI));
+  size = receiver.receive(vector_to_fill);
+  std::cout << "vector to fill: " << vector_to_fill.size() << std::endl;
+  received_PI = *reinterpret_cast<float *>(&vector_to_fill[0]);
   EXPECT_EQ(size, sizeof(received_PI));
   EXPECT_EQ(received_PI, PI);
 
@@ -133,7 +140,11 @@ TEST(UdpDataTest, BlockingSendNonBlockingReceiveTest)
   receiver.bind();
   receiver.asyncReceive(std::bind(handle_data, std::placeholders::_1));
 
-  std::size_t size = sender.send(MutBuffer(reinterpret_cast<void *>(&PI), sizeof(PI)));
+  std::vector<uint8_t> vector_to_send;
+  vector_to_send.resize(sizeof(PI));
+  std::memcpy(&vector_to_send[0], &PI, sizeof(PI));
+
+  std::size_t size = sender.send(vector_to_send);
   EXPECT_EQ(size, sizeof(PI));
 
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
