@@ -134,9 +134,7 @@ void UdpSenderNode::subscriber_callback(udp_msgs::msg::UdpPacket::SharedPtr msg)
 {
   if (this->get_current_state().id() == State::PRIMARY_STATE_ACTIVE) {
     std::vector<uint8_t> out;
-    RCLCPP_INFO(get_logger(), "msg size: %i", msg->data.size());
     drivers::common::from_msg(msg, out);
-    RCLCPP_INFO(get_logger(), "sent size: %i", out.size());
     m_udp_driver->sender()->asyncSend(out);
   }
 }

@@ -19,6 +19,4 @@
 
 #include <asio.hpp>
 
-using MutBuffer = asio::mutable_buffer;
-
 #endif  // IO_CONTEXT__COMMON_HPP_

@@ -55,17 +55,17 @@ public:
   /*
    * Blocking Send Operation
    */
-  std::size_t send(const MutBuffer & buff);
+  std::size_t send(std::vector<uint8_t> & buff);
 
   /*
    * Blocking Receive Operation
    */
-  size_t receive(const MutBuffer & buff);
+  size_t receive(std::vector<uint8_t> & buff);
 
   /*
    * NonBlocking Send Operation
    */
-  void asyncSend(const std::vector<uint8_t> & buff);
+  void asyncSend(std::vector<uint8_t> & buff);
 
   /*
    * NonBlocking Receive Operation

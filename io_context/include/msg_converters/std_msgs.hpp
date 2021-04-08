@@ -39,6 +39,8 @@
 #include <std_msgs/msg/float32.hpp>
 #include <std_msgs/msg/float64.hpp>
 
+#include <vector>
+
 #include "io_context/common.hpp"
 
 namespace drivers
@@ -50,51 +52,51 @@ namespace common
  * ROS2 Message to Raw Buffer Converters
  * std_msgs::msg::Int variant
  */
-void convertFromRos2Message(const std_msgs::msg::Int8::SharedPtr & in, MutBuffer & out);
-void convertFromRos2Message(const std_msgs::msg::Int16::SharedPtr & in, MutBuffer & out);
-void convertFromRos2Message(const std_msgs::msg::Int32::SharedPtr & in, MutBuffer & out);
-void convertFromRos2Message(const std_msgs::msg::Int64::SharedPtr & in, MutBuffer & out);
+void from_msg(const std_msgs::msg::Int8::SharedPtr & in, std::vector<uint8_t> & out);
+void from_msg(const std_msgs::msg::Int16::SharedPtr & in, std::vector<uint8_t> & out);
+void from_msg(const std_msgs::msg::Int32::SharedPtr & in, std::vector<uint8_t> & out);
+void from_msg(const std_msgs::msg::Int64::SharedPtr & in, std::vector<uint8_t> & out);
 
 /*
  * Raw Buffer to ROS2 Message Converters
  * std_msgs::msg::Int variant
  */
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Int8 & out);
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Int16 & out);
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Int32 & out);
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Int64 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Int8 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Int16 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Int32 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Int64 & out);
 
 /*
  * ROS2 Message to Raw Buffer Converters
  * std_msgs::msg::UInt variant
  */
-void convertFromRos2Message(const std_msgs::msg::UInt8::SharedPtr & in, MutBuffer & out);
-void convertFromRos2Message(const std_msgs::msg::UInt16::SharedPtr & in, MutBuffer & out);
-void convertFromRos2Message(const std_msgs::msg::UInt32::SharedPtr & in, MutBuffer & out);
-void convertFromRos2Message(const std_msgs::msg::UInt64::SharedPtr & in, MutBuffer & out);
+void from_msg(const std_msgs::msg::UInt8::SharedPtr & in, std::vector<uint8_t> & out);
+void from_msg(const std_msgs::msg::UInt16::SharedPtr & in, std::vector<uint8_t> & out);
+void from_msg(const std_msgs::msg::UInt32::SharedPtr & in, std::vector<uint8_t> & out);
+void from_msg(const std_msgs::msg::UInt64::SharedPtr & in, std::vector<uint8_t> & out);
 
 /*
  * Raw Buffer to ROS2 Message Converters
  * std_msgs::msg::UInt variant
  */
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::UInt8 & out);
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::UInt16 & out);
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::UInt32 & out);
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::UInt64 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::UInt8 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::UInt16 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::UInt32 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::UInt64 & out);
 
 /*
  * ROS2 Message to Raw Buffer Converters
  * std_msgs::msg::Float variant
  */
-void convertFromRos2Message(const std_msgs::msg::Float32::SharedPtr & in, MutBuffer & out);
-void convertFromRos2Message(const std_msgs::msg::Float64::SharedPtr & in, MutBuffer & out);
+void from_msg(const std_msgs::msg::Float32::SharedPtr & in, std::vector<uint8_t> & out);
+void from_msg(const std_msgs::msg::Float64::SharedPtr & in, std::vector<uint8_t> & out);
 
 /*
  * Raw Buffer to ROS2 Message Converters
  * std_msgs::msg::Float variant
  */
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Float32 & out);
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Float64 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Float32 & out);
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Float64 & out);
 
 }  // namespace common
 }  // namespace drivers

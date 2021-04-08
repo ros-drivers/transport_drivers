@@ -29,124 +29,134 @@ namespace common
  * ROS2 Message to Raw Buffer Converters
  * std_msgs::msg::Int variant
  */
-void convertFromRos2Message(const std_msgs::msg::Int8::SharedPtr & in, MutBuffer & out)
+void from_msg(const std_msgs::msg::Int8::SharedPtr & in, std::vector<uint8_t> & out)
 {
-  out = MutBuffer(&in->data, sizeof(in->data));
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
 }
 
-void convertFromRos2Message(const std_msgs::msg::Int16::SharedPtr & in, MutBuffer & out)
+void from_msg(const std_msgs::msg::Int16::SharedPtr & in, std::vector<uint8_t> & out)
 {
-  out = MutBuffer(&in->data, sizeof(in->data));
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
 }
 
-void convertFromRos2Message(const std_msgs::msg::Int32::SharedPtr & in, MutBuffer & out)
+void from_msg(const std_msgs::msg::Int32::SharedPtr & in, std::vector<uint8_t> & out)
 {
-  out = MutBuffer(&in->data, sizeof(in->data));
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
 }
 
-void convertFromRos2Message(const std_msgs::msg::Int64::SharedPtr & in, MutBuffer & out)
+void from_msg(const std_msgs::msg::Int64::SharedPtr & in, std::vector<uint8_t> & out)
 {
-  out = MutBuffer(&in->data, sizeof(in->data));
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
+}
+
+/*
+ * ROS2 Message to Raw Buffer Converters
+ * std_msgs::msg::UInt variant
+ */
+void from_msg(const std_msgs::msg::UInt8::SharedPtr & in, std::vector<uint8_t> & out)
+{
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
+}
+
+void from_msg(const std_msgs::msg::UInt16::SharedPtr & in, std::vector<uint8_t> & out)
+{
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
+}
+
+void from_msg(const std_msgs::msg::UInt32::SharedPtr & in, std::vector<uint8_t> & out)
+{
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
+}
+
+void from_msg(const std_msgs::msg::UInt64::SharedPtr & in, std::vector<uint8_t> & out)
+{
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
+}
+
+/*
+ * ROS2 Message to Raw Buffer Converters
+ * std_msgs::msg::Float variant
+ */
+void from_msg(const std_msgs::msg::Float32::SharedPtr & in, std::vector<uint8_t> & out)
+{
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
+}
+
+void from_msg(const std_msgs::msg::Float64::SharedPtr & in, std::vector<uint8_t> & out)
+{
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
 }
 
 /*
  * Raw Buffer to ROS2 Message Converters
  * std_msgs::msg::Int variant
  */
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Int8 & out)
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Int8 & out)
 {
-  out.data = *asio::buffer_cast<int8_t *>(in);
+  out.data = *reinterpret_cast<int8_t *>(in[0]);
 }
 
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Int16 & out)
+void to_msg(const std::vector<int16_t> & in, std_msgs::msg::Int16 & out)
 {
-  out.data = *asio::buffer_cast<int16_t *>(in);
+  out.data = *reinterpret_cast<int16_t *>(in[0]);
 }
 
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Int32 & out)
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Int32 & out)
 {
-  out.data = *asio::buffer_cast<int32_t *>(in);
+  out.data = *reinterpret_cast<int32_t *>(in[0]);
 }
 
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Int64 & out)
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Int64 & out)
 {
-  out.data = *asio::buffer_cast<int64_t *>(in);
-}
-
-/*
- * ROS2 Message to Raw Buffer Converters
- * std_msgs::msg::UInt variant
- */
-void convertFromRos2Message(const std_msgs::msg::UInt8::SharedPtr & in, MutBuffer & out)
-{
-  out = MutBuffer(&in->data, sizeof(in->data));
-}
-
-void convertFromRos2Message(const std_msgs::msg::UInt16::SharedPtr & in, MutBuffer & out)
-{
-  out = MutBuffer(&in->data, sizeof(in->data));
-}
-
-void convertFromRos2Message(const std_msgs::msg::UInt32::SharedPtr & in, MutBuffer & out)
-{
-  out = MutBuffer(&in->data, sizeof(in->data));
-}
-
-void convertFromRos2Message(const std_msgs::msg::UInt64::SharedPtr & in, MutBuffer & out)
-{
-  out = MutBuffer(&in->data, sizeof(in->data));
+  out.data = *reinterpret_cast<int64_t *>(in[0]);
 }
 
 /*
  * Raw Buffer to ROS2 Message Converters
  * std_msgs::msg::UInt variant
  */
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::UInt8 & out)
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::UInt8 & out)
 {
-  out.data = *asio::buffer_cast<int8_t *>(in);
+  out.data = *reinterpret_cast<uint8_t *>(in[0]);
 }
 
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::UInt16 & out)
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::UInt16 & out)
 {
-  out.data = *asio::buffer_cast<int16_t *>(in);
+  out.data = *reinterpret_cast<uint16_t *>(in[0]);
 }
 
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::UInt32 & out)
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::UInt32 & out)
 {
-  out.data = *asio::buffer_cast<int32_t *>(in);
+  out.data = *reinterpret_cast<uint32_t *>(in[0]);
 }
 
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::UInt64 & out)
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::UInt64 & out)
 {
-  out.data = *asio::buffer_cast<int64_t *>(in);
-}
-
-/*
- * ROS2 Message to Raw Buffer Converters
- * std_msgs::msg::Float variant
- */
-void convertFromRos2Message(const std_msgs::msg::Float32::SharedPtr & in, MutBuffer & out)
-{
-  out = MutBuffer(&in->data, sizeof(in->data));
-}
-
-void convertFromRos2Message(const std_msgs::msg::Float64::SharedPtr & in, MutBuffer & out)
-{
-  out = MutBuffer(&in->data, sizeof(in->data));
+  out.data = *reinterpret_cast<uint64_t *>(in[0]);
 }
 
 /*
  * Raw Buffer to ROS2 Message Converters
  * std_msgs::msg::Float variant
  */
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Float32 & out)
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Float32 & out)
 {
-  out.data = *asio::buffer_cast<float_t *>(in);
+  out.data = *reinterpret_cast<float *>(in[0]);
 }
 
-void convertToRos2Message(const MutBuffer & in, std_msgs::msg::Float64 & out)
+void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Float64 & out)
 {
-  out.data = *asio::buffer_cast<double_t *>(in);
+  out.data = *reinterpret_cast<double *>(in[0]);
 }
 
 }  // namespace common
