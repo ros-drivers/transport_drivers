@@ -1,86 +1,46 @@
-// Copyright 2018 Apex.AI, Inc.
+// Copyright 2021 LeoDrive, Copyright 2021 The Autoware Foundation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// Co-developed by Tier IV, Inc. and Apex.AI, Inc.
 
-#include "test_driver.hpp"
+#include <gtest/gtest.h>
 
 #include <string>
-#include <vector>
 
-#include "gtest/gtest.h"
-#include "rclcpp/rclcpp.hpp"
+#include "serial_driver/serial_driver.hpp"
 
-#if defined(__linux__)
-#include <pty.h>
-#else
-#include <util.h>
-#endif
+using drivers::serial_driver::FlowControl;
+using drivers::serial_driver::Parity;
+using drivers::serial_driver::SerialDriver;
+using drivers::serial_driver::SerialPortConfig;
+using drivers::serial_driver::StopBits;
 
-using test_serial_driver::TestDriver;
-using test_serial_driver::Packet;
-using test_serial_driver::flow_control_t;
-using test_serial_driver::parity_t;
-using test_serial_driver::stop_bits_t;
+static constexpr const char * dev_name = "/dev/ttyS0";
+static constexpr uint32_t baud = 115200;
+static constexpr FlowControl fc = FlowControl::NONE;
+static constexpr Parity pt = Parity::NONE;
+static constexpr StopBits sb = StopBits::ONE;
 
-namespace
+TEST(SerialDriverTest, PropertiesTest)
 {
-class serial_driver : public ::testing::Test
-{
-protected:
-  virtual void SetUp()
-  {
-    if (openpty(&master_fd, &slave_fd, name, NULL, NULL) == -1) {
-      perror("openpty");
-      exit(127);
-    }
+  IoContext ctx;
+  SerialPortConfig config(baud, fc, pt, sb);
+  SerialDriver driver(ctx);
 
-    ASSERT_GT(master_fd, 0);
-    ASSERT_GT(slave_fd, 0);
-    ASSERT_GT(std::string(name).length(), 0);
-  }
+  EXPECT_EQ(driver.port().get(), nullptr);
 
-  int master_fd;
-  int slave_fd;
-  char name[100];
-};
-}  // namespace
+  driver.init_port(dev_name, config);
 
+  EXPECT_EQ(driver.port()->device_name(), dev_name);
 
-// tests serial_driver_node's get_packet function which receives serial packages
-TEST_F(serial_driver, basic)
-{
-  // rclcpp::init required to start the node
-  rclcpp::init(0, nullptr);
-
-  // setting values to send
-  std::vector<int32_t> values(10);
-  std::generate(values.begin(), values.end(), [n = 0]() mutable {return n++;});
-
-  rclcpp::NodeOptions options;
-
-  TestDriver driver(
-    "serial_driver_node",
-    options,
-    name,
-    TestDriver::SerialPortConfig {38400, flow_control_t::software, parity_t::even, stop_bits_t::one}
-  );
-
-  for (auto val : values) {
-    ssize_t result = write(master_fd, reinterpret_cast<char *>(&val), sizeof(val));
-    (void)result;
-    driver.run(1U);
-    EXPECT_EQ(driver.get_last_value(), val);
-  }
+  ctx.waitForExit();
 }

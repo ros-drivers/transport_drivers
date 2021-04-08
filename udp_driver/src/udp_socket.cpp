@@ -38,6 +38,7 @@ UdpSocket::UdpSocket(
   m_udp_socket(ctx.ios()),
   m_endpoint(address::from_string(ip), port)
 {
+  m_recv_buffer.resize(m_recv_buffer_size);
 }
 
 UdpSocket::~UdpSocket()
@@ -86,8 +87,6 @@ void UdpSocket::asyncSend(const std::vector<uint8_t> & buff)
 void UdpSocket::asyncReceive(Functor func)
 {
   m_func = std::move(func);
-  m_recv_buffer.resize(m_recv_buffer_size);
-
   m_udp_socket.async_receive_from(
     asio::buffer(m_recv_buffer),
     m_endpoint,
