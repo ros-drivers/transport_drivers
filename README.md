@@ -43,6 +43,24 @@ Install dependencies using `rosdep` from your top-level workspace directory:
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
+Once you have the repository cloned and dependencies installed, you can now go ahead and compile:
+
+```
+colcon build
+```
+
+After successful compilation, you should be able to source your newly built packages:
+
+```
+source install/setup.bash
+```
+
+...and now you should be able to run your newly built executables. Here is how you would launch the `udp_driver` bridge node:
+
+```
+ros2 run udp_driver udp_bridge_node_exe --ros-args --params-file ./src/transport_drivers/udp_driver/params/example_udp_params.yaml
+```
+
 ## Testing
 
 Comprehensive unit tests have been written for every package within this repository.
