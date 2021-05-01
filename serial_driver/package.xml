@@ -15,6 +15,7 @@
   <buildtool_depend>asio_cmake_module</buildtool_depend>
 
   <depend>asio</depend>
+  <depend>example_interfaces</depend>
   <depend>io_context</depend>
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>

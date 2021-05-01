@@ -17,9 +17,10 @@
 
 #include "udp_driver/udp_driver.hpp"
 
+#include <lifecycle_msgs/msg/state.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
-#include <lifecycle_msgs/msg/state.hpp>
+#include <udp_msgs/msg/udp_packet.hpp>
 
 #include <chrono>
 #include <memory>
@@ -28,13 +29,13 @@
 
 #include "msg_converters/converters.hpp"
 
-namespace lc = rclcpp_lifecycle;
-using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
-
 namespace drivers
 {
 namespace udp_driver
 {
+
+namespace lc = rclcpp_lifecycle;
+using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
 
 /// \brief UdpReceiverNode class which can receive UDP datagrams
 class UdpReceiverNode final

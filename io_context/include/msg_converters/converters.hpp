@@ -1,4 +1,4 @@
-// Copyright 2021 LeoDrive.
+// Copyright 2021 LeoDrive, The Autoware Foundation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,35 @@
 #ifndef MSG_CONVERTERS__CONVERTERS_HPP_
 #define MSG_CONVERTERS__CONVERTERS_HPP_
 
-#include "example_interfaces.hpp"
-#include "std_msgs.hpp"
-#include "udp_msgs.hpp"
+#include <algorithm>
+#include <vector>
+
+#include "io_context/common.hpp"
+
+namespace drivers
+{
+namespace common
+{
+
+// A "basic" message is one which has a data member
+// which stores the data
+template<typename MsgTypeT>
+inline void from_basic_msg(const typename MsgTypeT::SharedPtr & in, std::vector<uint8_t> & out)
+{
+  out.resize(sizeof(in->data));
+  std::memcpy(&out[0], &in->data, sizeof(in->data));
+}
+
+// A "basic" message is one which has a data member
+// which stores the data
+template<typename MsgTypeT>
+inline void to_basic_msg(const std::vector<uint8_t> & in, MsgTypeT & out)
+{
+  using VectorTypeT = decltype(out.data);
+  out.data = *reinterpret_cast<VectorTypeT *>(in[0]);
+}
+
+}  // namespace common
+}  // namespace drivers
 
 #endif  // MSG_CONVERTERS__CONVERTERS_HPP_

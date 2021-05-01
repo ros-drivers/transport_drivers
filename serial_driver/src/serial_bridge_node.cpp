@@ -199,7 +199,7 @@ void SerialBridgeNode::get_params()
 void SerialBridgeNode::receive_callback(const std::vector<uint8_t> & buffer)
 {
   UInt8MultiArray out;
-  drivers::common::to_msg(buffer, out);
+  drivers::common::to_basic_msg<UInt8MultiArray>(buffer, out);
   m_publisher->publish(out);
 }
 
@@ -207,7 +207,7 @@ void SerialBridgeNode::subscriber_callback(const UInt8MultiArray::SharedPtr msg)
 {
   if (this->get_current_state().id() == State::PRIMARY_STATE_ACTIVE) {
     std::vector<uint8_t> out;
-    drivers::common::from_msg(*msg, out);
+    drivers::common::from_basic_msg<UInt8MultiArray>(msg, out);
     m_serial_driver->port()->async_send(out);
   }
 }

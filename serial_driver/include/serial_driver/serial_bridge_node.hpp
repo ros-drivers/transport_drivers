@@ -17,6 +17,7 @@
 
 #include "serial_driver/serial_driver.hpp"
 
+#include <example_interfaces/msg/u_int8_multi_array.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
 #include <lifecycle_msgs/msg/state.hpp>
@@ -28,14 +29,14 @@
 
 #include "msg_converters/converters.hpp"
 
-namespace lc = rclcpp_lifecycle;
-using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
-using example_interfaces::msg::UInt8MultiArray;
-
 namespace drivers
 {
 namespace serial_driver
 {
+
+namespace lc = rclcpp_lifecycle;
+using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
+using example_interfaces::msg::UInt8MultiArray;
 
 /// \brief SerialBridgeNode class which can send and receive serial data
 class SerialBridgeNode final

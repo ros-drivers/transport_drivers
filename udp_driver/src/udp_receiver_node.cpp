@@ -137,7 +137,7 @@ void UdpReceiverNode::receiver_callback(const std::vector<uint8_t> & buffer)
   out.address = m_ip;
   out.src_port = m_port;
 
-  out.data = buffer;
+  drivers::common::to_basic_msg<udp_msgs::msg::UdpPacket>(buffer, out);
 
   m_publisher->publish(out);
 }
