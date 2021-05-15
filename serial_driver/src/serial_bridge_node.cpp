@@ -55,6 +55,10 @@ LNI::CallbackReturn SerialBridgeNode::on_configure(const lc::State & state)
 {
   (void)state;
 
+  // Create Publisher
+  m_publisher = this->create_publisher<UInt8MultiArray>(
+    "serial_read", rclcpp::QoS{100});
+
   try {
     m_serial_driver->init_port(m_device_name, *m_device_config);
     if (!m_serial_driver->port()->is_open()) {
@@ -68,10 +72,6 @@ LNI::CallbackReturn SerialBridgeNode::on_configure(const lc::State & state)
       m_device_name.c_str(), ex.what());
     return LNI::CallbackReturn::FAILURE;
   }
-
-  // Create Publisher
-  m_publisher = this->create_publisher<UInt8MultiArray>(
-    "serial_read", rclcpp::QoS{100});
 
   // Create Subscriber
   auto qos = rclcpp::QoS(rclcpp::KeepLast(32)).best_effort();
