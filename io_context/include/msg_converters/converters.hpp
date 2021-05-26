@@ -34,6 +34,7 @@ template<typename MsgTypeT>
 inline void from_basic_msg(const typename MsgTypeT::SharedPtr & in, std::vector<uint8_t> & out)
 {
   std::cout << "[ io_context::converters::from_basic_msg ] msgtype.data size: " << sizeof(in->data) << std::endl;
+
   out.resize(sizeof(in->data));
   std::memcpy(&out[0], &in->data, sizeof(in->data));
 }

@@ -91,6 +91,14 @@ if(BUILD_TESTING)
   endforeach()
 endif()
 
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/launch
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}
+)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/params
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}
+)
+
 ament_auto_package(
   CONFIG_EXTRAS_POST "udp_driver-extras.cmake"
 )

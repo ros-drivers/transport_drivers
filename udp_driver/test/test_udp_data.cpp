@@ -81,7 +81,6 @@ TEST(UdpDataTest, BlockingSendReceiveTest)
   std::vector<uint8_t> vector_to_fill;
   vector_to_fill.resize(sizeof(received_PI));
   size = receiver.receive(vector_to_fill);
-  std::cout << "vector to fill: " << vector_to_fill.size() << std::endl;
   received_PI = *reinterpret_cast<float *>(&vector_to_fill[0]);
   EXPECT_EQ(size, sizeof(received_PI));
   EXPECT_EQ(received_PI, PI);
