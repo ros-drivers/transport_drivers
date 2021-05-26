@@ -1,0 +1,5 @@
+/**:
+  ros__parameters:
+    ip: "192.168.10.5"
+    port: 57410
+    output_topic: "p57410"

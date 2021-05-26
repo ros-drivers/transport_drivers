@@ -28,7 +28,7 @@ namespace udp_driver
 {
 
 UdpReceiverNode::UdpReceiverNode(const rclcpp::NodeOptions & options)
-: lc::LifecycleNode("udp_receiver_node", options),
+: lc::LifecycleNode("udp_receiver", options),
   m_owned_ctx{new IoContext(1)},
   m_udp_driver{new UdpDriver(*m_owned_ctx)}
 {
@@ -38,7 +38,7 @@ UdpReceiverNode::UdpReceiverNode(const rclcpp::NodeOptions & options)
 UdpReceiverNode::UdpReceiverNode(
   const rclcpp::NodeOptions & options,
   const IoContext & ctx)
-: lc::LifecycleNode("udp_receiver_node", options),
+: lc::LifecycleNode("udp_receiver", options),
   m_udp_driver{new UdpDriver(ctx)}
 {
   get_params();
@@ -69,7 +69,7 @@ LNI::CallbackReturn UdpReceiverNode::on_configure(const lc::State & state)
   }
 
   m_publisher = this->create_publisher<udp_msgs::msg::UdpPacket>(
-    "udp_read", rclcpp::QoS(100));
+    std::string(this->get_name()) + "/" + m_outputTopic, rclcpp::QoS(100));
 
   RCLCPP_DEBUG(get_logger(), "UDP receiver successfully configured.");
 
@@ -124,22 +124,29 @@ void UdpReceiverNode::get_params()
     throw ex;
   }
 
+  try {
+    m_outputTopic = declare_parameter("output_topic").get<std::string>();
+  } catch (rclcpp::ParameterTypeException & ex) {
+    RCLCPP_ERROR(get_logger(), "The output_topic paramter provided was invalid");
+    throw ex;
+  }
   RCLCPP_INFO(get_logger(), "ip: %s", m_ip.c_str());
   RCLCPP_INFO(get_logger(), "port: %i", m_port);
+  RCLCPP_INFO(get_logger(), "output_topic: %s", m_outputTopic.c_str());
 }
 
 void UdpReceiverNode::receiver_callback(const std::vector<uint8_t> & buffer)
 {
-  udp_msgs::msg::UdpPacket out;
+  m_out.reset(new udp_msgs::msg::UdpPacket());
+  m_out->header.frame_id = m_ip;
+  m_out->header.stamp = this->now();
+  m_out->address = m_ip;
+  m_out->src_port = m_port;
 
-  out.header.frame_id = m_ip;
-  out.header.stamp = this->now();
-  out.address = m_ip;
-  out.src_port = m_port;
+  m_out->data = buffer;
+  //drivers::common::to_basic_msg<udp_msgs::msg::UdpPacket>(buffer, out);
 
-  drivers::common::to_basic_msg<udp_msgs::msg::UdpPacket>(buffer, out);
-
-  m_publisher->publish(out);
+  m_publisher->publish(*m_out);
 }
 
 }  // namespace udp_driver

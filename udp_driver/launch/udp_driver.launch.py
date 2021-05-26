@@ -25,7 +25,7 @@ def generate_launch_description():
 
     udp_driver_receiver = LifecycleNode(
         namespace = '',
-        name = 'udp_driver_receiver',
+        name = 'udp_receiver',
         package = 'udp_driver',
         executable = 'udp_receiver_node_exe',
         parameters = [params],
@@ -33,7 +33,7 @@ def generate_launch_description():
 
     udp_driver_sender = LifecycleNode(
         namespace = '',
-        name = 'udp_driver_sender',
+        name = 'udp_sender',
         package = 'udp_driver',
         executable = 'udp_sender_node_exe',
         parameters = [params],
