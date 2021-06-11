@@ -31,11 +31,13 @@ namespace common
 
 inline void from_msg(const UInt8MultiArray & in, std::vector<uint8_t> & out)
 {
+  out.reserve(in.data.size());
   std::copy(in.data.begin(), in.data.end(), out.begin());
 }
 
 inline void to_msg(const std::vector<uint8_t> & in, UInt8MultiArray & out)
 {
+  out.data.reserve(in.size());
   std::copy(in.begin(), in.end(), out.data.begin());
 }
 
