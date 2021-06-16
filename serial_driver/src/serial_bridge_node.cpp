@@ -126,21 +126,21 @@ void SerialBridgeNode::get_params()
   auto sb = StopBits::ONE;
 
   try {
-    m_device_name = declare_parameter("device_name").get<std::string>();
+    m_device_name = declare_parameter<std::string>("device_name");
   } catch (rclcpp::ParameterTypeException & ex) {
     RCLCPP_ERROR(get_logger(), "The device name provided was invalid");
     throw ex;
   }
 
   try {
-    baud_rate = declare_parameter("baud_rate").get<uint32_t>();
+    baud_rate = declare_parameter<int>("baud_rate");
   } catch (rclcpp::ParameterTypeException & ex) {
     RCLCPP_ERROR(get_logger(), "The baud_rate provided was invalid");
     throw ex;
   }
 
   try {
-    const auto fc_string = declare_parameter("flow_control").get<std::string>();
+    const auto fc_string = declare_parameter<std::string>("flow_control");
 
     if (fc_string == "none") {
       fc = FlowControl::NONE;
@@ -158,7 +158,7 @@ void SerialBridgeNode::get_params()
   }
 
   try {
-    const auto pt_string = declare_parameter("parity").get<std::string>();
+    const auto pt_string = declare_parameter<std::string>("parity");
 
     if (pt_string == "none") {
       pt = Parity::NONE;
@@ -176,7 +176,7 @@ void SerialBridgeNode::get_params()
   }
 
   try {
-    const auto sb_string = declare_parameter("stop_bits").get<std::string>();
+    const auto sb_string = declare_parameter<std::string>("stop_bits");
 
     if (sb_string == "1" || sb_string == "1.0") {
       sb = StopBits::ONE;
