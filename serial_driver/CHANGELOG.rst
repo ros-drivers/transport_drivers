@@ -2,8 +2,8 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2021-08-30)
+------------------
 * Remove deprecated api from galactic (`#57 <https://github.com/ros-drivers/transport_drivers/issues/57>`_)
 * Serial driver debugs (`#56 <https://github.com/ros-drivers/transport_drivers/issues/56>`_)
   * debugged message conversion

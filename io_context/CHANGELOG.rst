@@ -2,8 +2,8 @@
 Changelog for package io_context
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2021-08-30)
+------------------
 * Serial driver debugs (`#56 <https://github.com/ros-drivers/transport_drivers/issues/56>`_)
   * debugged message conversion
   debugged serial bridge segfault (publisher accessed before initialized)
