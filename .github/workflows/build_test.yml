@@ -1,13 +1,6 @@
 name: ROS2 CI
 
-on:
-  pull_request:
-    branches:
-      - 'develop'
-      - 'main'
-  push:
-    branches:
-      - 'main'
+on: [pull_request, push]
 
 jobs:
   test_environment:
@@ -37,7 +30,7 @@ jobs:
         with:
           path: ros_ws/src
       - name: build and test
-        uses: ros-tooling/action-ros-ci@master
+        uses: ros-tooling/action-ros-ci@0.2.2
         with:
           package-name: udp_driver serial_driver
           target-ros2-distro: ${{ matrix.ros_distribution }}
