@@ -1,12 +1,13 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package serial_driver
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package io_context
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
 * update READMEs for each package (`#54 <https://github.com/ros-drivers/transport_drivers/issues/54>`_)
   * update READMEs for each package
   * add more to readme, renamed config to params
+* use vectors not mutbuffers (`#50 <https://github.com/ros-drivers/transport_drivers/issues/50>`_)
 * Port udp_driver Changes to serial_driver (`#47 <https://github.com/ros-drivers/transport_drivers/issues/47>`_)
   * Adding SerialPort and framework for SerialDriver.
   * Adding SerialDriver
@@ -24,11 +25,17 @@ Forthcoming
   * [serial_driver] Fix error message
   * [serial_driver] Fix typo
   * [serial_driver] Shorten node name
+* Generic udp nodes (`#40 <https://github.com/ros-drivers/transport_drivers/issues/40>`_)
+  * use udp_msgs for receiver and sender nodes
+  * use vector of uint8_ts instead of mutable buffer
+  * all tests passing
+* Rename MutSocketBuffer to MutBuffer (`#46 <https://github.com/ros-drivers/transport_drivers/issues/46>`_)
 * Export ASIO definitions (`#44 <https://github.com/ros-drivers/transport_drivers/issues/44>`_)
 * Enforce C++14. Do not duplicate compiler flags (`#45 <https://github.com/ros-drivers/transport_drivers/issues/45>`_)
 * Deduplicate ASIO CMake module (`#43 <https://github.com/ros-drivers/transport_drivers/issues/43>`_)
   * Added ASIO CMake module
   * Use asio_cmake_module
+* Use RCLCPP logging macros (`#42 <https://github.com/ros-drivers/transport_drivers/issues/42>`_)
 * Fix copyright years (`#41 <https://github.com/ros-drivers/transport_drivers/issues/41>`_)
 * Removed Boost (`#39 <https://github.com/ros-drivers/transport_drivers/issues/39>`_)
   * Removed Boost
@@ -43,37 +50,29 @@ Forthcoming
   * Force non-Boost version of ASIO
   * Force non-Boost version of ASIO
   * Ignore result to avoid compiler warning
-* remove autoware namespace (`#35 <https://github.com/ros-drivers/transport_drivers/issues/35>`_)
-  * remove autoware namespace
-  * move msgs namespace to utils
-* Make Nodes Component-Compatible (`#22 <https://github.com/ros-drivers/transport_drivers/issues/22>`_)
-  * Making constructors for SerialDriverNode component-compatible.
-  * Making constructors for UdpDriverNode component-compatible.
+* Create Full UDP Nodes (`#38 <https://github.com/ros-drivers/transport_drivers/issues/38>`_)
+  * Reorganize namespaces
+  * Apply reviewer feedback
+  * Create UdpReceiverNode as LifecycleNode
+  * Create UdpSenderNode as Lifecycle Node
+  * Adding bridge node
+  * Add comment to bridge node about purpose
+* Reorg namespaces (`#37 <https://github.com/ros-drivers/transport_drivers/issues/37>`_)
+  * Move UDP driver node to correct location
+  * Reorganize namespaces
+  * Remove unused include_directories
+  * Apply reviewer feedback
+* move io_context to shared lib (`#36 <https://github.com/ros-drivers/transport_drivers/issues/36>`_)
 * Contributors: Esteve Fernandez, Evan Flynn, Joshua Whitley
 
 0.0.6 (2020-08-27)
 ------------------
-* Uncrustify fixes.
-* Remove lifecycle references (`#19 <https://github.com/ros-drivers/transport_drivers/issues/19>`_)
-* Fixing boost dependency. (`#18 <https://github.com/ros-drivers/transport_drivers/issues/18>`_)
-* Contributors: Esteve Fernandez, Joshua Whitley
 
 0.0.5 (2020-07-16)
 ------------------
-* Remove Autoware.AUTO Dependencies (`#15 <https://github.com/ros-drivers/transport_drivers/issues/15>`_)
-  * Removing autoware dependencies.
-  * Fixing linting errors.
-  * Addressing review feedback.
-* Be specific about which parts of Boost are necessary (`#10 <https://github.com/ros-drivers/transport_drivers/issues/10>`_)
-  * serial: be specific about Boost dependency.
-  * udp: be specific about Boost dependency.
-* Contributors: G.A. vd. Hoorn, Joshua Whitley
 
 0.0.4 (2019-12-12)
 ------------------
-* Making serial_driver version number consistent with repo.
-* Initial commit of serial_driver.
-* Contributors: Joshua Whitley
 
 0.0.3 (2019-08-21)
 ------------------
