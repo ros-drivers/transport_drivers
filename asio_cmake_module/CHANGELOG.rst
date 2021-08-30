@@ -2,8 +2,8 @@
 Changelog for package asio_cmake_module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2021-08-30)
+------------------
 * Export ASIO definitions (`#44 <https://github.com/ros-drivers/transport_drivers/issues/44>`_)
 * Deduplicate ASIO CMake module (`#43 <https://github.com/ros-drivers/transport_drivers/issues/43>`_)
   * Added ASIO CMake module

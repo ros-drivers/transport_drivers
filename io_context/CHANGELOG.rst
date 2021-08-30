@@ -2,8 +2,8 @@
 Changelog for package io_context
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2021-08-30)
+------------------
 * update READMEs for each package (`#54 <https://github.com/ros-drivers/transport_drivers/issues/54>`_)
   * update READMEs for each package
   * add more to readme, renamed config to params
