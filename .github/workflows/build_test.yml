@@ -1,11 +1,6 @@
 name: ROS2 CI
 
-on:
-  pull_request:
-    branches:
-      - 'develop'
-      - 'main'
-  push:
+on: [pull_request, push]
 
 jobs:
   test_environment:
