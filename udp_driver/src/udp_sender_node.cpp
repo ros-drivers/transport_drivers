@@ -61,7 +61,6 @@ LNI::CallbackReturn UdpSenderNode::on_configure(const lc::State & state)
     m_udp_driver->init_sender(m_ip, m_port);
     if (!m_udp_driver->sender()->isOpen()) {
       m_udp_driver->sender()->open();
-      m_udp_driver->sender()->reuseAddress();
     }
   } catch (const std::exception & ex) {
     RCLCPP_ERROR(

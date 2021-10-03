@@ -50,7 +50,6 @@ public:
   void open();
   void close();
   bool isOpen() const;
-  void reuseAddress();
   void bind();
 
   /*
