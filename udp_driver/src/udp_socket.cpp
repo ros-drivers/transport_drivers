@@ -144,6 +144,7 @@ uint16_t UdpSocket::port() const
 void UdpSocket::open()
 {
   m_udp_socket.open(udp::v4());
+  m_udp_socket.set_option(udp::socket::reuse_address(true));
 }
 
 void UdpSocket::close()
