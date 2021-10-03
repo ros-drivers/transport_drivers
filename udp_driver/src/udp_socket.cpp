@@ -160,6 +160,11 @@ bool UdpSocket::isOpen() const
   return m_udp_socket.is_open();
 }
 
+void UdpSocket::reuseAddress()
+{
+  m_udp_socket.set_option(udp::socket::reuse_address(true));
+}
+
 void UdpSocket::bind()
 {
   m_udp_socket.bind(m_endpoint);
