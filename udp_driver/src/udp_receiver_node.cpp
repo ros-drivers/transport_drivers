@@ -55,6 +55,9 @@ LNI::CallbackReturn UdpReceiverNode::on_configure(const lc::State & state)
 {
   (void)state;
 
+  m_publisher = this->create_publisher<udp_msgs::msg::UdpPacket>(
+    "udp_read", rclcpp::QoS(100));
+
   try {
     m_udp_driver->init_receiver(m_ip, m_port);
     m_udp_driver->receiver()->open();
@@ -67,9 +70,6 @@ LNI::CallbackReturn UdpReceiverNode::on_configure(const lc::State & state)
       m_ip.c_str(), m_port, ex.what());
     return LNI::CallbackReturn::FAILURE;
   }
-
-  m_publisher = this->create_publisher<udp_msgs::msg::UdpPacket>(
-    "udp_read", rclcpp::QoS(100));
 
   RCLCPP_DEBUG(get_logger(), "UDP receiver successfully configured.");
 
