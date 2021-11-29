@@ -111,24 +111,14 @@ LNI::CallbackReturn UdpReceiverNode::on_shutdown(const lc::State & state)
 void UdpReceiverNode::get_params()
 {
   try {
-// NOTE(esteve): remove this when Foxy is no longer supported
-#if RCLCPP_VERSION_MAJOR > 2
-    m_ip = declare_parameter<std::string>("ip");
-#else
     m_ip = declare_parameter<std::string>("ip", "");
-#endif
   } catch (rclcpp::ParameterTypeException & ex) {
     RCLCPP_ERROR(get_logger(), "The ip paramter provided was invalid");
     throw ex;
   }
 
   try {
-// NOTE(esteve): remove this when Foxy is no longer supported
-#if RCLCPP_VERSION_MAJOR > 2
-    m_port = declare_parameter<int>("port");
-#else
     m_port = declare_parameter<int>("port", 0);
-#endif
   } catch (rclcpp::ParameterTypeException & ex) {
     RCLCPP_ERROR(get_logger(), "The port paramter provided was invalid");
     throw ex;

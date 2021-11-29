@@ -126,36 +126,21 @@ void SerialBridgeNode::get_params()
   auto sb = StopBits::ONE;
 
   try {
-// NOTE(esteve): remove this when Foxy is no longer supported
-#if RCLCPP_VERSION_MAJOR > 2
-    m_device_name = declare_parameter<std::string>("device_name");
-#else
     m_device_name = declare_parameter<std::string>("device_name", "");
-#endif
   } catch (rclcpp::ParameterTypeException & ex) {
     RCLCPP_ERROR(get_logger(), "The device name provided was invalid");
     throw ex;
   }
 
   try {
-// NOTE(esteve): remove this when Foxy is no longer supported
-#if RCLCPP_VERSION_MAJOR > 2
-    baud_rate = declare_parameter<int>("baud_rate");
-#else
     baud_rate = declare_parameter<int>("baud_rate", 0);
-#endif
   } catch (rclcpp::ParameterTypeException & ex) {
     RCLCPP_ERROR(get_logger(), "The baud_rate provided was invalid");
     throw ex;
   }
 
   try {
-// NOTE(esteve): remove this when Foxy is no longer supported
-#if RCLCPP_VERSION_MAJOR > 2
-    const auto fc_string = declare_parameter<std::string>("flow_control");
-#else
     const auto fc_string = declare_parameter<std::string>("flow_control", "");
-#endif
 
     if (fc_string == "none") {
       fc = FlowControl::NONE;
@@ -173,12 +158,7 @@ void SerialBridgeNode::get_params()
   }
 
   try {
-// NOTE(esteve): remove this when Foxy is no longer supported
-#if RCLCPP_VERSION_MAJOR > 2
-    const auto pt_string = declare_parameter<std::string>("parity");
-#else
     const auto pt_string = declare_parameter<std::string>("parity", "");
-#endif
 
     if (pt_string == "none") {
       pt = Parity::NONE;
@@ -196,12 +176,7 @@ void SerialBridgeNode::get_params()
   }
 
   try {
-// NOTE(esteve): remove this when Foxy is no longer supported
-#if RCLCPP_VERSION_MAJOR > 2
-    const auto sb_string = declare_parameter<std::string>("stop_bits");
-#else
     const auto sb_string = declare_parameter<std::string>("stop_bits", "");
-#endif
 
     if (sb_string == "1" || sb_string == "1.0") {
       sb = StopBits::ONE;
