@@ -43,6 +43,12 @@ ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
   src/udp_receiver_node.cpp
   src/udp_sender_node.cpp
 )
+target_compile_definitions(${PROJECT_NAME}_nodes
+  PRIVATE
+    RCLCPP_VERSION_MAJOR=${rclcpp_VERSION_MAJOR}
+    RCLCPP_VERSION_MINOR=${rclcpp_VERSION_MINOR}
+    RCLCPP_VERSION_PATCH=${rclcpp_VERSION_PATCH}
+)
 ament_target_dependencies(${PROJECT_NAME}_nodes "ASIO")
 target_link_libraries(${PROJECT_NAME}_nodes ${PROJECT_NAME})
 
