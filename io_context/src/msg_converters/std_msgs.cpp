@@ -17,6 +17,7 @@
 #include "msg_converters/std_msgs.hpp"
 
 #include <cmath>
+#include <vector>
 
 #include "asio.hpp"
 
