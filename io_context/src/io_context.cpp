@@ -26,15 +26,14 @@ namespace drivers
 namespace common
 {
 
+IoContext::IoContext()
+: IoContext(std::thread::hardware_concurrency()) {}
+
 IoContext::IoContext(size_t threads_count)
 : m_ios(new asio::io_service()),
   m_work(new asio::io_service::work(ios())),
   m_ios_thread_workers(new drivers::common::thread_group())
 {
-  if (threads_count == size_t(-1)) {
-    threads_count = std::thread::hardware_concurrency();
-  }
-
   for (size_t i = 0; i < threads_count; ++i) {
     m_ios_thread_workers->create_thread(
       [this]() {
