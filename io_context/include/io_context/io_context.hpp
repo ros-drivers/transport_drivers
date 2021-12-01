@@ -59,7 +59,8 @@ struct thread_group
 class IoContext
 {
 public:
-  explicit IoContext(size_t threads_count = -1);
+  IoContext();
+  explicit IoContext(size_t threads_count);
   ~IoContext();
 
   IoContext(const IoContext &) = delete;
