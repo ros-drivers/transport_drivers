@@ -39,6 +39,11 @@
 #include <std_msgs/msg/float32.hpp>
 #include <std_msgs/msg/float64.hpp>
 
+/*
+ * std_msgs::msg::UInt8MultiArray variant
+ */
+#include <std_msgs/msg/u_int8_multi_array.hpp>
+
 #include <vector>
 
 #include "io_context/common.hpp"
@@ -97,6 +102,27 @@ void from_msg(const std_msgs::msg::Float64::SharedPtr & in, std::vector<uint8_t>
  */
 void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Float32 & out);
 void to_msg(const std::vector<uint8_t> & in, std_msgs::msg::Float64 & out);
+
+/*
+ * Raw Buffer to ROS2 Message Converter
+ * std_msgs::msg::UInt8MultiArray variant
+ */
+inline void to_msg(
+  const std::vector<uint8_t> & in, std_msgs::msg::UInt8MultiArray & out,
+  const size_t & bytes_transferred)
+{
+  out.data.resize(bytes_transferred);
+  std::memcpy(&out.data[0], &in[0], bytes_transferred);
+}
+
+/*
+ * ROS2 Message to Raw Buffer Converter
+ * std_msgs::msg::UInt8MultiArray variant
+ */
+inline void from_msg(const std_msgs::msg::UInt8MultiArray::SharedPtr & in, std::vector<uint8_t> & out)
+{
+  out = in->data;
+}
 
 }  // namespace common
 }  // namespace drivers

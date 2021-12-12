@@ -30,7 +30,7 @@
 
 namespace lc = rclcpp_lifecycle;
 using LNI = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface;
-using example_interfaces::msg::UInt8MultiArray;
+using std_msgs::msg::UInt8MultiArray;
 
 namespace drivers
 {
@@ -80,7 +80,7 @@ public:
   void subscriber_callback(const UInt8MultiArray::SharedPtr msg);
 
   /// \breif Callback for when serial data are received
-  void receive_callback(const std::vector<uint8_t> & buffer);
+  void receive_callback(const std::vector<uint8_t> & buffer, const size_t & bytes_transferred);
 
 private:
   void get_params();

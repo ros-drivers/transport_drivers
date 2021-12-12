@@ -94,7 +94,7 @@ void SerialPort::async_receive_handler(
   }
 
   if (bytes_transferred > 0 && m_func) {
-    m_func(m_recv_buffer);
+    m_func(m_recv_buffer, bytes_transferred);
     m_serial_port.async_read_some(
       asio::buffer(m_recv_buffer),
       [this](std::error_code error, size_t bytes_transferred)
