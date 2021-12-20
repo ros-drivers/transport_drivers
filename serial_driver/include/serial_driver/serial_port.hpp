@@ -30,7 +30,7 @@ namespace drivers
 namespace serial_driver
 {
 
-using Functor = std::function<void (std::vector<uint8_t> &)>;
+using Functor = std::function<void (std::vector<uint8_t> &, const size_t &)>;
 
 enum class FlowControl
 {

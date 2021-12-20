@@ -69,7 +69,6 @@ if(BUILD_TESTING)
     )
     ament_target_dependencies(${TEST_SERIAL_DRIVER_EXE}
       rclcpp
-      example_interfaces
       lifecycle_msgs
       ASIO
     )

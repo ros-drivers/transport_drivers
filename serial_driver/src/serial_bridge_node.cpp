@@ -64,7 +64,7 @@ LNI::CallbackReturn SerialBridgeNode::on_configure(const lc::State & state)
     if (!m_serial_driver->port()->is_open()) {
       m_serial_driver->port()->open();
       m_serial_driver->port()->async_receive(
-        std::bind(&SerialBridgeNode::receive_callback, this, std::placeholders::_1));
+        std::bind(&SerialBridgeNode::receive_callback, this, std::placeholders::_1, std::placeholders::_2));
     }
   } catch (const std::exception & ex) {
     RCLCPP_ERROR(
@@ -196,10 +196,10 @@ void SerialBridgeNode::get_params()
   m_device_config = std::make_unique<SerialPortConfig>(baud_rate, fc, pt, sb);
 }
 
-void SerialBridgeNode::receive_callback(const std::vector<uint8_t> & buffer)
+void SerialBridgeNode::receive_callback(const std::vector<uint8_t> & buffer, const size_t & bytes_transferred)
 {
   UInt8MultiArray out;
-  drivers::common::to_msg(buffer, out);
+  drivers::common::to_msg(buffer, out, bytes_transferred);
   m_publisher->publish(out);
 }
 
@@ -207,7 +207,7 @@ void SerialBridgeNode::subscriber_callback(const UInt8MultiArray::SharedPtr msg)
 {
   if (this->get_current_state().id() == State::PRIMARY_STATE_ACTIVE) {
     std::vector<uint8_t> out;
-    drivers::common::from_msg(*msg, out);
+    drivers::common::from_msg(msg, out);
     m_serial_driver->port()->async_send(out);
   }
 }
