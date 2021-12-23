@@ -44,11 +44,7 @@ public:
     const std::string & host_ip, uint16_t host_port);
   UdpSocket(
     const IoContext & ctx,
-    const std::string & remote_ip, uint16_t remote_port,
-    uint16_t host_port);
-  UdpSocket(
-    const IoContext & ctx,
-    const std::string & remote_ip, uint16_t remote_port);
+    const std::string & ip, uint16_t port);
   ~UdpSocket();
 
   UdpSocket(const UdpSocket &) = delete;

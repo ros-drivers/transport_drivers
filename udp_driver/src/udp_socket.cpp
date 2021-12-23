@@ -41,33 +41,21 @@ UdpSocket::UdpSocket(
   m_remote_endpoint(address::from_string(remote_ip), remote_port),
   m_host_endpoint(address::from_string(host_ip), host_port)
 {
+  m_remote_endpoint = remote_ip.empty()
+    ? udp::endpoint{udp::v4(), remote_port}
+    : udp::endpoint{address::from_string(remote_ip), remote_port};
+  m_host_endpoint = host_ip.empty()
+    ? udp::endpoint{udp::v4(), host_port}
+    : udp::endpoint{address::from_string(host_ip), host_port};
   m_recv_buffer.resize(m_recv_buffer_size);
 }
 
 UdpSocket::UdpSocket(
   const IoContext & ctx,
-  const std::string & remote_ip,
-  const uint16_t remote_port,
-  const uint16_t host_port)
-: m_ctx(ctx),
-  m_udp_socket(ctx.ios()),
-  m_remote_endpoint(address::from_string(remote_ip), remote_port),
-  m_host_endpoint(udp::v4(), host_port)
-{
-  m_recv_buffer.resize(m_recv_buffer_size);
-}
-
-UdpSocket::UdpSocket(
-  const IoContext & ctx,
-  const std::string & remote_ip,
-  const uint16_t remote_port)
-: m_ctx(ctx),
-  m_udp_socket(ctx.ios()),
-  m_remote_endpoint(address::from_string(remote_ip), remote_port),
-  m_host_endpoint()
-{
-  m_recv_buffer.resize(m_recv_buffer_size);
-}
+  const std::string & ip,
+  const uint16_t port)
+: UdpSocket{ctx, ip, port, ip, port}
+{}
 
 UdpSocket::~UdpSocket()
 {
@@ -91,7 +79,7 @@ size_t UdpSocket::receive(std::vector<uint8_t> & buff)
 
   std::size_t len = m_udp_socket.receive_from(
     asio::buffer(buff),
-    m_remote_endpoint,
+    m_host_endpoint,
     0,
     error);
 
@@ -117,7 +105,7 @@ void UdpSocket::asyncReceive(Functor func)
   m_func = std::move(func);
   m_udp_socket.async_receive_from(
     asio::buffer(m_recv_buffer),
-    m_remote_endpoint,
+    m_host_endpoint,
     [this](std::error_code error, std::size_t bytes_transferred)
     {
       asyncReceiveHandler(error, bytes_transferred);
@@ -150,7 +138,7 @@ void UdpSocket::asyncReceiveHandler(
     m_recv_buffer.resize(m_recv_buffer_size);
     m_udp_socket.async_receive_from(
       asio::buffer(m_recv_buffer),
-      m_remote_endpoint,
+      m_host_endpoint,
       [this](std::error_code error, std::size_t bytes_tf)
       {
         m_recv_buffer.resize(bytes_tf);
