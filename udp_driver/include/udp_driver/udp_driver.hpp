@@ -35,6 +35,9 @@ public:
   explicit UdpDriver(const IoContext & ctx);
 
   void init_sender(const std::string & ip, uint16_t port);
+  void init_sender(
+    const std::string & remote_ip, uint16_t remote_port,
+    const std::string & host_ip, uint16_t host_port);
   void init_receiver(const std::string & ip, uint16_t port);
 
   std::shared_ptr<UdpSocket> sender() const;

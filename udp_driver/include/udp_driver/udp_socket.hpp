@@ -38,14 +38,22 @@ using Functor = std::function<void (const std::vector<uint8_t> &)>;
 class UdpSocket
 {
 public:
-  UdpSocket(const IoContext & ctx, const std::string & ip, uint16_t port);
+  UdpSocket(
+    const IoContext & ctx,
+    const std::string & remote_ip, uint16_t remote_port,
+    const std::string & host_ip, uint16_t host_port);
+  UdpSocket(
+    const IoContext & ctx,
+    const std::string & ip, uint16_t port);
   ~UdpSocket();
 
   UdpSocket(const UdpSocket &) = delete;
   UdpSocket & operator=(const UdpSocket &) = delete;
 
-  std::string ip() const;
-  uint16_t port() const;
+  std::string remote_ip() const;
+  uint16_t remote_port() const;
+  std::string host_ip() const;
+  uint16_t host_port() const;
 
   void open();
   void close();
@@ -84,7 +92,8 @@ private:
 private:
   const IoContext & m_ctx;
   udp::socket m_udp_socket;
-  udp::endpoint m_endpoint;
+  udp::endpoint m_remote_endpoint;
+  udp::endpoint m_host_endpoint;
   Functor m_func;
   static const size_t m_recv_buffer_size{2048};
   std::vector<uint8_t> m_recv_buffer;

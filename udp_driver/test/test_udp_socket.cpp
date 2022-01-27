@@ -29,8 +29,8 @@ TEST(UdpSocketTest, LifeCycleTest)
   IoContext ctx;
   UdpSocket socket(ctx, ip, port);
 
-  EXPECT_EQ(socket.ip(), ip);
-  EXPECT_EQ(socket.port(), port);
+  EXPECT_EQ(socket.remote_ip(), ip);
+  EXPECT_EQ(socket.remote_port(), port);
 
   EXPECT_EQ(socket.isOpen(), false);
   socket.open();
