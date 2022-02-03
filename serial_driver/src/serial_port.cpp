@@ -73,6 +73,11 @@ void SerialPort::async_receive(Functor func)
     });
 }
 
+void SerialPort::send_break()
+{
+  m_serial_port.send_break();
+}
+
 void SerialPort::async_send_handler(
   const asio::error_code & error,
   size_t bytes_transferred)

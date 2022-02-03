@@ -214,6 +214,8 @@ public:
   /// \param[in] func A function to be called when data are received
   void async_receive(Functor func);
 
+  /// \brief Function to send a break sequence to the serial port
+  void send_break();
 private:
   void async_send_handler(
     const asio::error_code & error,
