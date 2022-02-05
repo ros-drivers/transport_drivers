@@ -1,4 +1,5 @@
 // Copyright 2021 LeoDrive, Copyright 2021 The Autoware Foundation
+// Copyright 2021 Trimble (c)
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -215,7 +216,10 @@ public:
   void async_receive(Functor func);
 
   /// \brief Function to send a break sequence to the serial port
-  void send_break();
+  ///        Note: The port should be open first
+  /// \returns True if the break was sent, False otherwise
+  bool send_break();
+
 private:
   void async_send_handler(
     const asio::error_code & error,
