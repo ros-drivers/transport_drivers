@@ -27,6 +27,7 @@ using drivers::serial_driver::SerialPortConfig;
 using drivers::serial_driver::StopBits;
 
 static constexpr const char * dev_name = "/dev/ttyS0";
+static constexpr const char * dev_null = "/dev/null";
 static constexpr uint32_t baud = 115200;
 static constexpr FlowControl fc = FlowControl::NONE;
 static constexpr Parity pt = Parity::NONE;
@@ -67,6 +68,51 @@ TEST(SerialPortTest, StateTest)
   EXPECT_THROW(port.receive(send_recv_buff), asio::system_error);
 
   // Can't test other functions without available port
+
+  ctx.waitForExit();
+}
+
+TEST(SerialDriverTest, SendBreakWhileClosed)
+{
+  IoContext ctx;
+  SerialPortConfig config(baud, fc, pt, sb);
+  SerialPort port(ctx, dev_null, config);
+
+  EXPECT_FALSE(port.is_open());
+  // Without the port open, expect this to fail
+  EXPECT_FALSE(port.send_break());
+
+  ctx.waitForExit();
+}
+
+TEST(SerialDriverTest, SendBreakWhenFailtToOpen)
+{
+  IoContext ctx;
+  SerialPortConfig config(baud, fc, pt, sb);
+  SerialPort port(ctx, dev_null, config);
+
+  EXPECT_FALSE(port.is_open());
+  EXPECT_THROW(port.open(), asio::system_error);
+  EXPECT_FALSE(port.is_open());
+
+  // Without the port open, should return false
+  EXPECT_FALSE(port.send_break());
+
+  ctx.waitForExit();
+}
+
+TEST(SerialDriverTest, SendBreakWhenWhileOpen)
+{
+  IoContext ctx;
+  SerialPortConfig config(baud, fc, pt, sb);
+  SerialPort port(ctx, dev_name, config);
+
+  EXPECT_FALSE(port.is_open());
+  EXPECT_NO_THROW(port.open());
+  EXPECT_TRUE(port.is_open());
+
+  // With the port open, expect it to work
+  EXPECT_TRUE(port.send_break());
 
   ctx.waitForExit();
 }
