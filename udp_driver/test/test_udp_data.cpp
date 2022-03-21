@@ -15,6 +15,7 @@
 // Developed by LeoDrive, 2021
 #include <gtest/gtest.h>
 
+#include <thread>
 #include <vector>
 
 #include "udp_driver/udp_socket.hpp"
