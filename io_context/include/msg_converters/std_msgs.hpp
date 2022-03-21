@@ -119,7 +119,9 @@ inline void to_msg(
  * ROS2 Message to Raw Buffer Converter
  * std_msgs::msg::UInt8MultiArray variant
  */
-inline void from_msg(const std_msgs::msg::UInt8MultiArray::SharedPtr & in, std::vector<uint8_t> & out)
+inline void from_msg(
+  const std_msgs::msg::UInt8MultiArray::SharedPtr & in,
+  std::vector<uint8_t> & out)
 {
   out = in->data;
 }

@@ -64,7 +64,9 @@ LNI::CallbackReturn SerialBridgeNode::on_configure(const lc::State & state)
     if (!m_serial_driver->port()->is_open()) {
       m_serial_driver->port()->open();
       m_serial_driver->port()->async_receive(
-        std::bind(&SerialBridgeNode::receive_callback, this, std::placeholders::_1, std::placeholders::_2));
+        std::bind(
+          &SerialBridgeNode::receive_callback, this, std::placeholders::_1,
+          std::placeholders::_2));
     }
   } catch (const std::exception & ex) {
     RCLCPP_ERROR(
@@ -196,7 +198,9 @@ void SerialBridgeNode::get_params()
   m_device_config = std::make_unique<SerialPortConfig>(baud_rate, fc, pt, sb);
 }
 
-void SerialBridgeNode::receive_callback(const std::vector<uint8_t> & buffer, const size_t & bytes_transferred)
+void SerialBridgeNode::receive_callback(
+  const std::vector<uint8_t> & buffer,
+  const size_t & bytes_transferred)
 {
   UInt8MultiArray out;
   drivers::common::to_msg(buffer, out, bytes_transferred);
