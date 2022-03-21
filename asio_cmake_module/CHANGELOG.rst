@@ -2,6 +2,9 @@
 Changelog for package asio_cmake_module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.1.0 (2022-03-20)
 ------------------
 

@@ -2,6 +2,11 @@
 Changelog for package io_context
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix linter errors.
+* Contributors: WhitleySoftwareServices
+
 1.1.0 (2022-03-20)
 ------------------
 * Fix the converter Converter between `std_msgs::msg::UInt8MultiArray` and `std::vector<uint8_t>` (`#73 <https://github.com/ros-drivers/transport_drivers/issues/73>`_)

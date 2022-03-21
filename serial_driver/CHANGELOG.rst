@@ -2,6 +2,12 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Disable broken test.
+* Fix linter errors.
+* Contributors: WhitleySoftwareServices
+
 1.1.0 (2022-03-20)
 ------------------
 * Support serial_break (`#76 <https://github.com/ros-drivers/transport_drivers/issues/76>`_)
