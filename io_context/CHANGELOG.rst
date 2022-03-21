@@ -2,6 +2,17 @@
 Changelog for package io_context
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix the converter Converter between `std_msgs::msg::UInt8MultiArray` and `std::vector<uint8_t>` (`#73 <https://github.com/ros-drivers/transport_drivers/issues/73>`_)
+  * example_interfaces is redundant as std_msgs includes UInt8MultiArray
+  * udp_msgs.hpp should not include "converters.hpp"
+  * Fix the converter std_msgs::msg::UInt8MultiArray <-> std::vector<uint8_t>
+* Add a second constructor to avoid comparing size_t (unsigned int) and int (`#70 <https://github.com/ros-drivers/transport_drivers/issues/70>`_)
+* Fix cpplint error (`#69 <https://github.com/ros-drivers/transport_drivers/issues/69>`_)
+  See https://build.ros2.org/job/Gdev__transport_drivers__ubuntu_focal_amd64/9/testReport/junit/(root)/projectroot/cpplint/
+* Contributors: ChenJun, Esteve Fernandez
+
 1.0.1 (2021-08-30)
 ------------------
 * Serial driver debugs (`#56 <https://github.com/ros-drivers/transport_drivers/issues/56>`_)

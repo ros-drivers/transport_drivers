@@ -2,6 +2,20 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Support serial_break (`#76 <https://github.com/ros-drivers/transport_drivers/issues/76>`_)
+  * Support serial_break
+  * Add protection to serial break and unit tests
+* Fix the converter Converter between `std_msgs::msg::UInt8MultiArray` and `std::vector<uint8_t>` (`#73 <https://github.com/ros-drivers/transport_drivers/issues/73>`_)
+  * example_interfaces is redundant as std_msgs includes UInt8MultiArray
+  * udp_msgs.hpp should not include "converters.hpp"
+  * Fix the converter std_msgs::msg::UInt8MultiArray <-> std::vector<uint8_t>
+* Add support for Foxy (`#68 <https://github.com/ros-drivers/transport_drivers/issues/68>`_)
+  * Add support for Foxy
+  * Use same API signature for all ROS distros
+* Contributors: ChenJun, Esteve Fernandez, RFRIEDM-Trimble
+
 1.0.1 (2021-08-30)
 ------------------
 * Remove deprecated api from galactic (`#57 <https://github.com/ros-drivers/transport_drivers/issues/57>`_)

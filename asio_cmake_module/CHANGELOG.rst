@@ -2,6 +2,9 @@
 Changelog for package asio_cmake_module
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.1 (2021-08-30)
 ------------------
 * Export ASIO definitions (`#44 <https://github.com/ros-drivers/transport_drivers/issues/44>`_)

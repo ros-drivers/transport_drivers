@@ -2,6 +2,21 @@
 Changelog for package udp_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add missing header.
+* Add new constructors and members to bind host endpoint (`#65 <https://github.com/ros-drivers/transport_drivers/issues/65>`_)
+  * Add new constructors and members to bind host endpoint
+  * address review: fix constructor and endpoint
+* Add support for Foxy (`#68 <https://github.com/ros-drivers/transport_drivers/issues/68>`_)
+  * Add support for Foxy
+  * Use same API signature for all ROS distros
+* Fix nullptr access in udp receiver node (`#67 <https://github.com/ros-drivers/transport_drivers/issues/67>`_)
+* Add reuse address function (`#64 <https://github.com/ros-drivers/transport_drivers/issues/64>`_)
+  * Add reuse address function
+  * Address review: Enable reuse address in open function
+* Contributors: Daisuke Nishimatsu, Esteve Fernandez, WhitleySoftwareServices
+
 1.0.1 (2021-08-30)
 ------------------
 * Remove deprecated api from galactic (`#57 <https://github.com/ros-drivers/transport_drivers/issues/57>`_)
