@@ -2,8 +2,8 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2022-03-20)
+------------------
 * Support serial_break (`#76 <https://github.com/ros-drivers/transport_drivers/issues/76>`_)
   * Support serial_break
   * Add protection to serial break and unit tests

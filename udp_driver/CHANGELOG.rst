@@ -2,8 +2,8 @@
 Changelog for package udp_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2022-03-20)
+------------------
 * Add missing header.
 * Add new constructors and members to bind host endpoint (`#65 <https://github.com/ros-drivers/transport_drivers/issues/65>`_)
   * Add new constructors and members to bind host endpoint
