@@ -2,8 +2,8 @@
 Changelog for package serial_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.0 (2022-03-20)
+------------------
 * Disable broken test.
 * Fix linter errors.
 * Contributors: WhitleySoftwareServices

@@ -2,8 +2,8 @@
 Changelog for package udp_driver
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.0 (2022-03-20)
+------------------
 * Fix linter errors.
 * Contributors: WhitleySoftwareServices
 
