@@ -101,6 +101,8 @@ TEST(SerialDriverTest, SendBreakWhenFailtToOpen)
   ctx.waitForExit();
 }
 
+// Below test requires valid serial port
+/*
 TEST(SerialDriverTest, SendBreakWhenWhileOpen)
 {
   IoContext ctx;
@@ -116,3 +118,4 @@ TEST(SerialDriverTest, SendBreakWhenWhileOpen)
 
   ctx.waitForExit();
 }
+*/
