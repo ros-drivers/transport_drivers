@@ -15,11 +15,11 @@
 
 #include "serial_driver/serial_port.hpp"
 
-#include <rclcpp/logging.hpp>
-
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <rclcpp/logging.hpp>
 
 namespace drivers
 {

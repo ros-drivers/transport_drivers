@@ -41,12 +41,12 @@ UdpSocket::UdpSocket(
   m_remote_endpoint(address::from_string(remote_ip), remote_port),
   m_host_endpoint(address::from_string(host_ip), host_port)
 {
-  m_remote_endpoint = remote_ip.empty()
-    ? udp::endpoint{udp::v4(), remote_port}
-    : udp::endpoint{address::from_string(remote_ip), remote_port};
-  m_host_endpoint = host_ip.empty()
-    ? udp::endpoint{udp::v4(), host_port}
-    : udp::endpoint{address::from_string(host_ip), host_port};
+  m_remote_endpoint = remote_ip.empty() ?
+    udp::endpoint{udp::v4(), remote_port} :
+  udp::endpoint{address::from_string(remote_ip), remote_port};
+  m_host_endpoint = host_ip.empty() ?
+    udp::endpoint{udp::v4(), host_port} :
+  udp::endpoint{address::from_string(host_ip), host_port};
   m_recv_buffer.resize(m_recv_buffer_size);
 }
 

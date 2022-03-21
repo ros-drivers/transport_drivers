@@ -16,11 +16,11 @@
 
 #include <gtest/gtest.h>
 
-#include <rclcpp/rclcpp.hpp>
-
 #include <chrono>
 #include <string>
 #include <vector>
+
+#include <rclcpp/rclcpp.hpp>
 
 #include "io_context/io_context.hpp"
 #include "udp_driver/udp_driver.hpp"

@@ -17,6 +17,8 @@
 #ifndef MSG_CONVERTERS__STD_MSGS_HPP_
 #define MSG_CONVERTERS__STD_MSGS_HPP_
 
+#include <vector>
+
 /*
  * std_msgs::msg::Int variant
  */
@@ -43,8 +45,6 @@
  * std_msgs::msg::UInt8MultiArray variant
  */
 #include <std_msgs/msg/u_int8_multi_array.hpp>
-
-#include <vector>
 
 #include "io_context/common.hpp"
 
@@ -119,7 +119,9 @@ inline void to_msg(
  * ROS2 Message to Raw Buffer Converter
  * std_msgs::msg::UInt8MultiArray variant
  */
-inline void from_msg(const std_msgs::msg::UInt8MultiArray::SharedPtr & in, std::vector<uint8_t> & out)
+inline void from_msg(
+  const std_msgs::msg::UInt8MultiArray::SharedPtr & in,
+  std::vector<uint8_t> & out)
 {
   out = in->data;
 }
