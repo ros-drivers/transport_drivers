@@ -16,6 +16,7 @@
 #define SERIAL_DRIVER__SERIAL_PORT_HPP_
 
 #include <array>
+#include <functional>
 #include <string>
 #include <vector>
 

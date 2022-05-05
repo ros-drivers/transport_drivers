@@ -18,6 +18,7 @@
 #define UDP_DRIVER__UDP_SOCKET_HPP_
 
 #include <array>
+#include <functional>
 #include <string>
 #include <vector>
 

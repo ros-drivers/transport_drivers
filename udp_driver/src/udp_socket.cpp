@@ -17,6 +17,7 @@
 #include "udp_driver/udp_socket.hpp"
 
 #include <iostream>
+#include <functional>
 #include <utility>
 #include <string>
 #include <system_error>

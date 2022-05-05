@@ -18,6 +18,7 @@
 #define IO_CONTEXT__IO_CONTEXT_HPP_
 
 #include <memory>
+#include <thread>
 #include <vector>
 #include <utility>
 
