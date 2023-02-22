@@ -101,6 +101,7 @@ void SerialPort::async_receive_handler(
 {
   if (error) {
     RCLCPP_ERROR_STREAM(rclcpp::get_logger("SerialPort::async_receive_handler"), error.message());
+    m_serial_port.close();
     return;
   }
 
