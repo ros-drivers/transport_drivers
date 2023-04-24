@@ -40,7 +40,10 @@ SerialPort::SerialPort(
 
 SerialPort::~SerialPort()
 {
-  close();
+  if (open())
+  {
+    close();
+  }
 }
 
 size_t SerialPort::send(const std::vector<uint8_t> & buff)
@@ -138,7 +141,7 @@ void SerialPort::open()
 void SerialPort::close()
 {
   asio::error_code error;
-  m_serial_port.close(error);
+  close(error);
   if (error) {
     RCLCPP_ERROR_STREAM(rclcpp::get_logger("SerialPort::close"), error.message());
   }
