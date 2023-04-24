@@ -40,7 +40,10 @@ SerialPort::SerialPort(
 
 SerialPort::~SerialPort()
 {
-  close();
+  if (is_open())
+  {
+    close();
+  }
 }
 
 size_t SerialPort::send(const std::vector<uint8_t> & buff)
@@ -101,7 +104,7 @@ void SerialPort::async_receive_handler(
 {
   if (error) {
     RCLCPP_ERROR_STREAM(rclcpp::get_logger("SerialPort::async_receive_handler"), error.message());
-    m_serial_port.close();
+    close();
     return;
   }
 
