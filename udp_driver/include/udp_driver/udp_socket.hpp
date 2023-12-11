@@ -59,6 +59,7 @@ public:
   void close();
   bool isOpen() const;
   void bind();
+  void joinMulticast(std::string & multicast_addr);
 
   /*
    * Blocking Send Operation
