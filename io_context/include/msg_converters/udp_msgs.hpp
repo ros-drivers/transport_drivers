@@ -34,7 +34,7 @@ namespace common
  */
 inline void from_msg(const udp_msgs::msg::UdpPacket::SharedPtr & in, std::vector<uint8_t> & out)
 {
-  out.resize(sizeof(in->data));
+  out.resize((in->data.size());
   std::copy(in->data.begin(), in->data.end(), out.begin());
 }
 
