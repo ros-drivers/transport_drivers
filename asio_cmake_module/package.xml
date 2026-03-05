@@ -5,7 +5,7 @@
   <version>1.2.0</version>
   <description>A CMake module for using the ASIO network library</description>
   <maintainer email="esteve@apache.org">Esteve Fernandez</maintainer>
-  <license>Apache License 2.0</license>
+  <license>Apache-2.0</license>
 
   <url type="repository">https://github.com/ros-drivers/transport_drivers</url>
   <url type="bugtracker">https://github.com/ros-drivers/transport_drivers/issues</url>
