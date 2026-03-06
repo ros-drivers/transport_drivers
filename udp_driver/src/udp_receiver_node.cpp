@@ -62,6 +62,7 @@ LNI::CallbackReturn UdpReceiverNode::on_configure(const lc::State & state)
     m_udp_driver->init_receiver(m_ip, m_port);
     m_udp_driver->receiver()->open();
     m_udp_driver->receiver()->bind();
+    m_udp_driver->receiver()->joinMulticast(m_ip);
     m_udp_driver->receiver()->asyncReceive(
       std::bind(&UdpReceiverNode::receiver_callback, this, std::placeholders::_1));
   } catch (const std::exception & ex) {

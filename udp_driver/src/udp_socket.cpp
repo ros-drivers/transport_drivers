@@ -192,5 +192,18 @@ void UdpSocket::bind()
   m_udp_socket.bind(m_host_endpoint);
 }
 
+void UdpSocket::joinMulticast(std::string & multicast_addr)
+{
+  if (address::from_string(multicast_addr).is_v4() &&
+    address::from_string(multicast_addr).to_v4().is_multicast())
+  {
+    m_udp_socket.set_option(
+      asio::ip::multicast::join_group(address::from_string(multicast_addr).to_v4()));
+    RCLCPP_INFO(
+      rclcpp::get_logger("UdpSocket::multicast"),
+      "Joined multicast group: %s", multicast_addr.c_str());
+  }
+}
+
 }  // namespace udp_driver
 }  // namespace drivers
