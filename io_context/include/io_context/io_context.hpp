@@ -66,7 +66,7 @@ public:
   IoContext(const IoContext &) = delete;
   IoContext & operator=(const IoContext &) = delete;
 
-  asio::io_service & ios() const;
+  asio::io_context & ios() const;
 
   bool isServiceStopped();
   uint32_t serviceThreadCount();
@@ -76,12 +76,12 @@ public:
   template<class F>
   void post(F f)
   {
-    ios().post(f);
+    asio::post(ios(), f);
   }
 
 private:
-  std::shared_ptr<asio::io_service> m_ios;
-  std::shared_ptr<asio::io_service::work> m_work;
+  std::shared_ptr<asio::io_context> m_ios;
+  std::shared_ptr<asio::executor_work_guard<asio::io_context::executor_type>> m_work;
   std::shared_ptr<drivers::common::thread_group> m_ios_thread_workers;
 };
 
