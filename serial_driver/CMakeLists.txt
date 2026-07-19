@@ -32,13 +32,19 @@ ament_auto_find_build_dependencies()
 
 find_package(asio_cmake_module REQUIRED)
 find_package(ASIO REQUIRED)
+if(ASIO_FOUND AND NOT TARGET asio::asio)
+  add_library(asio::asio INTERFACE IMPORTED)
+  set_target_properties(asio::asio PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${ASIO_INCLUDE_DIR}"
+  )
+endif()
 
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/serial_port.cpp
   src/serial_driver.cpp
 )
 
-ament_target_dependencies(${PROJECT_NAME} "ASIO")
+target_link_libraries(${PROJECT_NAME} asio::asio)
 
 ament_auto_add_library(${PROJECT_NAME}_nodes SHARED
   src/serial_bridge_node.cpp
@@ -50,7 +56,7 @@ rclcpp_components_register_node(${PROJECT_NAME}_nodes
 )
 
 target_link_libraries(${PROJECT_NAME}_nodes ${PROJECT_NAME})
-ament_target_dependencies(${PROJECT_NAME}_nodes "ASIO")
+target_link_libraries(${PROJECT_NAME}_nodes asio::asio)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto)
@@ -68,10 +74,10 @@ if(BUILD_TESTING)
     ament_add_gtest(${TEST_SERIAL_DRIVER_EXE}
       test/${name}.cpp
     )
-    ament_target_dependencies(${TEST_SERIAL_DRIVER_EXE}
-      rclcpp
-      lifecycle_msgs
-      ASIO
+    target_link_libraries(${TEST_SERIAL_DRIVER_EXE}
+      rclcpp::rclcpp
+      ${lifecycle_msgs_TARGETS}
+      asio::asio
     )
     target_include_directories(${TEST_SERIAL_DRIVER_EXE} PRIVATE include)
     target_link_libraries(${TEST_SERIAL_DRIVER_EXE} ${PROJECT_NAME} ${PROJECT_NAME_NODES})
