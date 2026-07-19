@@ -33,12 +33,18 @@ ament_auto_find_build_dependencies()
 
 find_package(asio_cmake_module REQUIRED)
 find_package(ASIO REQUIRED)
+if(ASIO_FOUND AND NOT TARGET asio::asio)
+  add_library(asio::asio INTERFACE IMPORTED)
+  set_target_properties(asio::asio PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${ASIO_INCLUDE_DIR}"
+  )
+endif()
 
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/io_context.cpp
   src/msg_converters/std_msgs.cpp
 )
-ament_target_dependencies(${PROJECT_NAME} "ASIO")
+target_link_libraries(${PROJECT_NAME} asio::asio)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -48,7 +54,7 @@ if(BUILD_TESTING)
 
   ament_add_gtest(${TEST_UDP_DRIVER_EXE}
           test/${name}.cpp)
-  ament_target_dependencies(${TEST_UDP_DRIVER_EXE} std_msgs udp_msgs "ASIO")
+  target_link_libraries(${TEST_UDP_DRIVER_EXE} ${std_msgs_TARGETS} ${udp_msgs_TARGETS} asio::asio)
 
   target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
   target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME})
