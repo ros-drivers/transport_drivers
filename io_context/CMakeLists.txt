@@ -38,7 +38,8 @@ ament_auto_add_library(${PROJECT_NAME} SHARED
   src/io_context.cpp
   src/msg_converters/std_msgs.cpp
 )
-ament_target_dependencies(${PROJECT_NAME} "ASIO")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${ASIO_INCLUDE_DIRS})
+target_compile_definitions(${PROJECT_NAME} PUBLIC ${ASIO_DEFINITIONS})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -48,7 +49,12 @@ if(BUILD_TESTING)
 
   ament_add_gtest(${TEST_UDP_DRIVER_EXE}
           test/${name}.cpp)
-  ament_target_dependencies(${TEST_UDP_DRIVER_EXE} std_msgs udp_msgs "ASIO")
+  target_link_libraries(${TEST_UDP_DRIVER_EXE}
+      ${std_msgs_TARGETS}
+      ${udp_msgs_TARGETS}
+  )
+  target_include_directories(${TEST_UDP_DRIVER_EXE} SYSTEM PUBLIC ${ASIO_INCLUDE_DIRS})
+  target_compile_definitions(${TEST_UDP_DRIVER_EXE} PUBLIC ${ASIO_DEFINITIONS})
 
   target_include_directories(${TEST_UDP_DRIVER_EXE} PRIVATE include)
   target_link_libraries(${TEST_UDP_DRIVER_EXE} ${PROJECT_NAME})
