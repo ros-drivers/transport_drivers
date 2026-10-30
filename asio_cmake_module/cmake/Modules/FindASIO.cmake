@@ -20,3 +20,11 @@ find_package_handle_standard_args(ASIO DEFAULT_MSG ASIO_INCLUDE_DIRS)
 mark_as_advanced(ASIO_INCLUDE_DIRS)
 list(APPEND ASIO_DEFINITIONS ASIO_STANDALONE)
 mark_as_advanced(ASIO_DEFINITIONS)
+
+if(ASIO_FOUND AND NOT TARGET asio::asio)
+  add_library(asio::asio INTERFACE IMPORTED)
+  set_target_properties(asio::asio PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${ASIO_INCLUDE_DIRS}"
+    INTERFACE_COMPILE_DEFINITIONS "${ASIO_DEFINITIONS}"
+  )
+endif()
